@@ -28,6 +28,14 @@ public class MongoInterface {
 	}
 	
 	/**
+	 * Get mongo database
+	 * @return database
+	 */
+	public MongoDatabase getDatabase() {
+		return database;
+	}
+	
+	/**
 	 * Get collection from database
 	 * @param collectionName
 	 * @return collection with name 'collectionName'
@@ -93,4 +101,6 @@ public class MongoInterface {
 			System.out.println(name);
 		}
 	}
+	
+
 }
