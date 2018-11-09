@@ -1,13 +1,6 @@
 package PoetryGenerator.Generator;
-import com.mongodb.client.FindIterable; 
-import com.mongodb.client.MongoCollection; 
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 
 import java.util.Iterator; 
-import org.bson.Document;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -19,7 +12,7 @@ import com.mongodb.MongoClient;
  * Interface for CRUD operations on MongoDB database
  * Used in poetry generator and for testing purposes
  * @author Clare Buckley
- * @version 08/11/2018
+ * @version 09/11/2018
  *
  */
 public class MongoInterface {
@@ -35,6 +28,8 @@ public class MongoInterface {
 		database =  mongo.getDB(databaseName);
 		
 		System.out.println(getDocument("testData", 1).get("textLine"));
+		updateDocument("testData", 1, "updatedTest", "updatedVal");
+		System.out.println(getDocument("testData", 1));
 		
 	}
 	
@@ -91,8 +86,13 @@ public class MongoInterface {
 	 * @param docVal - new value to update with
 	 */
 	public void updateDocument(String collectionName, int docId, String docKey, String docVal) {
-		MongoCollection<Document> collection = getCollection(collectionName);
-		collection.updateOne(Filters.eq("id", docId), Updates.set(docKey, docVal));
+		DBCollection collection = getCollection(collectionName);
+		BasicDBObject newDocument = new BasicDBObject();
+		
+		newDocument.append("$set", new BasicDBObject().append(docKey, docVal));
+		BasicDBObject searchQuery = new BasicDBObject().append("id", docId);
+		
+		collection.update(searchQuery, newDocument);
 	}
 	
 	/**
@@ -101,8 +101,11 @@ public class MongoInterface {
 	 * @param docId - id of document to be deleted
 	 */
 	public void deleteDocument(String collectionName, int docId) {
-		MongoCollection<Document> collection = getCollection(collectionName);
-		collection.deleteOne(Filters.eq("id", docId)); 
+		BasicDBObject query = new BasicDBObject();
+		query.append("id", docId);
+
+		DBCollection collection = getCollection(collectionName);
+		collection.remove(query); 
 	}
 	
 	/**

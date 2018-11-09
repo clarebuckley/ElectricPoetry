@@ -1,10 +1,7 @@
 package PoetryGenerator.Generator;
 
-import org.bson.Document;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.client.FindIterable;
 
 public class PoemLine {
 	private int id;
