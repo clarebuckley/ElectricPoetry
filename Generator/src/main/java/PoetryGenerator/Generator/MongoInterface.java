@@ -9,6 +9,10 @@ import java.util.Iterator;
 import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient; 
 
 /**
@@ -21,19 +25,28 @@ import com.mongodb.MongoClient;
 public class MongoInterface {
 
 	private MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
-	private final MongoDatabase database;  
+	
+	
+	private final DB database;
 	private final String databaseName;
 	
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
-		database = mongo.getDatabase(databaseName);
+		database =  mongo.getDB(databaseName);
+		
+		System.out.println(getDocument("testData", 1).get("textLine"));
+		
+	}
+	
+	public static void main(String args[]) {
+		 new MongoInterface("test");
 	}
 	
 	/**
 	 * Get mongo database
 	 * @return database
 	 */
-	public MongoDatabase getDatabase() {
+	public DB getDatabase() {
 		return database;
 	}
 	
@@ -42,14 +55,22 @@ public class MongoInterface {
 	 * @param collectionName
 	 * @return collection with name 'collectionName'
 	 */
-	public MongoCollection<Document> getCollection(String collectionName){
+	public DBCollection getCollection(String collectionName){
 		return database.getCollection(collectionName);
 	}
 	
-	public FindIterable<Document> getDocument(String collectionName, String docId) {
-		MongoCollection<Document> collection = getCollection(collectionName);
-		System.out.println(collection.find(Filters.eq("id", docId)));
-		return collection.find(Filters.eq("id", docId));
+	/**
+	 * Return document from the collection
+	 * @param collectionName
+	 * @param docId
+	 * @return
+	 */
+	public DBObject getDocument(String collectionName, Object docId) {
+		DBCollection collection = getCollection(collectionName);
+		DBObject query = new BasicDBObject("id", docId);
+		DBCursor cursor = collection.find(query);
+		DBObject javaObject = cursor.one();
+		return javaObject;
 	}
 		
 	/**
@@ -57,9 +78,9 @@ public class MongoInterface {
 	 * @param collectionName - collection to add document to
 	 * @param document - document to be added
 	 */
-	public void insertDocument(String collectionName, Document document) {
-		MongoCollection<Document> collection = getCollection(collectionName);
-		collection.insertOne(document);
+	public void insertDocument(String collectionName, DBObject[] document) {
+		DBCollection collection = getCollection(collectionName);
+		collection.insert(document);
 	}
 	
 	/**
@@ -89,10 +110,10 @@ public class MongoInterface {
 	 * @param collectionName
 	 */
 	public void printCollectionContents(String collectionName) {
-		MongoCollection<Document> collection = getCollection(collectionName);
+		DBCollection collection = getCollection(collectionName);
 		
 		// Getting the iterable object 
-		FindIterable<Document> iterDoc = collection.find(); 
+		DBCursor iterDoc = collection.find(); 
 		Iterator it = iterDoc.iterator(); 
 		int count = 1;
 		while (it.hasNext()) {  
@@ -105,7 +126,7 @@ public class MongoInterface {
 	 * List all collections in the database
 	 */
 	public void listCollections() {
-		for(String name : database.listCollectionNames()) {
+		for(String name : database.getCollectionNames()) {
 			System.out.println(name);
 		}
 	}

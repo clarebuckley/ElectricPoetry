@@ -2,6 +2,10 @@ package PoetryGenerator.Generator;
 
 import org.bson.Document;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.FindIterable;
+
 public class PoemLine {
 	private int id;
 	//Original text from poem
@@ -43,12 +47,16 @@ public class PoemLine {
 		this.tagged = tagged;
 	}
 	
-	public Document buildLineDocument() {
-		Document document = new Document("id", id)
-			.append("textLine", textLine)
-			.append("POS", pos)
-			.append("taggedLine", tagged);
+	public DBObject buildLineDocument() {
+		DBObject document = new BasicDBObject("_id", id)
+				.append("textLine", textLine)
+				.append("POS", pos)
+				.append("taggedLine", tagged);
 		
 		return document;
 	}
+	
+//	public PoemLine documentToObject(FindIterable<Document> document) {
+//		return new PoemLine()
+//	}
 }
