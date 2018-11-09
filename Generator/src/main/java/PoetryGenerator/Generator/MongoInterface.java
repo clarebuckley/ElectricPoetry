@@ -6,7 +6,9 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import java.util.Iterator; 
-import org.bson.Document; 
+import org.bson.Document;
+
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient; 
 
 /**
@@ -42,6 +44,12 @@ public class MongoInterface {
 	 */
 	public MongoCollection<Document> getCollection(String collectionName){
 		return database.getCollection(collectionName);
+	}
+	
+	public FindIterable<Document> getDocument(String collectionName, String docId) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		System.out.println(collection.find(Filters.eq("id", docId)));
+		return collection.find(Filters.eq("id", docId));
 	}
 		
 	/**
