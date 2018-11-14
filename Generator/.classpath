@@ -24,5 +24,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/Clare/Downloads/stanford-pos-tagger-3.0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
