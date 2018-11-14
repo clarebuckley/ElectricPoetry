@@ -1,5 +1,7 @@
 package PoetryGenerator.Generator;
-
+//Diagram including database structure
+//Explain project/db setup, how data is stored
+//Explain choices between main decisions - top 3, choice of 1 for example
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 

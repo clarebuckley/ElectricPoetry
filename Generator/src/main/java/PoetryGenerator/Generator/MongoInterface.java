@@ -25,6 +25,7 @@ public class MongoInterface {
 	
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
+		//TODO change this
 		database =  mongo.getDB(databaseName);
 		
 		System.out.println(getDocument("testData", 1).get("textLine"));
