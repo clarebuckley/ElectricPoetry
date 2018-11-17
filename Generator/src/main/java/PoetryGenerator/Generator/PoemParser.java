@@ -20,7 +20,9 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.BasicDependenciesAnnotation;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedDependenciesAnnotation;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.EnhancedDependenciesAnnotation;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
@@ -53,7 +55,6 @@ public class PoemParser {
 			List <CoreMap> sentences = document.get(SentencesAnnotation.class);
 			List<String> words = new ArrayList<String>();
 			List<String> posTags = new ArrayList<String>();
-			List<String> nerTags = new ArrayList<String>();
 
 			for (CoreMap sentence : sentences) {
 				// traversing the words in the current sentence
@@ -66,9 +67,6 @@ public class PoemParser {
 					String pos = token.get(PartOfSpeechAnnotation.class);
 					posTags.add(pos);
 
-					//NER label of the token
-					String ne = token.get(NamedEntityTagAnnotation.class);
-					nerTags.add(ne);
 				}
 
 				//Syntactic parse tree of sentence 
@@ -76,14 +74,13 @@ public class PoemParser {
 				System.out.println("Tree:\n"+ tree); 
 
 				//Dependency graph of the sentence 
-				SemanticGraph dependencies = sentence.get(CollapsedDependenciesAnnotation.class); 
+				SemanticGraph dependencies = sentence.get(EnhancedDependenciesAnnotation.class); 
 				System.out.println("Dependencies\n:"+ dependencies);
 			}
 
 			System.out.println("Words: " + words.toString());
 			System.out.println("posTags: " + posTags.toString());
-			System.out.println("nerTags: " + nerTags.toString());
-
+		
 			//Map of the chain 
 			Map<Integer, CorefChain> graph = document.get(CorefChainAnnotation.class); 
 			System.out.println("Map of the chain:\n" + graph);
