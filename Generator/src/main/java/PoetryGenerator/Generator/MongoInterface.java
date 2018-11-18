@@ -1,12 +1,18 @@
 package PoetryGenerator.Generator;
 
-import java.util.Iterator; 
+import java.util.Iterator;
+
+import org.bson.Document;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient; 
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase; 
 
 /**
  * Interface for CRUD operations on MongoDB database
@@ -20,14 +26,14 @@ public class MongoInterface {
 	private MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
 	
 	
-	private final DB database;
+	private final MongoDatabase database;
 	private final String databaseName;
 	
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
-		//TODO change this
-		database =  mongo.getDB(databaseName);
+		database =  mongo.getDatabase(databaseName);
 		
+		//Tests
 		System.out.println(getDocument("testData", 1).get("textLine"));
 		updateDocument("testData", 1, "updatedTest", "updatedVal");
 		System.out.println(getDocument("testData", 1));
@@ -35,6 +41,7 @@ public class MongoInterface {
 	}
 	
 	public static void main(String args[]) {
+		//for testing
 		 new MongoInterface("test");
 	}
 	
@@ -42,7 +49,7 @@ public class MongoInterface {
 	 * Get mongo database
 	 * @return database
 	 */
-	public DB getDatabase() {
+	public MongoDatabase getDatabase() {
 		return database;
 	}
 	
@@ -51,7 +58,7 @@ public class MongoInterface {
 	 * @param collectionName
 	 * @return collection with name 'collectionName'
 	 */
-	public DBCollection getCollection(String collectionName){
+	public MongoCollection<Document> getCollection(String collectionName){
 		return database.getCollection(collectionName);
 	}
 	
@@ -61,12 +68,16 @@ public class MongoInterface {
 	 * @param docId
 	 * @return
 	 */
-	public DBObject getDocument(String collectionName, Object docId) {
-		DBCollection collection = getCollection(collectionName);
-		DBObject query = new BasicDBObject("id", docId);
-		DBCursor cursor = collection.find(query);
-		DBObject javaObject = cursor.one();
-		return javaObject;
+	public Document getDocument(String collectionName, Object docId) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+
+		Document toFind = new Document().append("id", docId);
+		FindIterable<Document> document = collection.find(toFind);
+		Iterator<Document> iterator = document.iterator();
+	    Document result = (Document) iterator.next();
+		System.out.println(result.toJson());
+		
+		return result;
 	}
 		
 	/**
@@ -74,9 +85,9 @@ public class MongoInterface {
 	 * @param collectionName - collection to add document to
 	 * @param document - document to be added
 	 */
-	public void insertDocument(String collectionName, DBObject[] document) {
-		DBCollection collection = getCollection(collectionName);
-		collection.insert(document);
+	public void insertDocument(String collectionName, Document document) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		collection.insertOne(document);
 	}
 	
 	/**
@@ -87,13 +98,11 @@ public class MongoInterface {
 	 * @param docVal - new value to update with
 	 */
 	public void updateDocument(String collectionName, int docId, String docKey, String docVal) {
-		DBCollection collection = getCollection(collectionName);
+		MongoCollection<Document> collection = getCollection(collectionName);
 		BasicDBObject newDocument = new BasicDBObject();
-		
 		newDocument.append("$set", new BasicDBObject().append(docKey, docVal));
-		BasicDBObject searchQuery = new BasicDBObject().append("id", docId);
-		
-		collection.update(searchQuery, newDocument);
+		BasicDBObject searchQuery = new BasicDBObject().append("id", docId);	
+		collection.updateOne(searchQuery, newDocument);
 	}
 	
 	/**
@@ -102,11 +111,8 @@ public class MongoInterface {
 	 * @param docId - id of document to be deleted
 	 */
 	public void deleteDocument(String collectionName, int docId) {
-		BasicDBObject query = new BasicDBObject();
-		query.append("id", docId);
-
-		DBCollection collection = getCollection(collectionName);
-		collection.remove(query); 
+		MongoCollection<Document> collection = getCollection(collectionName);
+		collection.deleteOne(new Document("id", docId));
 	}
 	
 	/**
@@ -114,11 +120,11 @@ public class MongoInterface {
 	 * @param collectionName
 	 */
 	public void printCollectionContents(String collectionName) {
-		DBCollection collection = getCollection(collectionName);
+		MongoCollection<Document> collection = getCollection(collectionName);
 		
 		// Getting the iterable object 
-		DBCursor iterDoc = collection.find(); 
-		Iterator it = iterDoc.iterator(); 
+		FindIterable<Document> iterDoc = collection.find(); 
+		Iterator<Document> it = iterDoc.iterator(); 
 		int count = 1;
 		while (it.hasNext()) {  
 			System.out.println(it.next());  
@@ -130,7 +136,7 @@ public class MongoInterface {
 	 * List all collections in the database
 	 */
 	public void listCollections() {
-		for(String name : database.getCollectionNames()) {
+		for(String name : database.listCollectionNames()) {
 			System.out.println(name);
 		}
 	}
