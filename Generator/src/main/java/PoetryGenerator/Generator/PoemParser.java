@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.bson.Document;
+
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
@@ -27,7 +29,7 @@ public class PoemParser {
 
 	private int docId;
 	private InputStream file;
-	private final MongoInterface mongo = new MongoInterface("test");
+	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
 		//Testing
@@ -36,7 +38,12 @@ public class PoemParser {
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
 		this.file = this.getClass().getResourceAsStream(filePath);
-		this.docId = mongo.getLastEnteredId("testData") + 1;
+		if(mongo.getLastEnteredId("verses") == -1) {
+			this.docId = 1;
+		} else {
+			this.docId = mongo.getLastEnteredId("verses") + 1;
+		}
+
 		System.out.println("start docId: " + docId);
 
 		//Test
@@ -84,16 +91,12 @@ public class PoemParser {
 				versePosTags.add(posTags);
 				verseText.add(line.trim());
 				verseLines++;
-
 			} 
 			else {
-				System.out.println("-------------------------------------END OF VERSE " + docId);
-				System.out.println(versePosTags.toString());
-				System.out.println(verseText.toString());
-				System.out.println(verseLines);
-				
-				//TODO: add verse tags to database here
-				
+				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
+				Document document = verse.buildDocument();
+				mongo.insertDocument("verses", document);
+
 				versePosTags.removeAll(versePosTags);
 				verseText.removeAll(verseText);
 				verseLines = 0;

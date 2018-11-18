@@ -2,13 +2,13 @@ package PoetryGenerator.Generator;
 
 import java.util.Iterator;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase; 
-import static com.mongodb.client.model.Sorts.*;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Sorts;
+
 
 /**
  * Interface for CRUD operations on MongoDB database
@@ -26,6 +26,12 @@ public class MongoInterface {
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
 		database = mongo.getDatabase(databaseName);
+		
+		printCollectionContents("verses");
+	}
+	
+	public static void main(String[] args) {
+		new MongoInterface("poetryDB");
 	}
 
 	/**
@@ -70,11 +76,9 @@ public class MongoInterface {
 	 */
 	public int getLastEnteredId(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-		Bson sort = descending("docId");
-		FindIterable<Document> document = collection.find().sort(sort);
-		Iterator<Document> iterator = document.iterator();
-		Document result = (Document) iterator.next();
-		int id = (Integer) result.get("id"); //change to docId when real collections used
+		Document document = collection.find().sort(Sorts.descending("id")).first();
+		Double docId = (Double) document.get("id");
+		Integer id = docId.intValue();
 		return id;
 	}
 
