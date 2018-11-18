@@ -49,6 +49,7 @@ public class PoemParser {
 		while (line != null) {
 			System.out.println(docId);
 			if(line.trim().isEmpty()) {
+				docId++;
 				System.out.println("-------------------------------------END OF VERSE");
 			} else {
 
@@ -88,7 +89,7 @@ public class PoemParser {
 			
 			//Attempt to read next line
 			try {
-				docId++;
+			
 				line = reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
