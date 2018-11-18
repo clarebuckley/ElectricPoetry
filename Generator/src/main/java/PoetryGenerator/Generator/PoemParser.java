@@ -24,7 +24,7 @@ import edu.stanford.nlp.util.CoreMap;
  *
  */
 public class PoemParser {
-	
+
 	private int docId;
 	private InputStream file;
 	private final MongoInterface mongo = new MongoInterface("test");
@@ -37,25 +37,25 @@ public class PoemParser {
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
 		this.file = this.getClass().getResourceAsStream(filePath);
 		this.docId = mongo.getLastEnteredId("testData") + 1;
-		
+		System.out.println("start docId: " + docId);
+
 		//Test
 		parseLinesInFile(file);
 	}
 
 	private void parseLinesInFile(InputStream file) throws IOException {
+		int verseLines = 0;
+		ArrayList<List<String>> versePosTags = new ArrayList<List<String>>();
+		ArrayList<String> verseText = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file));
 		String line = reader.readLine();
 
+		//Loop through each line in the input text
 		while (line != null) {
-			System.out.println(docId);
-			if(line.trim().isEmpty()) {
-				docId++;
-				System.out.println("-------------------------------------END OF VERSE");
-			} else {
-
-				// creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
+			if(!line.trim().isEmpty()) {
+				// creates a StanfordCoreNLP object with POS tagging
 				Properties props = new Properties();
-				props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+				props.setProperty("annotators", "tokenize, ssplit, pos");
 				StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
 				// create an empty Annotation just with the given text
@@ -66,7 +66,6 @@ public class PoemParser {
 
 				// these are all the sentences in this document
 				List <CoreMap> sentences = document.get(SentencesAnnotation.class);
-				List<String> words = new ArrayList<String>();
 				List<String> posTags = new ArrayList<String>();
 
 				for (CoreMap sentence : sentences) {
@@ -74,7 +73,7 @@ public class PoemParser {
 					for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
 						//text of the token
 						String word = token.get(TextAnnotation.class);
-						words.add(word);
+						//TODO: add word to wordbank here
 
 						//POS tag of the token
 						String pos = token.get(PartOfSpeechAnnotation.class);
@@ -82,14 +81,27 @@ public class PoemParser {
 					}
 				}
 
-				System.out.println("Words: " + words.toString());
-				System.out.println("posTags: " + posTags.toString());
+				versePosTags.add(posTags);
+				verseText.add(line.trim());
+				verseLines++;
 
+			} 
+			else {
+				System.out.println("-------------------------------------END OF VERSE " + docId);
+				System.out.println(versePosTags.toString());
+				System.out.println(verseText.toString());
+				System.out.println(verseLines);
+				
+				//TODO: add verse tags to database here
+				
+				versePosTags.removeAll(versePosTags);
+				verseText.removeAll(verseText);
+				verseLines = 0;
+				docId++;
 			}
-			
+
 			//Attempt to read next line
 			try {
-			
 				line = reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -1,0 +1,564 @@
+2018-11-18 16:24:10 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:24:10 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:24:10 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:44}] to localhost:27017
+2018-11-18 16:24:10 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5706183}
+2018-11-18 16:24:10 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:45}] to localhost:27017
+2018-11-18 16:24:11 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:11 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:24:11 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:11 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:12 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.6 sec].
+2018-11-18 16:24:12 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:12 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:15 INFO  AbstractSequenceClassifier:88 - Loading classifier from edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz ... done [2.7 sec].
+2018-11-18 16:24:18 INFO  AbstractSequenceClassifier:88 - Loading classifier from edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz ... done [2.6 sec].
+2018-11-18 16:24:21 INFO  AbstractSequenceClassifier:88 - Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [3.8 sec].
+2018-11-18 16:24:21 INFO  JollyDayHolidays:88 - Initializing JollyDayHoliday for SUTime from classpath edu/stanford/nlp/models/sutime/jollyday/Holidays_sutime.xml as sutime.binder.1.
+2018-11-18 16:24:23 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:24 INFO  ParserGrammar:88 - Loading parser from serialized file edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz ... done [0.6 sec].
+2018-11-18 16:24:24 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:30 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:31 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:32 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:33 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator ner
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:24:34 INFO  StanfordCoreNLP:88 - Adding annotator dcoref
+2018-11-18 16:25:12 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:25:12 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:25:12 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:46}] to localhost:27017
+2018-11-18 16:25:12 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5836476}
+2018-11-18 16:25:12 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:47}] to localhost:27017
+2018-11-18 16:25:13 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:13 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:25:13 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:13 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:14 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.5 sec].
+2018-11-18 16:25:14 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:14 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:16 INFO  ParserGrammar:88 - Loading parser from serialized file edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz ... done [1.3 sec].
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:16 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:17 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:18 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:18 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:18 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:18 INFO  StanfordCoreNLP:88 - Adding annotator lemma
+2018-11-18 16:25:18 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:37 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:25:37 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:25:37 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:48}] to localhost:27017
+2018-11-18 16:25:37 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5642577}
+2018-11-18 16:25:37 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:49}] to localhost:27017
+2018-11-18 16:25:38 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:38 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:25:38 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:38 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:39 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.6 sec].
+2018-11-18 16:25:39 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:41 INFO  ParserGrammar:88 - Loading parser from serialized file edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz ... done [1.4 sec].
+2018-11-18 16:25:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:41 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:42 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:25:43 INFO  StanfordCoreNLP:88 - Adding annotator parse
+2018-11-18 16:26:39 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:26:39 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:26:39 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:50}] to localhost:27017
+2018-11-18 16:26:39 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=7268665}
+2018-11-18 16:26:39 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:51}] to localhost:27017
+2018-11-18 16:26:39 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:39 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:26:39 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:39 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.6 sec].
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:26:41 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:57 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:26:57 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:26:57 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:52}] to localhost:27017
+2018-11-18 16:26:57 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5380966}
+2018-11-18 16:26:57 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:53}] to localhost:27017
+2018-11-18 16:26:57 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:26:57 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:26:57 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:26:59 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.6 sec].
+2018-11-18 16:27:09 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:27:09 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:27:09 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:54}] to localhost:27017
+2018-11-18 16:27:09 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5460475}
+2018-11-18 16:27:09 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:55}] to localhost:27017
+2018-11-18 16:27:10 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:17 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:27:17 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:27:17 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:56}] to localhost:27017
+2018-11-18 16:27:17 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5001888}
+2018-11-18 16:27:17 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:57}] to localhost:27017
+2018-11-18 16:27:17 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:17 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:27:17 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:17 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.5 sec].
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:27:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:19 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2018-11-18 16:28:19 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2018-11-18 16:28:19 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:58}] to localhost:27017
+2018-11-18 16:28:19 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5334800}
+2018-11-18 16:28:19 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:59}] to localhost:27017
+2018-11-18 16:28:19 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:19 INFO  TokenizerAnnotator:88 - No tokenizer type provided. Defaulting to PTBTokenizer.
+2018-11-18 16:28:19 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:19 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  MaxentTagger:88 - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [1.6 sec].
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator tokenize
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator ssplit
+2018-11-18 16:28:21 INFO  StanfordCoreNLP:88 - Adding annotator pos
