@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -16,8 +17,10 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.RelationExtractorAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Parses input texts and adds POS, dependencies, and text content to the database
@@ -77,9 +80,18 @@ public class PoemParser {
 
 				for (CoreMap sentence : sentences) {
 					// traversing the words in the current sentence
-					for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+					List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
+
+					Collection<String> nGrams = StringUtils.getNgramsFromTokens(tokens,3,5);
+					//TODO: for each in the array, when you add that word to the array also add the n-gram [will be multiple
+					//n-grams for each word (max/min vals)
+//					System.out.println(tokens);
+//					System.out.println(nGrams.toString());
+					for (CoreLabel token : tokens) {
 						//text of the token
 						String word = token.get(TextAnnotation.class);
+
+
 						//TODO: add word to wordbank here
 
 						//POS tag of the token
@@ -95,7 +107,7 @@ public class PoemParser {
 			else {
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
 				Document document = verse.buildDocument();
-				mongo.insertDocument("verses", document);
+				//				mongo.insertDocument("verses", document);
 
 				versePosTags.removeAll(versePosTags);
 				verseText.removeAll(verseText);
