@@ -3,6 +3,7 @@ package PoetryGenerator.Generator;
 import java.util.Iterator;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -10,11 +11,13 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase; 
 
+import static com.mongodb.client.model.Sorts.*;
+
 /**
  * Interface for CRUD operations on MongoDB database
  * Used in poetry generator and for testing purposes
  * @author Clare Buckley
- * @version 09/11/2018
+ * @version 18/11/2018
  *
  */
 public class MongoInterface {
@@ -28,19 +31,9 @@ public class MongoInterface {
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
 		database =  mongo.getDatabase(databaseName);
-		
-		//Tests
-		System.out.println(getDocument("testData", 1).get("textLine"));
-		updateDocument("testData", 1, "updatedTest", "updatedVal");
-		System.out.println(getDocument("testData", 1));
-		
 	}
 	
-	public static void main(String args[]) {
-		//for testing
-		 new MongoInterface("test");
-	}
-	
+
 	/**
 	 * Get mongo database
 	 * @return database
@@ -62,7 +55,7 @@ public class MongoInterface {
 	 * Return document from the collection
 	 * @param collectionName
 	 * @param docId
-	 * @return
+	 * @return document with id docId in the collection
 	 */
 	public Document getDocument(String collectionName, Object docId) {
 		MongoCollection<Document> collection = getCollection(collectionName);
@@ -74,6 +67,20 @@ public class MongoInterface {
 		System.out.println(result.toJson());
 		
 		return result;
+	}
+	
+	/**
+	 * Get last entered document in the collection
+	 * @param collectionName collection to search
+	 * @return document with highest docId in the collection
+	 */
+	public Document getLastEntered(String collectionName) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		Bson sort = descending("docId");
+		FindIterable<Document> document = collection.find().sort(sort);
+		Iterator<Document> iterator = document.iterator();
+	    Document result = (Document) iterator.next();
+	    return result;
 	}
 		
 	/**
@@ -121,10 +128,8 @@ public class MongoInterface {
 		// Getting the iterable object 
 		FindIterable<Document> iterDoc = collection.find(); 
 		Iterator<Document> it = iterDoc.iterator(); 
-		int count = 1;
 		while (it.hasNext()) {  
 			System.out.println(it.next());  
-			count++; 
 		}
 	}
 	
@@ -137,5 +142,4 @@ public class MongoInterface {
 		}
 	}
 	
-
 }
