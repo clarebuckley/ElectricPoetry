@@ -24,6 +24,10 @@ import edu.stanford.nlp.util.CoreMap;
  *
  */
 public class PoemParser {
+	
+	private int docId;
+	private InputStream file;
+	private final MongoInterface mongo = new MongoInterface("test");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
 		//Testing
@@ -31,17 +35,19 @@ public class PoemParser {
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
-		InputStream file = this.getClass().getResourceAsStream(filePath);
+		this.file = this.getClass().getResourceAsStream(filePath);
+		this.docId = mongo.getLastEnteredId("testData") + 1;
+		
 		//Test
 		parseLinesInFile(file);
 	}
-
 
 	private void parseLinesInFile(InputStream file) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file));
 		String line = reader.readLine();
 
 		while (line != null) {
+			System.out.println(docId);
 			if(line.trim().isEmpty()) {
 				System.out.println("-------------------------------------END OF VERSE");
 			} else {
@@ -82,6 +88,7 @@ public class PoemParser {
 			
 			//Attempt to read next line
 			try {
+				docId++;
 				line = reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();

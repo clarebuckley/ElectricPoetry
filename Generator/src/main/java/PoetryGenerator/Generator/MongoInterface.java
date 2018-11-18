@@ -1,16 +1,13 @@
 package PoetryGenerator.Generator;
 
 import java.util.Iterator;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase; 
-
 import static com.mongodb.client.model.Sorts.*;
 
 /**
@@ -23,16 +20,13 @@ import static com.mongodb.client.model.Sorts.*;
 public class MongoInterface {
 
 	private MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
-	
-	
 	private final MongoDatabase database;
 	private final String databaseName;
-	
+
 	MongoInterface(String databaseNameParam) {
 		databaseName = databaseNameParam;
-		database =  mongo.getDatabase(databaseName);
+		database = mongo.getDatabase(databaseName);
 	}
-	
 
 	/**
 	 * Get mongo database
@@ -41,7 +35,7 @@ public class MongoInterface {
 	public MongoDatabase getDatabase() {
 		return database;
 	}
-	
+
 	/**
 	 * Get collection from database
 	 * @param collectionName
@@ -50,7 +44,7 @@ public class MongoInterface {
 	public MongoCollection<Document> getCollection(String collectionName){
 		return database.getCollection(collectionName);
 	}
-	
+
 	/**
 	 * Return document from the collection
 	 * @param collectionName
@@ -63,26 +57,27 @@ public class MongoInterface {
 		Document toFind = new Document().append("id", docId);
 		FindIterable<Document> document = collection.find(toFind);
 		Iterator<Document> iterator = document.iterator();
-	    Document result = (Document) iterator.next();
+		Document result = (Document) iterator.next();
 		System.out.println(result.toJson());
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * Get last entered document in the collection
+	 * Get id of last entered document in the collection
 	 * @param collectionName collection to search
-	 * @return document with highest docId in the collection
+	 * @return highest docId in the collection
 	 */
-	public Document getLastEntered(String collectionName) {
+	public int getLastEnteredId(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		Bson sort = descending("docId");
 		FindIterable<Document> document = collection.find().sort(sort);
 		Iterator<Document> iterator = document.iterator();
-	    Document result = (Document) iterator.next();
-	    return result;
+		Document result = (Document) iterator.next();
+		int id = (Integer) result.get("id"); //change to docId when real collections used
+		return id;
 	}
-		
+
 	/**
 	 * Insert a document into a collection
 	 * @param collectionName - collection to add document to
@@ -92,7 +87,7 @@ public class MongoInterface {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		collection.insertOne(document);
 	}
-	
+
 	/**
 	 * Update document in a collection
 	 * @param collectionName - collection containing document
@@ -107,7 +102,7 @@ public class MongoInterface {
 		BasicDBObject searchQuery = new BasicDBObject().append("id", docId);	
 		collection.updateOne(searchQuery, newDocument);
 	}
-	
+
 	/**
 	 * Delete document in a collection
 	 * @param collectionName - collection containing document
@@ -117,14 +112,14 @@ public class MongoInterface {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		collection.deleteOne(new Document("id", docId));
 	}
-	
+
 	/**
 	 * Print out collection contents
 	 * @param collectionName
 	 */
 	public void printCollectionContents(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-		
+
 		// Getting the iterable object 
 		FindIterable<Document> iterDoc = collection.find(); 
 		Iterator<Document> it = iterDoc.iterator(); 
@@ -132,7 +127,7 @@ public class MongoInterface {
 			System.out.println(it.next());  
 		}
 	}
-	
+
 	/**
 	 * List all collections in the database
 	 */
@@ -141,5 +136,5 @@ public class MongoInterface {
 			System.out.println(name);
 		}
 	}
-	
+
 }
