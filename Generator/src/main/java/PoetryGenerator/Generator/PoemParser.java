@@ -85,8 +85,8 @@ public class PoemParser {
 					Collection<String> nGrams = StringUtils.getNgramsFromTokens(tokens,3,5);
 					//TODO: for each in the array, when you add that word to the array also add the n-gram [will be multiple
 					//n-grams for each word (max/min vals)
-//					System.out.println(tokens);
-//					System.out.println(nGrams.toString());
+					System.out.println(tokens);
+					System.out.println(nGrams.toString());
 					for (CoreLabel token : tokens) {
 						//text of the token
 						String word = token.get(TextAnnotation.class);
