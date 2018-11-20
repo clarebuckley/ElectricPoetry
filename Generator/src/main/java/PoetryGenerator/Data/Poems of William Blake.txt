@@ -1,25 +1,4 @@
 ﻿
-
-
-by
-
-William Blake
-
-
-
-SONGS OF INNOCENCE AND OF EXPERIENCE
-
-and
-
-THE BOOK of THEL
-
-
-
-
-
-   SONGS OF INNOCENCE
-
-
  
 
    Piping down the valleys wild,
@@ -48,7 +27,7 @@ THE BOOK of THEL
      Every child may joy to hear.
 
 
-   THE SHEPHERD
+
 
    How sweet is the Shepherd's sweet lot!
    From the morn to the evening he stays;
@@ -61,7 +40,7 @@ THE BOOK of THEL
    For they know when their Shepherd is nigh.
 
 
-   THE ECHOING GREEN
+
 
    The sun does arise,
    And make happy the skies;
@@ -97,7 +76,6 @@ THE BOOK of THEL
    On the darkening green.
 
 
-   THE LAMB
 
      Little Lamb, who made thee
      Dost thou know who made thee,
@@ -122,7 +100,7 @@ THE BOOK of THEL
      Little Lamb, God bless thee!
 
 
-   THE LITTLE BLACK BOY
+
 
    My mother bore me in the southern wild,
      And I  am black, but oh my soul is white!
@@ -160,8 +138,6 @@ THE BOOK of THEL
    And be like him, and he will then love me.
 
 
-   THE BLOSSOM
-
    Merry, merry sparrow!
    Under leaves so green
    A happy blossom
@@ -176,7 +152,6 @@ THE BOOK of THEL
    Near my bosom.
 
 
-   THE CHIMNEY-SWEEPER
 
    When my mother died I was very young,
    And my father sold me while yet my tongue
@@ -209,7 +184,7 @@ THE BOOK of THEL
    So, if all do their duty, they need not fear harm.
 
 
-   THE LITTLE BOY LOST
+
 
    "Father, father, where are you going?
      Oh do not walk so fast!
@@ -222,7 +197,7 @@ THE BOOK of THEL
      And away the vapour flew.
 
 
-   THE LITTLE BOY FOUND
+
 
    The little boy lost in the lonely fen,
      Led by the wandering light,
@@ -235,7 +210,7 @@ THE BOOK of THEL
      The little boy weeping sought.
 
 
-   LAUGHING SONG
+
 
    When the green woods laugh with the voice of joy,
    And the dimpling stream runs laughing by;
@@ -253,7 +228,6 @@ THE BOOK of THEL
    To sing the sweet chorus of "Ha, ha, he!"
 
 
-   A  SONG
 
    Sweet dreams, form a shade
    O'er my lovely infant's head!
@@ -296,8 +270,7 @@ THE BOOK of THEL
    Heaven and earth to peace beguiles.
 
 
-   DIVINE IMAGE
-
+   
    To Mercy, Pity, Peace, and Love,
      All pray in their distress,
    And to these virtues of delight
@@ -324,7 +297,7 @@ THE BOOK of THEL
      There God is dwelling too.
 
 
-   HOLY THURSDAY
+
 
    'Twas on a Holy Thursday, their innocent faces clean,
    Came children walking two and two, in read, and blue, and green:
@@ -342,7 +315,7 @@ THE BOOK of THEL
    Then cherish pity, lest you drive an angel from your door.
 
 
-   NIGHT
+
 
    The sun descending in the west,
    The evening star does shine;
@@ -400,7 +373,7 @@ THE BOOK of THEL
      As I guard o'er the fold."
 
 
-   SPRING
+
 
         Sound the flute!
         Now it's mute!
@@ -433,7 +406,7 @@ THE BOOK of THEL
    Merrily, merrily, to welcome in the year.
 
 
-   NURSE'S SONG
+
 
    When the voices of children are heard on the green,
      And laughing is heard on the hill,
@@ -454,8 +427,6 @@ THE BOOK of THEL
      And all the hills echoed.
 
 
-   INFANT JOY
-
    "I have no name;
    I am but two days old."
    What shall I call thee?
@@ -471,7 +442,7 @@ THE BOOK of THEL
    Sweet joy befall thee!
 
 
-   A DREAM
+
 
    Once a dream did weave a shade
    O'er my angel-guarded bed,
@@ -499,8 +470,7 @@ THE BOOK of THEL
    Little wanderer, hie thee home!"
 
 
-   ON ANOTHER'S SORROW
-
+ 
    Can I see another's woe,
    And not be in sorrow too?
    Can I see another's grief,
@@ -547,10 +517,10 @@ THE BOOK of THEL
    He doth sit by us and moan.
 
 
-   SONGS OF EXPERIENCE
 
 
-   INTRODUCTION
+
+
 
    Hear the voice of the Bard,
    Who present, past, and future, sees;
@@ -577,7 +547,7 @@ THE BOOK of THEL
    Are given thee till the break of day."
 
 
-   EARTH'S ANSWER
+
 
    Earth raised up her head
    From the darkness dread and drear,
@@ -610,8 +580,6 @@ THE BOOK of THEL
    That free love with bondage bound."
 
 
-   THE CLOD AND THE PEBBLE
-
    "Love seeketh not itself to please,
      Nor for itself hath any care,
    But for another gives it ease,
@@ -628,7 +596,6 @@ THE BOOK of THEL
      And builds a hell in heaven's despite."
 
 
-   HOLY THURSDAY
 
    Is this a holy thing to see
      In a rich and fruitful land,--
@@ -651,7 +618,7 @@ THE BOOK of THEL
      Nor poverty the mind appall.
 
 
-   THE LITTLE GIRL LOST
+
 
    In futurity
    I prophetic see
@@ -719,7 +686,6 @@ THE BOOK of THEL
    To caves the sleeping maid.
 
 
-   THE LITTLE GIRL FOUND
 
    All the night in woe
    Lyca's parents go
@@ -787,7 +753,6 @@ THE BOOK of THEL
    Nor the lion's growl.
 
 
-   THE CHIMNEY SWEEPER
 
    A little black thing in the snow,
    Crying "weep! weep!" in notes of woe!
@@ -805,7 +770,6 @@ THE BOOK of THEL
    Who make up a heaven of our misery."
 
 
-   NURSE'S SONG
 
    When voices of children are heard on the green,
    And whisperings are in the dale,
@@ -818,7 +782,7 @@ THE BOOK of THEL
    And your winter and night in disguise.
 
 
-   THE SICK ROSE
+
 
    O rose, thou art sick!
      The invisible worm,
@@ -831,7 +795,7 @@ THE BOOK of THEL
      Does thy life destroy.
 
 
-   THE FLY
+
 
    Little Fly,
    Thy summer's play
@@ -859,7 +823,6 @@ THE BOOK of THEL
    Or if I die.
 
 
-   THE ANGEL
 
    I dreamt a dream!  What can it mean?
    And that I was a maiden Queen
@@ -882,7 +845,7 @@ THE BOOK of THEL
    And grey hairs were on my head.
 
 
-   THE TYGER
+
 
    Tyger, tyger, burning bright
    In the forests of the night,
@@ -915,7 +878,6 @@ THE BOOK of THEL
    Dare frame thy fearful symmetry?
 
 
-   MY PRETTY ROSE TREE
 
    A flower was offered to me,
      Such a flower as May never bore;
@@ -928,7 +890,7 @@ THE BOOK of THEL
      And her thorns were my only delight.
 
 
-   AH SUNFLOWER
+
 
    Ah Sunflower, weary of time,
      Who countest the steps of the sun;
@@ -941,7 +903,6 @@ THE BOOK of THEL
      Where my Sunflower wishes to go!
 
 
-   THE LILY
 
    The modest Rose puts forth a thorn,
    The humble sheep a threat'ning horn:
@@ -949,7 +910,7 @@ THE BOOK of THEL
    Nor a thorn nor a threat stain her beauty bright.
 
 
-   THE GARDEN OF LOVE
+
 
    I laid me down upon a bank,
      Where Love lay sleeping;
@@ -977,7 +938,7 @@ THE BOOK of THEL
      And binding with briars my joys and desires.
 
 
-   THE LITTLE VAGABOND
+
 
    Dear mother, dear mother, the Church is cold;
    But the Alehouse is healthy, and pleasant, and warm.
@@ -1000,8 +961,6 @@ THE BOOK of THEL
    But kiss him, and give him both drink and apparel.
 
 
-   LONDON
-
    I wandered through each chartered street,
      Near where the chartered Thames does flow,
    A mark in every face I meet,
@@ -1023,7 +982,6 @@ THE BOOK of THEL
      And blights with plagues the marriage-hearse.
 
 
-   THE HUMAN ABSTRACT
 
    Pity would be no more
    If we did not make somebody poor,
@@ -1056,7 +1014,7 @@ THE BOOK of THEL
    There grows one in the human Brain.
 
 
-   INFANT SORROW
+
 
    My mother groaned, my father wept:
    Into the dangerous world I leapt,
@@ -1069,7 +1027,6 @@ THE BOOK of THEL
    To sulk upon my mother's breast.
 
 
-   A POISON TREE
 
    I was angry with my friend:
    I told my wrath, my wrath did end.
@@ -1092,8 +1049,7 @@ THE BOOK of THEL
    My foe outstretched beneath the tree.
 
 
-   A LITTLE BOY LOST
-
+  
    "Nought loves another as itself,
      Nor venerates another so,
    Nor is it possible to thought
@@ -1124,9 +1080,7 @@ THE BOOK of THEL
    The weeping parents wept in vain.
      Are such thing done on Albion's shore?
 
-
-   A LITTLE GIRL LOST
-
+	 
    Children of the future age,
    Reading this indignant page,
    Know that in a former time
@@ -1169,7 +1123,7 @@ THE BOOK of THEL
    That shakes the blossoms of my hoary hair!"
 
 
-   THE SCHOOLBOY
+  
 
    I love to rise on a summer morn,
      When birds are singing on every tree;
@@ -1208,8 +1162,6 @@ THE BOOK of THEL
      When the blasts of winter appear?
 
 
-   TO TIRZAH
-
    Whate'er is born of mortal birth
    Must be consumed with the earth,
    To rise from generation free:
@@ -1230,7 +1182,7 @@ THE BOOK of THEL
    Then what have I to do with thee?
 
 
-   THE VOICE OF THE ANCIENT BARD
+
 
    Youth of delight!  come hither
    And see the opening morn,
@@ -1245,9 +1197,8 @@ THE BOOK of THEL
    And wish to lead others, when they should be led.
 
 
-   APPENDIX
+  
 
-   A DIVINE IMAGE
 
    Cruelty has a human heart,
      And Jealousy a human face;
@@ -1259,24 +1210,13 @@ THE BOOK of THEL
    The human face a furnace sealed,
      The human heart its hungry gorge.
 
-   NOTE:  Though written and engraved by Blake, "A DIVINE IMAGE" was
-   never included in the SONGS OF INNOCENCE AND OF EXPERIENCE.
-
-
-
-
-
-
- 
+  
 
   Does the Eagle know what is in the pit?
   Or wilt thou go ask the Mole:
   Can Wisdom be put in a silver rod?
   Or Love in a golden bowl?
 
-
- 
-  I
 
   The daughters of Mne Seraphim led round their sunny flocks,
   All but the youngest: she in paleness sought the secret air.
@@ -1329,7 +1269,6 @@ THE BOOK of THEL
   And went to mind her numerous charge among the verdant grass.
 
 
-  II.
 
   O little Cloud the virgin said, I charge thee to tell me
   Why thou complainest now when in one hour thou fade away:
@@ -1370,7 +1309,6 @@ THE BOOK of THEL
   And the bright Cloud saild on, to find his partner in the vale.
 
 
-  III.
 
   Then Thel astonish'd view'd the Worm upon its dewy bed.
 
@@ -1409,7 +1347,7 @@ THE BOOK of THEL
   And to return: fear nothing, enter with thy virgin feet.
 
 
-  IV.
+
 
   The eternal gates terrific porter lifted the northern bar:
   Thel enter'd in & saw the secrets of the land unknown;
@@ -1437,5 +1375,4 @@ THE BOOK of THEL
 
   The Virgin started from her seat, & with a shriek,
   Fled back unhinderd till she came into the vales of Har.
-
 
