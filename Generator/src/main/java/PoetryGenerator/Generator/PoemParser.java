@@ -83,20 +83,23 @@ public class PoemParser {
 					List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
 
 					Collection<String> nGrams = StringUtils.getNgramsFromTokens(tokens,3,5);
-					//TODO: for each in the array, when you add that word to the array also add the n-gram [will be multiple
+					//TODO FUTURE ITERATIONS: for each in the array, when you add that word to the array also add the n-gram [will be multiple
 					//n-grams for each word (max/min vals)
-					System.out.println(tokens);
-					System.out.println(nGrams.toString());
+					//					System.out.println(tokens);
+					//					System.out.println(nGrams.toString());
 					for (CoreLabel token : tokens) {
 						//text of the token
 						String word = token.get(TextAnnotation.class);
-
-
-						//TODO: add word to wordbank here
-
+						word = word.toLowerCase();
+						
+						
 						//POS tag of the token
 						String pos = token.get(PartOfSpeechAnnotation.class);
+						System.out.println(word + " --> " + pos);
 						posTags.add(pos);
+						
+						//Add word to wordbank
+						mongo.updateDocumentArray("wordBank","tag", pos, "words", word);
 					}
 				}
 
@@ -106,8 +109,8 @@ public class PoemParser {
 			} 
 			else {
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
-				Document document = verse.buildDocument();
-				//				mongo.insertDocument("verses", document);
+				Document verseDocument = verse.buildDocument();
+				//				mongo.insertDocument("verses", verseDocument);
 
 				versePosTags.removeAll(versePosTags);
 				verseText.removeAll(verseText);

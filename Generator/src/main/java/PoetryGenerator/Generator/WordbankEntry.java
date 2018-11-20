@@ -13,7 +13,7 @@ public class WordbankEntry {
 	private String[] nGram;
 	private ArrayList<String> tags = new ArrayList<String>();
 	
-	public WordbankEntry(String tag, String word, String[] nGram) {
+	public WordbankEntry(String tag, String word) {
 		this.word = word;
 		this.nGram = nGram;
 		this.tag = tag;

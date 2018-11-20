@@ -90,15 +90,25 @@ public class MongoInterface {
 	/**
 	 * Update document in a collection
 	 * @param collectionName - collection containing document
-	 * @param docId - document id
-	 * @param docKey - key for value to be updated
-	 * @param docVal - new value to update with
+
 	 */
-	public void updateDocument(String collectionName, int docId, String docKey, String docVal) {
+	public void updateDocument(String collectionName, String searchId, String searchVal, String updateId, String updateVal) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		BasicDBObject newDocument = new BasicDBObject();
-		newDocument.append("$set", new BasicDBObject().append(docKey, docVal));
-		BasicDBObject searchQuery = new BasicDBObject().append("id", docId);	
+		newDocument.append("$set", new BasicDBObject().append(updateId, updateVal));
+				
+		BasicDBObject searchQuery = new BasicDBObject().append(searchId, searchVal);
+
+		collection.updateOne(searchQuery, newDocument);
+	}
+	
+	public void updateDocumentArray(String collectionName, String searchId, String searchVal, String updateId, String updateVal) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		BasicDBObject newDocument = new BasicDBObject();
+		newDocument.append("$addToSet", new BasicDBObject().append(updateId, updateVal));
+				
+		BasicDBObject searchQuery = new BasicDBObject().append(searchId, searchVal);
+
 		collection.updateOne(searchQuery, newDocument);
 	}
 
