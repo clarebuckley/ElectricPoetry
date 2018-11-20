@@ -25,7 +25,7 @@ import edu.stanford.nlp.util.StringUtils;
 /**
  * Parses input texts and adds POS, dependencies, and text content to the database
  * @author Clare Buckley
- * @version 18/11/2018
+ * @version 20/11/2018
  *
  */
 public class PoemParser {
@@ -47,9 +47,6 @@ public class PoemParser {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
 
-		System.out.println("start docId: " + docId);
-
-		//Test
 		parseLinesInFile(file);
 	}
 
@@ -63,55 +60,50 @@ public class PoemParser {
 		//Loop through each line in the input text
 		while (line != null) {
 			if(!line.trim().isEmpty()) {
-				// creates a StanfordCoreNLP object with POS tagging
+				//Create a StanfordCoreNLP object with POS tagging
 				Properties props = new Properties();
 				props.setProperty("annotators", "tokenize, ssplit, pos");
 				StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-				// create an empty Annotation just with the given text
+				//Create empty Annotation just with the given text
 				Annotation document = new Annotation(line);
 
-				// run all Annotators on this text
+				//Run all Annotators on this text
 				pipeline.annotate(document);
 
-				// these are all the sentences in this document
+				//Sentences in the document
 				List <CoreMap> sentences = document.get(SentencesAnnotation.class);
 				List<String> posTags = new ArrayList<String>();
 
 				for (CoreMap sentence : sentences) {
-					// traversing the words in the current sentence
+					//Get tokenized sentence
 					List<CoreLabel> tokens = sentence.get(TokensAnnotation.class);
 
-					Collection<String> nGrams = StringUtils.getNgramsFromTokens(tokens,3,5);
-					//TODO FUTURE ITERATIONS: for each in the array, when you add that word to the array also add the n-gram [will be multiple
-					//n-grams for each word (max/min vals)
-					//					System.out.println(tokens);
-					//					System.out.println(nGrams.toString());
 					for (CoreLabel token : tokens) {
-						//text of the token
+						//Text of the token
 						String word = token.get(TextAnnotation.class);
 						word = word.toLowerCase();
-						
-						
+
 						//POS tag of the token
 						String pos = token.get(PartOfSpeechAnnotation.class);
-						System.out.println(word + " --> " + pos);
 						posTags.add(pos);
-						
+
 						//Add word to wordbank
 						mongo.updateDocumentArray("wordBank","tag", pos, "words", word);
 					}
 				}
-
+				//Get POS tags and plain text for this verse
 				versePosTags.add(posTags);
 				verseText.add(line.trim());
 				verseLines++;
 			} 
 			else {
+				//End of verse, add to db
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
 				Document verseDocument = verse.buildDocument();
-				//				mongo.insertDocument("verses", verseDocument);
+				mongo.insertDocument("verses", verseDocument);
 
+				//Empty all data structures for next verse
 				versePosTags.removeAll(versePosTags);
 				verseText.removeAll(verseText);
 				verseLines = 0;
