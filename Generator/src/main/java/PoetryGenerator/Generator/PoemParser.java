@@ -35,8 +35,6 @@ public class PoemParser {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
-		//Testing
-		new PoemParser("/PoetryGenerator/Data/testFile.txt");
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
@@ -102,6 +100,7 @@ public class PoemParser {
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
 				Document verseDocument = verse.buildDocument();
 				mongo.insertDocument("verses", verseDocument);
+				System.out.println("Added verse to db");
 
 				//Empty all data structures for next verse
 				versePosTags.removeAll(versePosTags);
