@@ -53,13 +53,10 @@ public class MongoInterface {
 	 */
 	public Document getDocument(String collectionName, Object docId) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-
 		Document toFind = new Document().append("id", docId);
 		FindIterable<Document> document = collection.find(toFind);
 		Iterator<Document> iterator = document.iterator();
 		Document result = (Document) iterator.next();
-		System.out.println(result.toJson());
-
 		return result;
 	}
 

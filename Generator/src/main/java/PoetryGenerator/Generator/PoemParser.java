@@ -47,7 +47,7 @@ public class PoemParser {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
 
-		parseLinesInFile(file);	
+//		parseLinesInFile(file);	
 	}
 
 	public PoemParser()  {
