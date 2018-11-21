@@ -92,7 +92,7 @@ public class MongoInterface {
 	 * @param collectionName - collection containing document
 
 	 */
-	public void updateDocument(String collectionName, String searchId, String searchVal, String updateId, String updateVal) {
+	public void updateDocument(String collectionName, String searchId, Object searchVal, String updateId, int updateVal) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		BasicDBObject newDocument = new BasicDBObject();
 		newDocument.append("$set", new BasicDBObject().append(updateId, updateVal));
@@ -135,6 +135,10 @@ public class MongoInterface {
 		while (it.hasNext()) {  
 			System.out.println(it.next());  
 		}
+	}
+	
+	public long getDocumentCount(String collectionName) {
+		return getCollection(collectionName).countDocuments();
 	}
 
 	/**

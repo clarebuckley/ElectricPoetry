@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import org.bson.Document;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
@@ -17,15 +20,13 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.RelationExtractorAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Parses input texts and adds POS, dependencies, and text content to the database
  * @author Clare Buckley
- * @version 20/11/2018
+ * @version 21/11/2018
  *
  */
 public class PoemParser {
@@ -35,6 +36,7 @@ public class PoemParser {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
+		new PoemParser();
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
@@ -45,8 +47,32 @@ public class PoemParser {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
 
-		parseLinesInFile(file);
+		parseLinesInFile(file);	
 	}
+
+	public PoemParser()  {
+		reAssignIds();
+	}
+
+	/**
+	 * Used after documents have been deleted
+	 */
+	private void reAssignIds() {
+		MongoCollection<Document> collection = mongo.getCollection("verses");
+		// Getting the iterable object 
+		FindIterable<Document> iterDoc = collection.find(); 
+		Iterator<Document> it = iterDoc.iterator(); 
+		
+		int newId = 0;
+		while (it.hasNext()) {  
+			Document doc = it.next();
+			Object id = doc.get("id");
+			mongo.updateDocument("verses", "id", id, "id", newId);
+			System.out.println("Changed " + id + " to " + newId);
+			newId++;
+		}
+	}
+
 
 	private void parseLinesInFile(InputStream file) throws IOException {
 		int verseLines = 0;
