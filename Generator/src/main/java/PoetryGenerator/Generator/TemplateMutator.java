@@ -11,17 +11,30 @@ import org.bson.Document;
 public class TemplateMutator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "verses";
+	private final int numVerses;
+	ArrayList<ArrayList<String[]>> completeVerses;
 
 	public static void main(String[] args) {
-		new TemplateMutator();
+		new TemplateMutator(3);
 	}
 
-	public TemplateMutator() {
-		getTemplate();
+	private TemplateMutator(int numVerses) {
+		this.completeVerses = new ArrayList<ArrayList<String[]>>();
+		this.numVerses = numVerses;
+
+		//Get required number of verses
+		for(int i = 0; i < numVerses; i++) {
+			ArrayList<String[]> verseTemplate = getTemplate();
+			completeVerses.add(verseTemplate);
+		}
 	}
 
 
-	public ArrayList<String[]> getTemplate() {
+	/**
+	 * Get template from database and translate to ArrayList<String[]>
+	 * @return template to be used for this verse
+	 */
+	private ArrayList<String[]> getTemplate() {
 		//Get random verse POS from database
 		Random random = new Random();
 		long docCount = mongo.getDocumentCount(collection);
@@ -29,7 +42,7 @@ public class TemplateMutator {
 		Document template = mongo.getDocument(collection, randomIndex);
 		String posString = template.get("POS").toString();
 		int numLines = (Integer) template.get("numLines");
-		
+
 		//Remove start [
 		posString = posString.substring(1);
 
@@ -42,16 +55,21 @@ public class TemplateMutator {
 			linesToProcess[i] = matcher.group(1);
 			i++;
 		}
-		
+
 		ArrayList<String[]> verse = new ArrayList<String[]>();
 		for(String line : linesToProcess) {
 			line = line.toString();
 			String[] tokens = line.split(", ");
-			System.out.println(line + "     | --> |      " + Arrays.toString(tokens));
+//			System.out.println(line + "     | --> |      " + Arrays.toString(tokens));
 			verse.add(tokens);
 		}
 
 		return verse;
+	}
+	
+	
+	public ArrayList<ArrayList<String[]>> getPoemTemplate() {
+		return completeVerses;
 	}
 
 }
