@@ -1,5 +1,6 @@
 package PoetryGenerator.Generator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
@@ -59,6 +60,16 @@ public class MongoInterface {
 		Document result = (Document) iterator.next();
 		return result;
 	}
+	
+	public Object getTagWords(String collectionName, Object docId) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		Document toFind = new Document().append("tag", docId);
+		FindIterable<Document> document = collection.find(toFind);
+		Iterator<Document> iterator = document.iterator();
+		Document result = (Document) iterator.next();
+		return result.get("words");
+	}
+	
 
 	/**
 	 * Get id of last entered document in the collection

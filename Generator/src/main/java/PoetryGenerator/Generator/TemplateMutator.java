@@ -14,11 +14,7 @@ public class TemplateMutator {
 	private final int numVerses;
 	ArrayList<ArrayList<String[]>> completeVerses;
 
-	public static void main(String[] args) {
-		new TemplateMutator(3);
-	}
-
-	private TemplateMutator(int numVerses) {
+	public TemplateMutator(int numVerses) {
 		this.completeVerses = new ArrayList<ArrayList<String[]>>();
 		this.numVerses = numVerses;
 
