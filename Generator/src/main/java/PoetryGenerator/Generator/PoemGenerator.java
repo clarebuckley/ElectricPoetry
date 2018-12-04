@@ -15,16 +15,17 @@ public class PoemGenerator {
 	}
 	
 	public PoemGenerator() {
-		this.templateMutator = new TemplateMutator(1);
+		this.templateMutator = new TemplateMutator(2);
 		this.template = templateMutator.getPoemTemplate();
 		this.templateFiller = new TemplateFiller();
 		this.poem = templateFiller.processTemplate(template);
-		//System.out.println(poem);
-		////printPoem(poem);
+		
+		printPoem(poem);
 		
 	}
 	
-	public void printPoem(ArrayList<ArrayList<String[]>> poem) {
+	public void printPoem(ArrayList<String> poem) {
+		System.out.println("------------ Poem Generator ------------");
 		for(int i = 0; i < poem.size(); i++) {
 			System.out.println(poem.get(i));
 		}

@@ -56,7 +56,6 @@ public class TemplateMutator {
 		for(String line : linesToProcess) {
 			line = line.toString();
 			String[] tokens = line.split(", ");
-//			System.out.println(line + "     | --> |      " + Arrays.toString(tokens));
 			verse.add(tokens);
 		}
 

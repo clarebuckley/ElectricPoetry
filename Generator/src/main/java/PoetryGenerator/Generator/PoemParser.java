@@ -36,7 +36,7 @@ public class PoemParser {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
-		new PoemParser();
+//		new PoemParser("/PoetryGenerator/Data/Poems 1817 by John Keats.txt");
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
@@ -47,7 +47,7 @@ public class PoemParser {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
 
-//		parseLinesInFile(file);	
+		parseLinesInFile(file);	
 	}
 
 	public PoemParser()  {

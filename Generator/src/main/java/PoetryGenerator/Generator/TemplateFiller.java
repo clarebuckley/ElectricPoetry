@@ -16,13 +16,12 @@ public class TemplateFiller {
 	public ArrayList<String> processTemplate(ArrayList<ArrayList<String[]>> template) {
 		ArrayList<String> poem = new ArrayList<String>();
 		for(int i = 0; i < template.size(); i++) {
-			System.out.println("Verse " + i);
 			ArrayList<String[]> line = template.get(i);
 			for(String[] tags : line) {
 				String newLine = getLine(tags);
 				poem.add(newLine);
-				System.out.println(newLine);
 			}
+			poem.add(System.lineSeparator());
 		}
 		return poem;
 	}
@@ -35,19 +34,24 @@ public class TemplateFiller {
 			if(Character.isLetter(tags[i].charAt(0))){
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordBank", tags[i]);
 				int numOfWords = words.size();
-				int randomIndex = random.nextInt(numOfWords);
+				int randomIndex = random.nextInt(numOfWords);	
 				line += words.get(randomIndex);	
 			} 
 			else {
-				//Remove space before punctuation
-				line = line.substring(0, line.length()-1);
 				line = line + tags[i];
+			}
+			
+			//Remove space before punctuation			TODO: change this to use regex
+			if(!Character.isLetter(tags[i].charAt(0)) || tags[i] == "POS") {
+				line = line.substring(0, line.length()-1);
 			}
 
 			if(i != tags.length-1) {
 				line += " ";
 			}
-			
+
+			line = line.substring(0, 1).toUpperCase() + line.substring(1);
+
 		}
 		return line;
 	}
