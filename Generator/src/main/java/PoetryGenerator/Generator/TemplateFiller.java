@@ -30,22 +30,27 @@ public class TemplateFiller {
 	private String getLine(String[] tags){
 		Random random = new Random();
 		String line = "";
-		for(int i = 0; i < tags.length; i++) {
-			//Ignore punctuation
+		for(int i = 0; i < tags.length; i++) {	
+			//For characters that aren't punctuation
 			if(Character.isLetter(tags[i].charAt(0))){
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordBank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);
-				line += words.get(randomIndex) + " ";
-//				if(i++ < tags.length && Character.isLetter(tags[i].charAt(0))) {
-//					line +=  " ";
-//				}
-
-			} else {
-				line = line + tags[i] + " ";
+				line += words.get(randomIndex);	
+			} 
+			else {
+				//Remove space before punctuation
+				line = line.substring(0, line.length()-1);
+				line = line + tags[i];
 			}
+
+			if(i != tags.length-1) {
+				line += " ";
+			}
+			
 		}
 		return line;
 	}
+
 
 }
