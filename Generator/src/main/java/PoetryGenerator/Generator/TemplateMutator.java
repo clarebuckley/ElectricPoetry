@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.bson.Document;
 
 public class TemplateMutator {
-	private final MongoInterface mongo = new MongoInterface("poetryDB");
+	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
 	private final String collection = "verses";
 	private final int numVerses;
 	ArrayList<ArrayList<String[]>> completeVerses;
@@ -38,7 +38,6 @@ public class TemplateMutator {
 		Document template = mongo.getDocument(collection, randomIndex);
 		String posString = template.get("POS").toString();
 		int numLines = (Integer) template.get("numLines");
-
 		//Remove start [
 		posString = posString.substring(1);
 

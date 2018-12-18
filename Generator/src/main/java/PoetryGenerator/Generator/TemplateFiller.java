@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class TemplateFiller {
-	MongoInterface mongo = new MongoInterface("poetryDB");
+	MongoInterface mongo = new MongoInterface("poetryDB-modern");
 	ArrayList<ArrayList<String[]>> template;
 
 	public TemplateFiller() {
@@ -18,6 +18,7 @@ public class TemplateFiller {
 		for(int i = 0; i < template.size(); i++) {
 			ArrayList<String[]> line = template.get(i);
 			for(String[] tags : line) {
+				System.out.println(Arrays.toString(tags));
 				String newLine = getLine(tags);
 				poem.add(newLine);
 			}
@@ -32,7 +33,7 @@ public class TemplateFiller {
 		for(int i = 0; i < tags.length; i++) {	
 			//For characters that aren't punctuation
 			if(Character.isLetter(tags[i].charAt(0))){
-				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordBank", tags[i]);
+				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);	
 				line += words.get(randomIndex);	

@@ -15,7 +15,7 @@ public class PoemGenerator {
 	}
 	
 	public PoemGenerator() {
-		this.templateMutator = new TemplateMutator(2);
+		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
 		this.templateFiller = new TemplateFiller();
 		this.poem = templateFiller.processTemplate(template);

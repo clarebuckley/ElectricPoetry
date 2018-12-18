@@ -1,6 +1,5 @@
 package PoetryGenerator.Generator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import org.bson.Document;
 import com.mongodb.BasicDBObject;

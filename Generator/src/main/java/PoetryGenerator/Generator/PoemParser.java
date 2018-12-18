@@ -1,6 +1,7 @@
 package PoetryGenerator.Generator;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,10 +34,23 @@ public class PoemParser {
 
 	private int docId;
 	private InputStream file;
-	private final MongoInterface mongo = new MongoInterface("poetryDB");
+	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
 //		new PoemParser("/PoetryGenerator/Data/Poems 1817 by John Keats.txt");
+		
+		File f = new File("./src/main/java/PoetryGenerator/ModernData"); // current directory
+
+		File[] files = f.listFiles();
+		for (File file : files) {
+			System.out.println(file);
+			System.out.println(file.getCanonicalPath());
+			String newPath = file.getCanonicalPath().replace("\\", "/");
+			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
+			System.out.println(newPath);
+		
+			new PoemParser(newPath);
+		}
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
@@ -46,7 +60,7 @@ public class PoemParser {
 		} else {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
-
+	
 		parseLinesInFile(file);	
 	}
 
@@ -113,7 +127,9 @@ public class PoemParser {
 						posTags.add(pos);
 
 						//Add word to wordbank
-						mongo.updateDocumentArray("wordBank","tag", pos, "words", word);
+						System.out.println(pos);
+						System.out.println(word);
+						mongo.updateDocumentArray("wordbank","tag", pos, "words", word);
 					}
 				}
 				//Get POS tags and plain text for this verse
@@ -124,9 +140,9 @@ public class PoemParser {
 			else {
 				//End of verse, add to db
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
-				Document verseDocument = verse.buildDocument();
-				mongo.insertDocument("verses", verseDocument);
-				System.out.println("Added verse to db");
+//				Document verseDocument = verse.buildDocument();
+//				mongo.insertDocument("verses", verseDocument);
+//				System.out.println("Added verse to db");
 
 				//Empty all data structures for next verse
 				versePosTags.removeAll(versePosTags);
