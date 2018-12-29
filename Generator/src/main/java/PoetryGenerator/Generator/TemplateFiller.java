@@ -30,15 +30,21 @@ public class TemplateFiller {
 		Random random = new Random();
 		String line = "";
 		for(int i = 0; i < tags.length; i++) {	
-			String punctuation = ".,:;``";
-
+			String punctuation = ".,:;``-";
+			if(tags[i] == "-RRB-") {
+				line = line; 
+			}
 			//Add punctuation
 			if(punctuation.contains(tags[i])) {
 				//Remove space before punctuation
-				line = line.substring(0, line.length()-1);
+				if(line.length() > 0) {
+					line = line.substring(0, line.length()-1);
+				}
+				
 				line += tags[i];
 			} else {
 				//Replace tags with words
+				System.out.println(tags[i]);
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);	
