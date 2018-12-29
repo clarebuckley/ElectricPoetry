@@ -37,20 +37,15 @@ public class PoemParser {
 	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
-//		new PoemParser("/PoetryGenerator/Data/Poems 1817 by John Keats.txt");
+//		File f = new File("./src/main/java/PoetryGenerator/ModernData"); // current directory
+//		File[] files = f.listFiles();
+//		for (File file : files) {
+//			String newPath = file.getCanonicalPath().replace("\\", "/");
+//			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
+//			new PoemParser(newPath);
+//		}
 		
-		File f = new File("./src/main/java/PoetryGenerator/ModernData"); // current directory
-
-		File[] files = f.listFiles();
-		for (File file : files) {
-			System.out.println(file);
-			System.out.println(file.getCanonicalPath());
-			String newPath = file.getCanonicalPath().replace("\\", "/");
-			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
-			System.out.println(newPath);
-		
-			new PoemParser(newPath);
-		}
+//		new PoemParser();
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {
@@ -140,9 +135,9 @@ public class PoemParser {
 			else {
 				//End of verse, add to db
 				PoemVerse verse = new PoemVerse(docId, verseText, versePosTags, verseLines);
-//				Document verseDocument = verse.buildDocument();
-//				mongo.insertDocument("verses", verseDocument);
-//				System.out.println("Added verse to db");
+				Document verseDocument = verse.buildDocument();
+				mongo.insertDocument("verses", verseDocument);
+				System.out.println("Added verse to db");
 
 				//Empty all data structures for next verse
 				versePosTags.removeAll(versePosTags);

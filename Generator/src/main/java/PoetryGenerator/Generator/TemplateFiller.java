@@ -18,7 +18,6 @@ public class TemplateFiller {
 		for(int i = 0; i < template.size(); i++) {
 			ArrayList<String[]> line = template.get(i);
 			for(String[] tags : line) {
-				System.out.println(Arrays.toString(tags));
 				String newLine = getLine(tags);
 				poem.add(newLine);
 			}
@@ -31,25 +30,22 @@ public class TemplateFiller {
 		Random random = new Random();
 		String line = "";
 		for(int i = 0; i < tags.length; i++) {	
-			//For characters that aren't punctuation
-			if(Character.isLetter(tags[i].charAt(0))){
+			String punctuation = ".,:;";
+
+			if(punctuation.contains(tags[i])) {
+				line = line.substring(0, line.length()-1);
+				line += tags[i];
+			} else {
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);	
 				line += words.get(randomIndex);	
 			} 
-			else {
-				line = line + tags[i];
-			}
-			
-			//Remove space before punctuation			TODO: change this to use regex
-			if(!Character.isLetter(tags[i].charAt(0)) || tags[i] == "POS") {
-				line = line.substring(0, line.length()-1);
-			}
 
 			if(i != tags.length-1) {
 				line += " ";
 			}
+
 
 			line = line.substring(0, 1).toUpperCase() + line.substring(1);
 

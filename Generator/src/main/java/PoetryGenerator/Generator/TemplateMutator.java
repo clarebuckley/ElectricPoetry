@@ -12,7 +12,10 @@ public class TemplateMutator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
 	private final String collection = "verses";
 	private final int numVerses;
+	//Complete verses made of POS tags
 	ArrayList<ArrayList<String[]>> completeVerses;
+	//Complete verses made of original lines TODO: get these to be used
+	ArrayList<ArrayList<String>> completeLines;
 
 	public TemplateMutator(int numVerses) {
 		this.completeVerses = new ArrayList<ArrayList<String[]>>();
@@ -64,6 +67,10 @@ public class TemplateMutator {
 	
 	public ArrayList<ArrayList<String[]>> getPoemTemplate() {
 		return completeVerses;
+	}
+	
+	public ArrayList<ArrayList<String>> getPoemLines(){
+		return completeLines;
 	}
 
 }
