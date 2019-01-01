@@ -31,6 +31,7 @@ public class TemplateFiller {
 		String line = "";
 		for(int i = 0; i < tags.length; i++) {	
 			String punctuation = ".,:;``-";
+			//TODO check what this tag is and refactor all the line=lines
 			if(tags[i] == "-RRB-") {
 				line = line; 
 			}
@@ -42,8 +43,12 @@ public class TemplateFiller {
 				}
 				
 				line += tags[i];
-			} else {
-				//Replace tags with words
+			} 
+			else if (tags[i] == "DT" || tags[i] == "IN" || tags[i] == "CC" || tags[i] == "PRP" || tags[i] == "PRP$" || tags[i] == "TO" || tags[i] == "WRB") {
+				line = line;
+			}
+			else {
+				//Replace tags with words	
 				System.out.println(tags[i]);
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
