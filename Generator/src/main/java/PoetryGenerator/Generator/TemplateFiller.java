@@ -13,43 +13,44 @@ public class TemplateFiller {
 	}
 
 
-	public ArrayList<String> processTemplate(ArrayList<ArrayList<String[]>> template) {
+	public ArrayList<String> processTemplate(ArrayList<ArrayList<String[]>> template, ArrayList<ArrayList<String[]>> poemText) {
 		ArrayList<String> poem = new ArrayList<String>();
+		
+		//Each verse
 		for(int i = 0; i < template.size(); i++) {
-			ArrayList<String[]> line = template.get(i);
-			for(String[] tags : line) {
-				String newLine = getLine(tags);
+			ArrayList<String[]> templateLine = template.get(i);
+			ArrayList<String[]> originalLine = poemText.get(i);
+			//Each line
+			for(int j = 0; j < templateLine.size(); j++) {
+				String newLine = getLine(templateLine.get(j), originalLine.get(i));
 				poem.add(newLine);
 			}
+		
 			poem.add(System.lineSeparator());
 		}
 		return poem;
 	}
 
-	private String getLine(String[] tags){
+	private String getLine(String[] tags, String[] originalWords){
 		Random random = new Random();
 		String line = "";
 		for(int i = 0; i < tags.length; i++) {	
 			String punctuation = ".,:;``-";
-			//TODO check what this tag is and refactor all the line=lines
-			if(tags[i] == "-RRB-") {
-				line = line; 
-			}
+
 			//Add punctuation
 			if(punctuation.contains(tags[i])) {
 				//Remove space before punctuation
 				if(line.length() > 0) {
 					line = line.substring(0, line.length()-1);
 				}
-				
+
 				line += tags[i];
 			} 
-			else if (tags[i] == "DT" || tags[i] == "IN" || tags[i] == "CC" || tags[i] == "PRP" || tags[i] == "PRP$" || tags[i] == "TO" || tags[i] == "WRB") {
-				line = line;
+			else if (tags[i] == "DT" || tags[i] == "IN" || tags[i] == "CC" || tags[i] == "PRP" || tags[i] == "PRP$" || tags[i] == "TO" || tags[i] == "WRB" || tags[i] == "-RRB-" || tags[i] == "-LRB-") {
+				line = originalWords[i];
 			}
 			else {
 				//Replace tags with words	
-				System.out.println(tags[i]);
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);	
@@ -66,7 +67,6 @@ public class TemplateFiller {
 
 		}
 		return line;
+
 	}
-
-
 }

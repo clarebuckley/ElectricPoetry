@@ -44,7 +44,8 @@ public class PoemParser {
 //			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
 //			new PoemParser(newPath);
 //		}
-		
+//		System.out.println("Complete!");
+
 //		new PoemParser();
 	}
 
@@ -86,7 +87,7 @@ public class PoemParser {
 	private void parseLinesInFile(InputStream file) throws IOException {
 		int verseLines = 0;
 		ArrayList<List<String>> versePosTags = new ArrayList<List<String>>();
-		ArrayList<String> verseText = new ArrayList<String>();
+		ArrayList<List<String>> verseText = new ArrayList<List<String>>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file));
 		String line = reader.readLine();
 
@@ -107,6 +108,7 @@ public class PoemParser {
 				//Sentences in the document
 				List <CoreMap> sentences = document.get(SentencesAnnotation.class);
 				List<String> posTags = new ArrayList<String>();
+				List<String> lineWords = new ArrayList<String>();
 
 				for (CoreMap sentence : sentences) {
 					//Get tokenized sentence
@@ -116,20 +118,23 @@ public class PoemParser {
 						//Text of the token
 						String word = token.get(TextAnnotation.class);
 						word = word.toLowerCase();
+						lineWords.add(word);
 
 						//POS tag of the token
 						String pos = token.get(PartOfSpeechAnnotation.class);
 						posTags.add(pos);
 
 						//Add word to wordbank
-						System.out.println(pos);
-						System.out.println(word);
-						mongo.updateDocumentArray("wordbank","tag", pos, "words", word);
+//						System.out.println(pos);
+//						System.out.println(word);
+//						mongo.updateDocumentArray("wordbank","tag", pos, "words", word);
 					}
 				}
 				//Get POS tags and plain text for this verse
 				versePosTags.add(posTags);
-				verseText.add(line.trim());
+				System.out.println(lineWords.toString());
+				System.out.println(posTags.toString());
+				verseText.add(lineWords);
 				verseLines++;
 			} 
 			else {
@@ -145,7 +150,8 @@ public class PoemParser {
 				verseLines = 0;
 				docId++;
 			}
-
+			
+		
 			//Attempt to read next line
 			try {
 				line = reader.readLine();

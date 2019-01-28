@@ -8,23 +8,36 @@ import java.util.regex.Pattern;
 
 import org.bson.Document;
 
+
+//TODO: retrieval of templates needs to be revisited - try using http://www.thejavageek.com/2015/08/24/retrieve-array-from-mongodb-using-java/ 
+
+
 public class TemplateMutator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
 	private final String collection = "verses";
 	private final int numVerses;
 	//Complete verses made of POS tags
 	ArrayList<ArrayList<String[]>> completeVerses;
-	//Complete verses made of original lines TODO: get these to be used
-	ArrayList<ArrayList<String>> completeLines;
+	ArrayList<ArrayList<String[]>> originalText;
+	ArrayList<String[]> originalTemplate;
+	ArrayList<String[]> verseTemplate;
 
 	public TemplateMutator(int numVerses) {
 		this.completeVerses = new ArrayList<ArrayList<String[]>>();
+		this.originalText = new ArrayList<ArrayList<String[]>>();
 		this.numVerses = numVerses;
 
 		//Get required number of verses
 		for(int i = 0; i < numVerses; i++) {
-			ArrayList<String[]> verseTemplate = getTemplate();
+			long docCount = mongo.getDocumentCount(collection);
+			Random random = new Random();
+			int randomIndex = random.nextInt((int)docCount);
+			System.out.println(randomIndex);
+			Document template = mongo.getDocument(collection, randomIndex);
+			originalTemplate = getTemplate(template, randomIndex, "text");
+			verseTemplate = getTemplate(template, randomIndex, "POS");
 			completeVerses.add(verseTemplate);
+			originalText.add(originalTemplate);
 		}
 	}
 
@@ -33,16 +46,13 @@ public class TemplateMutator {
 	 * Get template from database and translate to ArrayList<String[]>
 	 * @return template to be used for this verse
 	 */
-	private ArrayList<String[]> getTemplate() {
+	private ArrayList<String[]> getTemplate(Document template, int randomIndex, String textType) {
 		//Get random verse POS from database
-		Random random = new Random();
-		long docCount = mongo.getDocumentCount(collection);
-		int randomIndex = random.nextInt((int)docCount);
-		Document template = mongo.getDocument(collection, randomIndex);
-		String posString = template.get("POS").toString();
+		String posString = template.get(textType).toString();
 		int numLines = (Integer) template.get("numLines");
-		//Remove start [
+		//Remove start [ and end ]
 		posString = posString.substring(1);
+		posString = posString.substring(0, posString.length());
 
 		//Get content for each line in verse
 		String[] linesToProcess = new String[numLines];
@@ -63,14 +73,14 @@ public class TemplateMutator {
 
 		return verse;
 	}
-	
-	
+
+
 	public ArrayList<ArrayList<String[]>> getPoemTemplate() {
 		return completeVerses;
 	}
-	
-	public ArrayList<ArrayList<String>> getPoemLines(){
-		return completeLines;
+
+	public  ArrayList<ArrayList<String[]>> getPoemText(){
+		return originalText;
 	}
 
 }

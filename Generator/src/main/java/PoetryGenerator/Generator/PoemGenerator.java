@@ -7,6 +7,7 @@ public class PoemGenerator {
 	private TemplateFiller templateFiller;
 	private TemplateMutator templateMutator;
 	private ArrayList<ArrayList<String[]>> template;
+	private ArrayList<ArrayList<String[]>> poemText;
 	private ArrayList<String> poem;
 	
 
@@ -17,8 +18,9 @@ public class PoemGenerator {
 	public PoemGenerator() {
 		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
+		this.poemText = templateMutator.getPoemText();
 		this.templateFiller = new TemplateFiller();
-		this.poem = templateFiller.processTemplate(template);
+		this.poem = templateFiller.processTemplate(template, poemText);
 		
 		printPoem(poem);
 		
