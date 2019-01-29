@@ -15,8 +15,6 @@ import org.bson.Document;
  *
  */
 
-//TODO: retrieval of templates needs to be revisited - try using http://www.thejavageek.com/2015/08/24/retrieve-array-from-mongodb-using-java/ 
-
 
 public class TemplateMutator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
@@ -34,11 +32,9 @@ public class TemplateMutator {
 			long docCount = mongo.getDocumentCount(collection);
 			Random random = new Random();
 			int randomIndex = random.nextInt((int)docCount);
-			System.out.println(randomIndex);
 			Document template = mongo.getDocument(collection, randomIndex);
 			originalTemplate = getTemplate(template, "text");
-			verseTemplate = getTemplate(template, "POS");
-			
+			verseTemplate = getTemplate(template, "POS");	
 		}
 	}
 
@@ -53,7 +49,6 @@ public class TemplateMutator {
 		//Get random verse POS from database
 		String templateString = template.get(textType).toString();
 		List<Document> verse = (List<Document>) template.get(textType);
-		System.out.println(verse.toString());
 		return verse;
 	}
 
