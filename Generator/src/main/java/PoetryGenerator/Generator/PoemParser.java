@@ -46,7 +46,7 @@ public class PoemParser {
 //		}
 //		System.out.println("Complete!");
 
-//		new PoemParser();
+		new PoemParser();
 	}
 
 	public PoemParser(String filePath) throws ClassNotFoundException, IOException {

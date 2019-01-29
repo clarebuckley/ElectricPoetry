@@ -1,6 +1,9 @@
 package PoetryGenerator.Generator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -54,7 +57,8 @@ public class MongoInterface {
 	public Document getDocument(String collectionName, Object docId) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		Document toFind = new Document().append("id", docId);
-		FindIterable<Document> document = collection.find(toFind);
+		List<Document> document = (List<Document>)collection.find(toFind).into(
+				new ArrayList<Document>());
 		Iterator<Document> iterator = document.iterator();
 		Document result = (Document) iterator.next();
 		return result;

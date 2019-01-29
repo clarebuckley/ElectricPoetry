@@ -1,6 +1,9 @@
 package PoetryGenerator.Generator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import org.bson.Document;
 
 /**
  * Generate poem using TemplateMutator and TemplateFiller
@@ -14,9 +17,9 @@ public class PoemGenerator {
 	private TemplateFiller templateFiller;
 	private TemplateMutator templateMutator;
 	//POS tag poem template
-	private ArrayList<ArrayList<String[]>> template;
+	private List<Document> template;
 	//Original poem content
-	private ArrayList<ArrayList<String[]>> poemText;
+	private List<Document> poemText;
 	private ArrayList<String> poem;
 	
 
@@ -26,7 +29,7 @@ public class PoemGenerator {
 	
 	public PoemGenerator() {
 		//Create template with 1 verse
-		this.templateMutator = new TemplateMutator(1);
+		this.templateMutator = new TemplateMutator(2);
 		this.template = templateMutator.getPoemTemplate();
 		this.poemText = templateMutator.getPoemText();
 		this.templateFiller = new TemplateFiller();
