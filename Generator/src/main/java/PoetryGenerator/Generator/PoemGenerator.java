@@ -16,12 +16,12 @@ import org.bson.Document;
 public class PoemGenerator {
 	private TemplateFiller templateFiller;
 	private TemplateMutator templateMutator;
+	private ArrayList<ArrayList<String>> poem;
 	//POS tag poem template
-	private List<Document> template;
+	private List<List<Document>> template;
 	//Original poem content
-	private List<Document> poemText;
-	private ArrayList<String> poem;
-	
+	private List<List<Document>> poemText;
+		
 
 	public static void main(String[] args) {
 		new PoemGenerator();
@@ -43,10 +43,13 @@ public class PoemGenerator {
 	 * Print out contents of poem input
 	 * @param poem - lines of poem are split into elements inside ArrayList
 	 */
-	public void printPoem(ArrayList<String> poem) {
+	public void printPoem(ArrayList<ArrayList<String>> poem) {
 		System.out.println("------------ Poem Generator ------------");
 		for(int i = 0; i < poem.size(); i++) {
-			System.out.println(poem.get(i));
+			ArrayList<String> lines = poem.get(i);
+			for(String line : lines) {
+				System.out.println(line);
+			}
 		}
 	}
 	

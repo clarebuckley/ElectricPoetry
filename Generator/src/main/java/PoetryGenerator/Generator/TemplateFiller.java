@@ -22,38 +22,46 @@ public class TemplateFiller {
 
 	/**
 	 * Process the POS poem template to create meaningful poem
-	 * @param template2 - POS poem template
+	 * @param template - POS poem template
 	 * @param poemText - original poem text
 	 * @return poem made of words from wordbank
 	 */
-	public ArrayList<String> processTemplate(List<Document> template2, List<Document> poemText) {
-		ArrayList<String> poem = new ArrayList<String>();
+	public ArrayList<ArrayList<String>> processTemplate(List<List<Document>> templateVerses, List<List<Document>> poemTextVerses) {
+		ArrayList<ArrayList<String>> poemVerses = new ArrayList<ArrayList<String>>();
 		String line = "";
 
-		//Process line by line
-		for(int i = 0; i < template2.size(); i++) {
-			List<String> templateLine = (List<String>) template2.get(i);
-			List<String> originalLine = (List<String>)poemText.get(i);
+		//Each verse
+		for(int x = 0; x < templateVerses.size(); x++) {
+			ArrayList<String> poemVerse = new ArrayList<String>();
+			List<Document> template = templateVerses.get(x);
+			List<Document> poemText = poemTextVerses.get(x);
 
-			//Each word in a line
-			for(int j = 0; j < templateLine.size(); j++) {
-				String word = getWord(templateLine.get(j), originalLine.get(j));
-				line += word;
-				//Don't add space after word if it's the end of a line
-				if(j < templateLine.size()) {
-					line += " ";
+			//Process line by line
+			for(int i = 0; i < template.size(); i++) {
+				List<String> templateLine = (List<String>) template.get(i);
+				List<String> originalLine = (List<String>)poemText.get(i);
+
+				//Each word in a line
+				for(int j = 0; j < templateLine.size(); j++) {
+					String word = getWord(templateLine.get(j), originalLine.get(j));
+					line += word;
+					//Don't add space after word if it's the end of a line
+					if(j < templateLine.size()) {
+						line += " ";
+					}
+					//Remove space before punctuation
+					line = line.replaceAll(" [.,:;``-]", word);
 				}
-				//Remove space before punctuation
-				line = line.replaceAll(" [.,:;``-]", word);
-			}
-			//Set start of lines to have capital letters
-			line = line.substring(0, 1).toUpperCase() + line.substring(1);
-			poem.add(line);
+				//Set start of lines to have capital letters
+				line = line.substring(0, 1).toUpperCase() + line.substring(1);
+				poemVerse.add(line);
 
-			//Reset for next line
-			line = "";
+				//Reset for next line
+				line = "";
+			}
+			poemVerses.add(poemVerse);
 		}
-		return poem;
+		return poemVerses;
 	}
 
 	/**
@@ -75,7 +83,6 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
