@@ -29,7 +29,7 @@ public class TemplateFiller {
 	public ArrayList<String> processTemplate(List<Document> template2, List<Document> poemText) {
 		ArrayList<String> poem = new ArrayList<String>();
 		String line = "";
-	
+
 		//Process line by line
 		for(int i = 0; i < template2.size(); i++) {
 			List<String> templateLine = (List<String>) template2.get(i);
@@ -39,37 +39,38 @@ public class TemplateFiller {
 			for(int j = 0; j < templateLine.size(); j++) {
 				String word = getWord(templateLine.get(j), originalLine.get(j));
 				line += word;
-				//Don't add space after word if it's the end of a line or if it's punctuation
-				if(!punctuation.contains(word) && j < templateLine.size()) {
+				//Don't add space after word if it's the end of a line
+				if(j < templateLine.size()) {
 					line += " ";
 				}
+				//Remove space before punctuation
+				line = line.replaceAll(" [.,:;``-]", word);
 			}
 			//Set start of lines to have capital letters
 			line = line.substring(0, 1).toUpperCase() + line.substring(1);
 			poem.add(line);
-			
+
 			//Reset for next line
 			line = "";
-		
 		}
 		return poem;
 	}
 
 	/**
 	 * Replace tags in the given line with words
-	 * @param string - POS tags
-	 * @param string2 - original words in the poem
-	 * @return line - a poem line made from English words
+	 * @param templateWord - POS tag
+	 * @param originalWord - original word in the current place in the poem
+	 * @return word - word to be used in this line
 	 */
 	private String getWord(String templateWord, String originalWord){
 		Random random = new Random();
 		String word = "";
 
 		//Only replace some words, keep others same as in original text
-		 if (retainOriginal.contains(templateWord)) {
+		if (retainOriginal.contains(templateWord)) {
 			word = originalWord;
 		}
-		
+
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
@@ -81,6 +82,5 @@ public class TemplateFiller {
 		}
 
 		return word;
-
 	}
 }
