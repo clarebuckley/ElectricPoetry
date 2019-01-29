@@ -1,18 +1,25 @@
 package PoetryGenerator.Generator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+
+/**
+ * Fill in a POS template using wordbank stored in database
+ * @author Clare Buckley
+ * @version 29/01/19
+ *
+ */
 
 public class TemplateFiller {
 	MongoInterface mongo = new MongoInterface("poetryDB-modern");
 	ArrayList<ArrayList<String[]>> template;
 
-	public TemplateFiller() {
-
-	}
-
-
+	/**
+	 * Process the POS poem template to create meaningful poem
+	 * @param template - POS poem template
+	 * @param poemText - original poem text
+	 * @return poem made of words from wordbank
+	 */
 	public ArrayList<String> processTemplate(ArrayList<ArrayList<String[]>> template, ArrayList<ArrayList<String[]>> poemText) {
 		ArrayList<String> poem = new ArrayList<String>();
 		
@@ -31,6 +38,12 @@ public class TemplateFiller {
 		return poem;
 	}
 
+	/**
+	 * Replace tags in the given line with words
+	 * @param tags - POS tags
+	 * @param originalWords - original words in the poem
+	 * @return line - a poem line made from English words
+	 */
 	private String getLine(String[] tags, String[] originalWords){
 		Random random = new Random();
 		String line = "";
@@ -46,11 +59,12 @@ public class TemplateFiller {
 
 				line += tags[i];
 			} 
+			//Only replace some words, keep others same as in original text
 			else if (tags[i] == "DT" || tags[i] == "IN" || tags[i] == "CC" || tags[i] == "PRP" || tags[i] == "PRP$" || tags[i] == "TO" || tags[i] == "WRB" || tags[i] == "-RRB-" || tags[i] == "-LRB-") {
 				line = originalWords[i];
 			}
+			//Replace tags with words from wordbank
 			else {
-				//Replace tags with words	
 				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", tags[i]);
 				int numOfWords = words.size();
 				int randomIndex = random.nextInt(numOfWords);	

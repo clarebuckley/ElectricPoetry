@@ -1,12 +1,21 @@
 package PoetryGenerator.Generator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+
+/**
+ * Generate poem using TemplateMutator and TemplateFiller
+ * Contains main method to print out poem
+ * @author Clare Buckley
+ * @version 29/01/2019
+ *
+ */
 
 public class PoemGenerator {
 	private TemplateFiller templateFiller;
 	private TemplateMutator templateMutator;
+	//POS tag poem template
 	private ArrayList<ArrayList<String[]>> template;
+	//Original poem content
 	private ArrayList<ArrayList<String[]>> poemText;
 	private ArrayList<String> poem;
 	
@@ -16,6 +25,7 @@ public class PoemGenerator {
 	}
 	
 	public PoemGenerator() {
+		//Create template with 1 verse
 		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
 		this.poemText = templateMutator.getPoemText();
@@ -26,6 +36,10 @@ public class PoemGenerator {
 		
 	}
 	
+	/**
+	 * Print out contents of poem input
+	 * @param poem - lines of poem are split into elements inside ArrayList
+	 */
 	public void printPoem(ArrayList<String> poem) {
 		System.out.println("------------ Poem Generator ------------");
 		for(int i = 0; i < poem.size(); i++) {

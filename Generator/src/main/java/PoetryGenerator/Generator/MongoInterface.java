@@ -19,7 +19,7 @@ import com.mongodb.client.model.Sorts;
  */
 public class MongoInterface {
 
-	private MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
+	private MongoClient mongo = new MongoClient( "localhost", 27017 ); 
 	private final MongoDatabase database;
 	private final String databaseName;
 
@@ -60,6 +60,12 @@ public class MongoInterface {
 		return result;
 	}
 	
+	/**
+	 * Get words associated with a POS tag
+	 * @param collectionName - collection to be used
+	 * @param docId - document id
+	 * @return words associated with POS tag
+	 */
 	public Object getTagWords(String collectionName, Object docId) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		Document toFind = new Document().append("tag", docId);
@@ -94,10 +100,14 @@ public class MongoInterface {
 		collection.insertOne(document);
 	}
 
+	
 	/**
 	 * Update document in a collection
-	 * @param collectionName - collection containing document
-
+	 * @param collectionName - name of collection containing document
+	 * @param searchId - search id
+	 * @param searchVal - search value
+	 * @param updateId - id to update with
+	 * @param updateVal - value to be updated
 	 */
 	public void updateDocument(String collectionName, String searchId, Object searchVal, String updateId, int updateVal) {
 		MongoCollection<Document> collection = getCollection(collectionName);
@@ -109,6 +119,14 @@ public class MongoInterface {
 		collection.updateOne(searchQuery, newDocument);
 	}
 	
+	/**
+	 * Update array element in a document
+	 * @param collectionName - name of collection containing document
+	 * @param searchId - search id
+	 * @param searchVal - search value
+	 * @param updateId - id to update with
+	 * @param updateVal - value to be added
+	 */
 	public void updateDocumentArray(String collectionName, String searchId, String searchVal, String updateId, String updateVal) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		BasicDBObject newDocument = new BasicDBObject();
@@ -144,6 +162,11 @@ public class MongoInterface {
 		}
 	}
 	
+	/**
+	 * Count number of documents in a given collection
+	 * @param collectionName - name of collection
+	 * @return number of documents
+	 */
 	public long getDocumentCount(String collectionName) {
 		return getCollection(collectionName).countDocuments();
 	}
