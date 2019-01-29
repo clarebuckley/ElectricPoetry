@@ -18,7 +18,7 @@ public class TemplateFiller {
 	ArrayList<ArrayList<String[]>> template;
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","VBG"));
-	String punctuation = ".,:;``-";	
+	String punctuation = ".,:;``-'";	
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -70,9 +70,12 @@ public class TemplateFiller {
 		if (retainOriginal.contains(templateWord)) {
 			word = originalWord;
 		}
-
+		if(templateWord == "''") {
+			templateWord = "``";
+		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
+			System.out.println(templateWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
