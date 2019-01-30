@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bson.Document;
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.BritishEnglish;
+import org.languagetool.rules.RuleMatch;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -59,11 +62,12 @@ public class PoemParser {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
 	
-		parseLinesInFile(file);	
+//		parseLinesInFile(file);	
 	}
 
 	public PoemParser()  {
-		reAssignIds();
+//		reAssignIds();
+		
 	}
 
 	/**
@@ -163,4 +167,6 @@ public class PoemParser {
 			}
 		}
 	}
+	
+
 }
