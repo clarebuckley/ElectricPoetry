@@ -16,7 +16,7 @@ import org.bson.Document;
  */
 
 public class TemplateMutator {
-	private final MongoInterface mongo = new MongoInterface("poetryDB-modern");
+	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "verses";
 	private final int numVerses;
 	//Templates to be returned

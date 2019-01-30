@@ -29,7 +29,7 @@ public class PoemGenerator {
 	
 	public PoemGenerator() {
 		//Create template with 1 verse
-		this.templateMutator = new TemplateMutator(3);
+		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
 		this.poemText = templateMutator.getPoemText();
 		this.templateFiller = new TemplateFiller();

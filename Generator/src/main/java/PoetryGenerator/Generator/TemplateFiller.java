@@ -9,7 +9,7 @@ import org.bson.Document;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 29/01/19
+ * @version 30/01/19
  *
  */
 
@@ -78,11 +78,15 @@ public class TemplateFiller {
 		if (retainOriginal.contains(templateWord)) {
 			word = originalWord;
 		}
-		if(templateWord == "''") {
+		else if(templateWord == "''") {
 			templateWord = "``";
+		}
+		else if(originalWord == "''") {
+			originalWord = "``";
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
+			System.out.println(templateWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
