@@ -53,15 +53,9 @@ public class TemplateFiller {
 				//Each word in a line
 				for(int j = 0; j < templateLine.size(); j++) {
 					boolean wordValid = false;
-					String word = "";
-					while(!wordValid) {
+					String word = "lhjkg";
+					while(!checkValidWord(word)) {
 						word = getWord(templateLine.get(j), originalLine.get(j));
-						if(!punctuation.contains(word) && templateLine.get(j)!= "POS" ) {
-							wordValid = checkValidWord(word);
-							System.out.println(wordValid);
-						}	else {
-							wordValid = true;
-						}
 					}
 
 					line += word;
@@ -73,13 +67,12 @@ public class TemplateFiller {
 					line = line.replaceAll(" [.,:;``-]", word);
 				}
 				line = postProcessLine(line);
-
 				boolean lineValid = false;
 				String testLine = line;
+				//Check word spelling is correct
 				while(!lineValid) {
 					lineValid = checkValidLine(testLine);
 				}
-
 				poemVerse.add(line);
 
 				//Reset for next line
@@ -107,7 +100,6 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
@@ -164,16 +156,15 @@ public class TemplateFiller {
 	 */
 	public boolean checkValidWord(String word) {
 		List<RuleMatch> matches;
-		
+		for (Rule rule : langTool.getAllRules()) {
+			if (!rule.isDictionaryBasedSpellingRule()) {
+				langTool.disableRule(rule.getId());
+			}
+		}
 		try {
-			System.out.println(word);
 			matches = langTool.check(word);
-			for (RuleMatch match : matches) {
-				System.out.println(match.getMessage());
-				if(match.getMessage() == "Possible spelling mistake found") {
-					System.out.println("INVALID------------------------");
-					return false;
-				} 
+			if(matches.size() > 0) {
+				return false;
 			}
 		} catch (IOException e) {
 			System.out.println("Error checking valid word");
@@ -188,26 +179,20 @@ public class TemplateFiller {
 	 * @return
 	 */
 	public boolean checkValidLine(String line) {
-		List<RuleMatch> matches;
-		for (Rule rule : langTool.getAllRules()) {
-			langTool.enableRule(rule.getId());
-		}
+		//TODO: This part always errors?
 
-
-//TODO: This part always errors?
-
-		//		List<RuleMatch> matches;
-		//		try {
-		//			System.out.println(line);
-		//			matches = langTool.check(line);
-		//			for (RuleMatch match : matches) {
-		//				//TODO Can you use this on the whole line to get grammar problems?
-		//				System.out.println("     --> " + match.getMessage());
-		//			}
-		//		} catch (IOException e) {
-		//			System.out.println("Error checking valid line");
-		//			e.printStackTrace();
-		//		}
+//		List<RuleMatch> matches;
+//		try {
+//			System.out.println(line);
+//			matches = langTool.check(line);
+//			for (RuleMatch match : matches) {
+//				//TODO Can you use this on the whole line to get grammar problems?
+//				System.out.println("     --> " + match.getMessage());
+//			}
+//		} catch (IOException e) {
+//			System.out.println("Error checking valid line");
+//			e.printStackTrace();
+//		}
 		return true;
 	}
 }
