@@ -9,7 +9,7 @@ import org.bson.Document;
  * Generate poem using TemplateMutator and TemplateFiller
  * Contains main method to print out poem
  * @author Clare Buckley
- * @version 29/01/2019
+ * @version 31/01/2019
  *
  */
 
@@ -21,18 +21,21 @@ public class PoemGenerator {
 	private List<List<Document>> template;
 	//Original poem content
 	private List<List<Document>> poemText;
-		
+	//Title of poem
+	String title = "Do Androids Dream of Electric Sheep?";
 
 	public static void main(String[] args) {
+		System.out.println("Writing your poem, please wait...");
 		new PoemGenerator();
 	}
 	
-	public PoemGenerator() {
+	public PoemGenerator() {		
 		//Create template with 1 verse
 		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
 		this.poemText = templateMutator.getPoemText();
 		this.templateFiller = new TemplateFiller();
+		
 		this.poem = templateFiller.processTemplate(template, poemText);
 		
 		printPoem(poem);

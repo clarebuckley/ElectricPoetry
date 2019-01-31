@@ -14,7 +14,7 @@ import org.languagetool.rules.RuleMatch;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 30/01/19
+ * @version 31/01/19
  *
  */
 
@@ -25,8 +25,6 @@ public class TemplateFiller {
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","VBG","VBP", "VBZ"));
 	String punctuation = ".,:;``-'''!";
-	//Title to base poem on
-	String title = "Do Androids Dream of Electric Sheep";
 	int replacedCount = 0;
 
 	/**
@@ -49,30 +47,13 @@ public class TemplateFiller {
 			for(int i = 0; i < template.size(); i++) {
 				List<String> templateLine = (List<String>) template.get(i);
 				List<String> originalLine = (List<String>)poemText.get(i);
-
-				//Each word in a line
-				for(int j = 0; j < templateLine.size(); j++) {
-					boolean wordValid = false;
-					String word = "lhjkg";
-					while(!checkValidWord(word)) {
-						word = getWord(templateLine.get(j), originalLine.get(j));
-					}
-
-					line += word;
-					//Don't add space after word if it's the end of a line
-					if(j < templateLine.size()) {
-						line += " ";
-					}
-					//Remove space before punctuation
-					line = line.replaceAll(" [.,:;``-]", word);
-				}
-				line = postProcessLine(line);
-				boolean lineValid = false;
-				String testLine = line;
+				line = processLine(templateLine,  originalLine);
+				
+				
 				//Check word spelling is correct
-				while(!lineValid) {
-					lineValid = checkValidLine(testLine);
-				}
+//				while(!checkValidLine(line)) {
+//				//fill in this
+//				}
 				poemVerse.add(line);
 
 				//Reset for next line
@@ -82,6 +63,34 @@ public class TemplateFiller {
 			poemVerses.add(poemVerse);
 		}
 		return poemVerses;
+	}
+	
+	/**
+	 * Process each line in a verse
+	 * @param templateLine
+	 * @param originalLine
+	 * @return String containing poem line
+	 */
+	private String processLine(List<String> templateLine, List<String> originalLine) {
+		String line = "";
+		//Each word in a line
+		for(int j = 0; j < templateLine.size(); j++) {
+			boolean wordValid = false;
+			String word = "lhjkg";
+			while(!checkValidWord(word)) {
+				word = getWord(templateLine.get(j), originalLine.get(j));
+			}
+
+			line += word;
+			//Don't add space after word if it's the end of a line
+			if(j < templateLine.size()) {
+				line += " ";
+			}
+			//Remove space before punctuation
+			line = line.replaceAll(" [.,:;``-]", word);
+		}
+		line = postProcessLine(line);
+		return line;
 	}
 
 	/**
@@ -163,6 +172,7 @@ public class TemplateFiller {
 		}
 		try {
 			matches = langTool.check(word);
+			System.out.println(matches.size());
 			if(matches.size() > 0) {
 				return false;
 			}
@@ -181,12 +191,15 @@ public class TemplateFiller {
 	public boolean checkValidLine(String line) {
 		//TODO: This part always errors?
 
-//		List<RuleMatch> matches;
+		List<RuleMatch> matches;
+		for (Rule rule : langTool.getAllRules()) {
+			rule.getDescription();
+//			langTool.enableRule(rule.getId());
+		}
 //		try {
 //			System.out.println(line);
 //			matches = langTool.check(line);
 //			for (RuleMatch match : matches) {
-//				//TODO Can you use this on the whole line to get grammar problems?
 //				System.out.println("     --> " + match.getMessage());
 //			}
 //		} catch (IOException e) {
