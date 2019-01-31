@@ -133,14 +133,14 @@ public class TemplateFiller {
 		//A apple --> an apple
 		line = line.replaceAll("a a", "an a");
 		line = line.replaceAll(" i ", " I ");
-
+		line = line.replaceAll("::", ":");
+		line = line.replaceAll("' s", "'s");
 
 		String capitaliseResult = "";
 		boolean capitalise = true;
 		for(int i = 0; i < line.length(); i++) {
 			//Current character
 			char c = line.charAt(i);
-
 			//If character is full stop, next character will be capitalised
 			if(c == '.') {
 				capitalise = true;
@@ -163,11 +163,11 @@ public class TemplateFiller {
 	 * @return true if word is contained in dictionary
 	 */
 	public boolean checkValidWord(String word) {
-		if(word.length() == 0) {
+		if(word.length() == 0 || word.contains("`")) {
 			return false;
 		} else {
 			List<RuleMatch> matches;
-			
+
 			for (Rule rule : langTool.getAllRules()) {
 				if (!rule.isDictionaryBasedSpellingRule()) {
 					langTool.disableRule(rule.getId());
@@ -193,23 +193,39 @@ public class TemplateFiller {
 	 * @return true if line is grammatically valid
 	 */
 	public boolean checkValidLine(String line) {
-		//TODO: This part always errors?
-
 		if(line.length() > 0) {
 			List<RuleMatch> matches;
-			
+
 			for (Rule rule : langTool.getAllRules()) {
-				//System.out.println(rule.getDescription());
 				langTool.enableRule(rule.getId());
 			}
 			try {
+				ArrayList<String> ignoreRule = new ArrayList<String>(Arrays.asList("And", "READABILITY_RULE_SIMPLE", "E_PRIME_LOOSE"));
 				System.out.println(line);
 				matches = langTool.check(line);
+				//Empty string is valid
 				if(matches.size() > 0) {
 					for (RuleMatch match : matches) {
-						System.out.println("     --> " + match.getMessage());
+						//Don't check for ignored rules
+						String ruleId = match.getRule().getId();
+						if(ignoreRule.contains(ruleId)){
+							return true;
+						} else {
+							//Act on an invalid line
+							int from = match.getFromPos();
+							int to = match.getToPos();
+							System.out.println(match.getFromPos() + " - " + match.getToPos() + "--> " + match.getRule().getId() + ": " + match.getMessage());
+							List<String> suggestions = match.getSuggestedReplacements();
+							if(suggestions.size() > 0) {
+								fixGrammar(line, from, to, suggestions);
+								return true;
+							} else if(ruleId == "SENTENCE_FRAGMENT") {
+								line += "?";
+							}
+							
+							return false;
+						}
 					}
-					return false;
 				} else {
 					return true;
 				}
@@ -222,5 +238,20 @@ public class TemplateFiller {
 		}
 
 		return true;
+	}
+	
+	/**
+	 * Fixes grammar issues in a given line
+	 * @param line - whole line containing error
+	 * @param from - start index of error
+	 * @param to - end index of error
+	 * @param suggestions - possible ways to correct issue
+	 */
+	private void fixGrammar(String line, int from, int to, List<String> suggestions) {
+		for(String suggestion : suggestions) {
+			System.out.println(suggestion);
+		}
+		
+		
 	}
 }
