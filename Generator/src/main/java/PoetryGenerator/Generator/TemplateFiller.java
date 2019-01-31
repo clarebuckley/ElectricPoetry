@@ -47,13 +47,11 @@ public class TemplateFiller {
 			for(int i = 0; i < template.size(); i++) {
 				List<String> templateLine = (List<String>) template.get(i);
 				List<String> originalLine = (List<String>)poemText.get(i);
-				line = processLine(templateLine,  originalLine);
-				
-				
-				//Check word spelling is correct
-//				while(!checkValidLine(line)) {
-//				//fill in this
-//				}
+
+
+				//while(!checkValidLine(line)) {
+					line = processLine(templateLine,  originalLine);
+				//}
 				poemVerse.add(line);
 
 				//Reset for next line
@@ -76,7 +74,7 @@ public class TemplateFiller {
 		//Each word in a line
 		for(int j = 0; j < templateLine.size(); j++) {
 			boolean wordValid = false;
-			String word = "lhjkg";
+			String word = "";
 			while(!checkValidWord(word)) {
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
@@ -161,24 +159,29 @@ public class TemplateFiller {
 	/**
 	 * Returns false if word is invalid
 	 * @param line
-	 * @return
+	 * @return true if word is contained in dictionary
 	 */
 	public boolean checkValidWord(String word) {
-		List<RuleMatch> matches;
-		for (Rule rule : langTool.getAllRules()) {
-			if (!rule.isDictionaryBasedSpellingRule()) {
-				langTool.disableRule(rule.getId());
+		if(word.length() == 0) {
+			return false;
+		} else {
+			List<RuleMatch> matches;
+			
+			for (Rule rule : langTool.getAllRules()) {
+				if (!rule.isDictionaryBasedSpellingRule()) {
+					langTool.disableRule(rule.getId());
+				}
 			}
-		}
-		try {
-			matches = langTool.check(word);
-			System.out.println(matches.size());
-			if(matches.size() > 0) {
-				return false;
+			try {
+				matches = langTool.check(word);
+				System.out.println(matches.size());
+				if(matches.size() > 0) {
+					return false;
+				}
+			} catch (IOException e) {
+				System.out.println("Error checking valid word");
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			System.out.println("Error checking valid word");
-			e.printStackTrace();
 		}
 		return true;
 	}
@@ -186,26 +189,37 @@ public class TemplateFiller {
 	/**
 	 * Checks that a poem line is valid before adding it to verse
 	 * @param line
-	 * @return
+	 * @return true if line is grammatically valid
 	 */
 	public boolean checkValidLine(String line) {
 		//TODO: This part always errors?
 
-		List<RuleMatch> matches;
-		for (Rule rule : langTool.getAllRules()) {
-			rule.getDescription();
-//			langTool.enableRule(rule.getId());
-		}
-//		try {
-//			System.out.println(line);
-//			matches = langTool.check(line);
-//			for (RuleMatch match : matches) {
-//				System.out.println("     --> " + match.getMessage());
+		if(line.length() > 0) {
+			List<RuleMatch> matches;
+			
+			for (Rule rule : langTool.getAllRules()) {
+				//System.out.println(rule.getDescription());
+				langTool.enableRule(rule.getId());
+			}
+//			try {
+//				System.out.println(line);
+//				matches = langTool.check(line);
+//				if(matches.size() > 0) {
+//					for (RuleMatch match : matches) {
+//						System.out.println("     --> " + match.getMessage());
+//					}
+//					return false;
+//				} else {
+//					return true;
+//				}
+//			} catch (IOException e) {
+//				System.out.println("Error checking valid line");
+//				e.printStackTrace();
 //			}
-//		} catch (IOException e) {
-//			System.out.println("Error checking valid line");
-//			e.printStackTrace();
-//		}
+		} else {
+			return false;
+		}
+
 		return true;
 	}
 }
