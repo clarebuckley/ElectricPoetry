@@ -10,6 +10,7 @@ import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
+import org.languagetool.rules.spelling.SpellingCheckRule;
 
 /**
  * Fill in a POS template using wordbank stored in database
@@ -49,9 +50,9 @@ public class TemplateFiller {
 				List<String> originalLine = (List<String>)poemText.get(i);
 
 
-				//while(!checkValidLine(line)) {
+				while(!checkValidLine(line)) {
 					line = processLine(templateLine,  originalLine);
-				//}
+				}
 				poemVerse.add(line);
 
 				//Reset for next line
@@ -62,7 +63,7 @@ public class TemplateFiller {
 		}
 		return poemVerses;
 	}
-	
+
 	/**
 	 * Process each line in a verse
 	 * @param templateLine
@@ -201,21 +202,21 @@ public class TemplateFiller {
 				//System.out.println(rule.getDescription());
 				langTool.enableRule(rule.getId());
 			}
-//			try {
-//				System.out.println(line);
-//				matches = langTool.check(line);
-//				if(matches.size() > 0) {
-//					for (RuleMatch match : matches) {
-//						System.out.println("     --> " + match.getMessage());
-//					}
-//					return false;
-//				} else {
-//					return true;
-//				}
-//			} catch (IOException e) {
-//				System.out.println("Error checking valid line");
-//				e.printStackTrace();
-//			}
+			try {
+				System.out.println(line);
+				matches = langTool.check(line);
+				if(matches.size() > 0) {
+					for (RuleMatch match : matches) {
+						System.out.println("     --> " + match.getMessage());
+					}
+					return false;
+				} else {
+					return true;
+				}
+			} catch (IOException e) {
+				System.out.println("Error checking valid line");
+				e.printStackTrace();
+			}
 		} else {
 			return false;
 		}
