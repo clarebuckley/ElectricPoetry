@@ -10,7 +10,6 @@ import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
-import org.languagetool.rules.spelling.SpellingCheckRule;
 
 /**
  * Fill in a POS template using wordbank stored in database
@@ -30,7 +29,6 @@ public class TemplateFiller {
 	private String punctuation = ".,:;``-'''!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
-	private int replacedCount = 0;
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -52,19 +50,13 @@ public class TemplateFiller {
 			for(int i = 0; i < template.size(); i++) {
 				List<String> templateLine = (List<String>) template.get(i);
 				List<String> originalLine = (List<String>)poemText.get(i);
-
-
-
 				line = processLine(templateLine,  originalLine);
 				if(!checkValidLine(line)) {
 					line = fixGrammar(line, matches);
 				}
-
 				poemVerse.add(line);
-
 				//Reset for next line
 				line = "";
-				replacedCount = 0;
 			}
 			poemVerses.add(poemVerse);
 		}
@@ -110,7 +102,7 @@ public class TemplateFiller {
 		String word = "";
 
 		//Only replace some words, keep others same as in original text
-		if (retainOriginal.contains(templateWord) || replacedCount > 5) {
+		if (retainOriginal.contains(templateWord)) {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
@@ -119,7 +111,7 @@ public class TemplateFiller {
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
 			word = words.get(randomIndex);	
-			replacedCount++;
+			System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -139,7 +131,7 @@ public class TemplateFiller {
 		//A apple --> an apple
 		line = line.replaceAll(" i ", " I ");
 		line = line.replaceAll("::", ":");
-		line = line.replaceAll("' s", "'s");
+		line = line.replaceAll(" 's", "'s");
 
 		String capitaliseResult = "";
 		boolean capitalise = true;
@@ -180,8 +172,8 @@ public class TemplateFiller {
 			}
 			try {
 				matches = langTool.check(word);
-				System.out.println(matches.size());
 				if(matches.size() > 0) {
+					System.out.println("word not valid: " + word);
 					return false;
 				}
 			} catch (IOException e) {
@@ -248,7 +240,6 @@ public class TemplateFiller {
 
 			}
 		}
-		System.out.println("Fixed: --> " + line );
 		return line;
 	}
 
@@ -262,14 +253,10 @@ public class TemplateFiller {
 	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
 		Random random = new Random();
 		String toReplace = line.substring(from,to);
-		for(String suggestion : suggestions) {
-			
-			System.out.println(suggestion);
-		}
 		int randomIndex = random.nextInt(suggestions.size());
 		String replacement = suggestions.get(randomIndex);
 		line = line.replace(toReplace, replacement);
-		System.out.println("Replaced " + toReplace + " with " + replacement);
+		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "'");
 
 		return line;
 	}
