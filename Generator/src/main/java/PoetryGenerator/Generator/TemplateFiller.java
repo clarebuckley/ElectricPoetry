@@ -15,18 +15,22 @@ import org.languagetool.rules.spelling.SpellingCheckRule;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 31/01/19
+ * @version 01/02/19
  *
  */
 
 public class TemplateFiller {
-	MongoInterface mongo = new MongoInterface("poetryDB");
-	JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
-	ArrayList<ArrayList<String[]>> template;
+	private MongoInterface mongo = new MongoInterface("poetryDB");
+	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
+	private ArrayList<ArrayList<String[]>> template;
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
-	ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","VBG","VBP", "VBZ"));
-	String punctuation = ".,:;``-'''!";
-	int replacedCount = 0;
+	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","VBG","VBP", "VBZ"));
+	//Grammar rules to be ignored 
+	private ArrayList<String> ignoreRule = new ArrayList<String>(Arrays.asList("And", "READABILITY_RULE_SIMPLE", "E_PRIME_LOOSE"));
+	private String punctuation = ".,:;``-'''!";
+	//List of grammar rules a line breaks
+	private List<RuleMatch> matches;
+	private int replacedCount = 0;
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -50,9 +54,12 @@ public class TemplateFiller {
 				List<String> originalLine = (List<String>)poemText.get(i);
 
 
-				while(!checkValidLine(line)) {
-					line = processLine(templateLine,  originalLine);
+
+				line = processLine(templateLine,  originalLine);
+				if(!checkValidLine(line)) {
+					line = fixGrammar(line, matches);
 				}
+
 				poemVerse.add(line);
 
 				//Reset for next line
@@ -112,7 +119,6 @@ public class TemplateFiller {
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);	
 			word = words.get(randomIndex);	
-			System.out.println(originalWord + " --> " + word);
 			replacedCount++;
 		} else {
 			word = templateWord;
@@ -131,7 +137,6 @@ public class TemplateFiller {
 		line = line.substring(0, 1).toUpperCase() + line.substring(1);
 
 		//A apple --> an apple
-		line = line.replaceAll("a a", "an a");
 		line = line.replaceAll(" i ", " I ");
 		line = line.replaceAll("::", ":");
 		line = line.replaceAll("' s", "'s");
@@ -194,38 +199,16 @@ public class TemplateFiller {
 	 */
 	public boolean checkValidLine(String line) {
 		if(line.length() > 0) {
-			List<RuleMatch> matches;
-
+			//Enable all grammar rules
 			for (Rule rule : langTool.getAllRules()) {
 				langTool.enableRule(rule.getId());
 			}
 			try {
-				ArrayList<String> ignoreRule = new ArrayList<String>(Arrays.asList("And", "READABILITY_RULE_SIMPLE", "E_PRIME_LOOSE"));
 				System.out.println(line);
 				matches = langTool.check(line);
 				//Empty string is valid
 				if(matches.size() > 0) {
-					for (RuleMatch match : matches) {
-						//Don't check for ignored rules
-						String ruleId = match.getRule().getId();
-						if(ignoreRule.contains(ruleId)){
-							return true;
-						} else {
-							//Act on an invalid line
-							int from = match.getFromPos();
-							int to = match.getToPos();
-							System.out.println(match.getFromPos() + " - " + match.getToPos() + "--> " + match.getRule().getId() + ": " + match.getMessage());
-							List<String> suggestions = match.getSuggestedReplacements();
-							if(suggestions.size() > 0) {
-								fixGrammar(line, from, to, suggestions);
-								return true;
-							} else if(ruleId == "SENTENCE_FRAGMENT") {
-								line += "?";
-							}
-							
-							return false;
-						}
-					}
+					fixGrammar(line, matches);
 				} else {
 					return true;
 				}
@@ -239,19 +222,55 @@ public class TemplateFiller {
 
 		return true;
 	}
-	
+
+
+
 	/**
-	 * Fixes grammar issues in a given line
+	 * Fix grammar for given line
+	 * @param line
+	 * @param matches
+	 */
+	private String fixGrammar(String line, List<RuleMatch> matches) {
+		for (RuleMatch match : matches) {
+			//Don't check for ignored rules
+			String ruleId = match.getRule().getId();
+			if(!ignoreRule.contains(ruleId)){
+				int from = match.getFromPos();
+				int to = match.getToPos();
+				System.out.println(line.substring(from,to) +  "--> " + match.getRule().getId() + ": " + match.getMessage());
+				List<String> suggestions = match.getSuggestedReplacements();
+				if(suggestions.size() > 0) {
+					line = replaceWithSuggestion(line, from, to, suggestions);
+				} 
+				if(ruleId == "SENTENCE_FRAGMENT") {
+					line += "?";
+				}
+
+			}
+		}
+		System.out.println("Fixed: --> " + line );
+		return line;
+	}
+
+	/**
+	 * Replace incorrect grammar with suggestions
 	 * @param line - whole line containing error
 	 * @param from - start index of error
 	 * @param to - end index of error
 	 * @param suggestions - possible ways to correct issue
 	 */
-	private void fixGrammar(String line, int from, int to, List<String> suggestions) {
+	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
+		Random random = new Random();
+		String toReplace = line.substring(from,to);
 		for(String suggestion : suggestions) {
+			
 			System.out.println(suggestion);
 		}
-		
-		
+		int randomIndex = random.nextInt(suggestions.size());
+		String replacement = suggestions.get(randomIndex);
+		line = line.replace(toReplace, replacement);
+		System.out.println("Replaced " + toReplace + " with " + replacement);
+
+		return line;
 	}
 }

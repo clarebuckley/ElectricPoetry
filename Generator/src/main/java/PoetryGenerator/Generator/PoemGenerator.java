@@ -22,7 +22,7 @@ public class PoemGenerator {
 	//Original poem content
 	private List<List<Document>> poemText;
 	//Title of poem
-	String title = "Do Androids Dream of Electric Sheep?";
+	private String title = "Do Androids Dream of Electric Sheep?";
 
 	public static void main(String[] args) {
 		System.out.println("Writing your poem, please wait...");
