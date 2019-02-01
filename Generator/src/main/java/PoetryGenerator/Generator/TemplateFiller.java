@@ -21,11 +21,10 @@ import org.languagetool.rules.RuleMatch;
 public class TemplateFiller {
 	private MongoInterface mongo = new MongoInterface("poetryDB");
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
-	private ArrayList<ArrayList<String[]>> template;
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","VBG","VBP", "VBZ"));
 	//Grammar rules to be ignored 
-	private ArrayList<String> ignoreRule = new ArrayList<String>(Arrays.asList("And", "READABILITY_RULE_SIMPLE", "E_PRIME_LOOSE"));
+	private ArrayList<String> ignoreRule = new ArrayList<String>(Arrays.asList("And"/*,"READABILITY_RULE_SIMPLE", "E_PRIME_LOOSE"*/));
 	private String punctuation = ".,:;``-'''!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
