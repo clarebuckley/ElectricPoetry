@@ -11,7 +11,7 @@ import org.bson.Document;
 /**
  * Retrieves a poem POS template from the database to be filled
  * @author Clare Buckley
- * @version 29/01/19
+ * @version 01/02/19
  *
  */
 
@@ -20,8 +20,8 @@ public class TemplateMutator {
 	private final String collection = "verses";
 	private final int numVerses;
 	//Templates to be returned
-	List<List<Document>> originalTemplate = new ArrayList<List<Document>>();
-	List<List<Document>> verseTemplate = new ArrayList<List<Document>>();
+	private List<List<Document>> originalTemplate = new ArrayList<List<Document>>();
+	private List<List<Document>> verseTemplate = new ArrayList<List<Document>>();
 	
 
 	public TemplateMutator(int numVerses) {
