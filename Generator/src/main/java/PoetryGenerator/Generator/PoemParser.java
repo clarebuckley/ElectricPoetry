@@ -66,7 +66,7 @@ public class PoemParser {
 	}
 
 	public PoemParser()  {
-//		reAssignIds();
+		reAssignIds();
 		
 	}
 
