@@ -32,7 +32,7 @@ public class PoemGenerator {
 	public PoemGenerator() {		
 		//Create template with 1 verse
 		System.out.println("Getting template...");
-		this.templateMutator = new TemplateMutator(2);
+		this.templateMutator = new TemplateMutator(1);
 		this.template = templateMutator.getPoemTemplate();
 		this.poemText = templateMutator.getPoemText();
 		System.out.println("Processing poem...");
