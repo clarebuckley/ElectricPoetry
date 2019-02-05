@@ -49,7 +49,7 @@ public class PoemGenerator {
 	 * @param poem - lines of poem are split into elements inside ArrayList
 	 */
 	public void printPoem(ArrayList<ArrayList<String>> poem) {
-		System.out.println("------------ Poem Generator ------------");
+		System.out.println("------------ " + title + " ------------");
 		for(int i = 0; i < poem.size(); i++) {
 			ArrayList<String> lines = poem.get(i);
 			for(String line : lines) {
