@@ -59,8 +59,6 @@ public class TemplateFiller {
 			}
 			//Add line break between verse
 			poemVerse.add(System.lineSeparator());
-
-
 			poemVerses.add(poemVerse);
 		}
 		return poemVerses;
@@ -116,8 +114,11 @@ public class TemplateFiller {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
-		else if(!punctuation.contains(templateWord) || templateWord == "``") {
+		else if(!punctuation.contains(templateWord) || templateWord.equals("``")) {
 			System.out.println(templateWord + ", " + originalWord);
+			if(templateWord.equals("``")) {
+				System.out.println("??????");
+			}
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);
@@ -146,6 +147,8 @@ public class TemplateFiller {
 		line = line.replaceAll(" 'll", "'ll");
 		line = line.replaceAll(" 'd", "'d");
 		line = line.replaceAll("!", "! ");
+		
+		//match constant following 'an' --> "^an [b-df-hj-np-tv-z]"
 
 		String capitaliseResult = "";
 		boolean capitalise = true;
