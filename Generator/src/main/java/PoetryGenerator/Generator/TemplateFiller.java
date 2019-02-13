@@ -15,7 +15,7 @@ import org.languagetool.rules.RuleMatch;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 01/02/19
+ * @version 13/02/19
  *
  */
 
@@ -27,6 +27,8 @@ public class TemplateFiller {
 	private String punctuation = ".,:;-'''!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
+	//Flag for validity of current word
+	private boolean wordValid = false;
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -75,7 +77,7 @@ public class TemplateFiller {
 		//Each word in a line
 		for(int j = 0; j < templateLine.size(); j++) {
 			String word = "";
-
+			wordValid = false;
 			while(!checkValidWord(word)) {
 				System.out.println("replacing word " + word);
 				if(templateLine.get(j) == "``") {
@@ -110,7 +112,7 @@ public class TemplateFiller {
 		String word = "";
 
 		//Only replace some words, keep others same as in original text
-		if (retainOriginal.contains(templateWord) || templateWord == "-lrb-") {
+		if ((retainOriginal.contains(templateWord) && wordValid) || templateWord == "-lrb-") {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
@@ -178,6 +180,7 @@ public class TemplateFiller {
 	 */
 	public boolean checkValidWord(String word) {
 		if(word.length() == 0 || word.contains("`")) {
+			wordValid = false;
 			return false;
 		} else {
 			List<RuleMatch> matches;
@@ -190,9 +193,10 @@ public class TemplateFiller {
 				matches = langTool.check(word);
 				if(matches.size() > 0) {
 					System.out.println("word not valid: " + word);
-					System.out.println(matches.get(0).getSuggestedReplacements());
+					wordValid = false;
 					return false;
 				} else {
+					wordValid = true;
 					return true;
 				}
 			} catch (IOException e) {

@@ -1027,3 +1027,21 @@
 2019-02-13 20:18:13 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:172}] to localhost:27017
 2019-02-13 20:18:13 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1237774}
 2019-02-13 20:18:14 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:173}] to localhost:27017
+2019-02-13 21:05:43 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-13 21:05:44 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2019-02-13 21:05:44 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:174}] to localhost:27017
+2019-02-13 21:05:44 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=4958279}
+2019-02-13 21:05:44 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:175}] to localhost:27017
+2019-02-13 21:05:44 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-13 21:05:44 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:176}] to localhost:27017
+2019-02-13 21:05:44 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2419636}
+2019-02-13 21:05:47 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:177}] to localhost:27017
+2019-02-13 21:18:09 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-13 21:18:10 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2019-02-13 21:18:10 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:178}] to localhost:27017
+2019-02-13 21:18:10 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=3653306}
+2019-02-13 21:18:10 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:179}] to localhost:27017
+2019-02-13 21:18:10 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-13 21:18:10 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:180}] to localhost:27017
+2019-02-13 21:18:10 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1366528}
+2019-02-13 21:18:11 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:181}] to localhost:27017
