@@ -80,12 +80,12 @@ public class TemplateFiller {
 			wordValid = false;
 			while(!checkValidWord(word)) {
 				System.out.println("replacing word " + word);
-				if(templateLine.get(j) == "``") {
-					templateLine.set(j,  "''");
-				}
-				if(templateLine.get(j) == "`" ) {
-					templateLine.set(j,  "'");
-				}
+//				if(templateLine.get(j) == "``") {
+//					templateLine.set(j,  "''");
+//				}
+//				if(templateLine.get(j) == "`" ) {
+//					templateLine.set(j,  "'");
+//				}
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
 
@@ -116,7 +116,7 @@ public class TemplateFiller {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
-		else if(!punctuation.contains(templateWord) || templateWord.equals("``")) {
+		else if(!punctuation.contains(templateWord) && !templateWord.equals("``")) {
 			System.out.println(templateWord + ", " + originalWord);
 			if(templateWord.equals("``")) {
 				System.out.println("??????");
