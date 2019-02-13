@@ -80,8 +80,11 @@ public class TemplateFiller {
 
 			while(!checkValidWord(word)) {
 				System.out.println("replacing word " + word);
-				if(templateLine.get(j) == "``" ) {
+				if(templateLine.get(j) == "``") {
 					templateLine.set(j,  "''");
+				}
+				if(templateLine.get(j) == "`" ) {
+					templateLine.set(j,  "'");
 				}
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
@@ -109,11 +112,11 @@ public class TemplateFiller {
 		String word = "";
 
 		//Only replace some words, keep others same as in original text
-		if (retainOriginal.contains(templateWord) || word == "-lrb-") {
+		if (retainOriginal.contains(templateWord) || templateWord == "-lrb-") {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
-		else if(!punctuation.contains(templateWord)) {
+		else if(!punctuation.contains(templateWord) || templateWord == "``") {
 			System.out.println(templateWord + ", " + originalWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
@@ -184,6 +187,7 @@ public class TemplateFiller {
 				matches = langTool.check(word);
 				if(matches.size() > 0) {
 					System.out.println("word not valid: " + word);
+					System.out.println(matches.get(0).getSuggestedReplacements());
 					return false;
 				} else {
 					return true;
