@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.languagetool.AnalyzedSentence;
@@ -80,12 +82,6 @@ public class TemplateFiller {
 			wordValid = false;
 			while(!checkValidWord(word)) {
 				System.out.println("replacing word " + word);
-//				if(templateLine.get(j) == "``") {
-//					templateLine.set(j,  "''");
-//				}
-//				if(templateLine.get(j) == "`" ) {
-//					templateLine.set(j,  "'");
-//				}
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
 
@@ -116,15 +112,17 @@ public class TemplateFiller {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
-		else if(!punctuation.contains(templateWord) && !templateWord.equals("``")) {
+		else if(!punctuation.contains(templateWord)) {
 			System.out.println(templateWord + ", " + originalWord);
-			if(templateWord.equals("``")) {
-				System.out.println("??????");
+			if(originalWord == "`") {
+				word = originalWord;
+			} else {
+				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
+				int numOfWords = words.size();
+				int randomIndex = random.nextInt(numOfWords);
+				word = words.get(randomIndex);	
 			}
-			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
-			int numOfWords = words.size();
-			int randomIndex = random.nextInt(numOfWords);
-			word = words.get(randomIndex);	
+			
 			System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
@@ -150,8 +148,15 @@ public class TemplateFiller {
 		line = line.replaceAll(" 'd", "'d");
 		line = line.replaceAll("!", "! ");
 		
-		//match constant following 'an' --> "^an [b-df-hj-np-tv-z]"
-
+		//For consonants following 'an', change to 'a'
+		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
+		Matcher matcher = pattern.matcher(line);
+		while(matcher.find()){
+		    String match = line.substring(matcher.start(), matcher.start()+1);
+		    line.replace(match, "a");
+		}
+		
+	
 		String capitaliseResult = "";
 		boolean capitalise = true;
 		for(int i = 0; i < line.length(); i++) {
