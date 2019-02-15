@@ -26,13 +26,15 @@ public class PoemGenerator {
 		System.out.println("------------------------------------");
 		System.out.println("Please enter the title of your poem: ");
 		Scanner scanner = new Scanner(System.in);
-		String poemTitle = scanner.nextLine();
+		poemTitle = scanner.nextLine();
+		scanner.close();
 		System.out.println("------------------------------------");
 		System.out.println("Writing your poem...");
-		scanner.close();
+		
 		
 		ArrayList<ArrayList<String>> poem = generatePoem(poemTitle, 1);
 		printPoem(poem);
+		
 	}
 
 
