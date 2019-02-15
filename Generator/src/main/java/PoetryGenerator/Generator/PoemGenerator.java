@@ -2,6 +2,7 @@ package PoetryGenerator.Generator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import org.bson.Document;
 
@@ -9,47 +10,50 @@ import org.bson.Document;
  * Generate poem using TemplateMutator and TemplateFiller
  * Contains main method to print out poem
  * @author Clare Buckley
- * @version 31/01/2019
+ * @version 15/02/2019
  *
  */
 
 public class PoemGenerator {
-	private TemplateFiller templateFiller;
-	private TemplateMutator templateMutator;
-	private ArrayList<ArrayList<String>> poem;
-	//POS tag poem template
-	private List<List<Document>> template;
-	//Original poem content
-	private List<List<Document>> poemText;
 	//Title of poem
-	private String title = "Do Androids Dream of Electric Sheep?";
+	private String poemTitle;
 
 	public static void main(String[] args) {
-		System.out.println("Writing your poem, please wait...");
 		new PoemGenerator();
 	}
-	
-	public PoemGenerator() {		
-		//Create template with 1 verse
-		System.out.println("Getting template...");
-		this.templateMutator = new TemplateMutator(1);
-		this.template = templateMutator.getPoemTemplate();
-		this.poemText = templateMutator.getPoemText();
-		System.out.println("Processing poem...");
-		this.templateFiller = new TemplateFiller();
+
+	public PoemGenerator() {
+		System.out.println("------------------------------------");
+		System.out.println("Please enter the title of your poem: ");
+		Scanner scanner = new Scanner(System.in);
+		String poemTitle = scanner.nextLine();
+		System.out.println("------------------------------------");
+		System.out.println("Writing your poem...");
+		scanner.close();
 		
-		this.poem = templateFiller.processTemplate(template, poemText);
-		
+		ArrayList<ArrayList<String>> poem = generatePoem(poemTitle, 1);
 		printPoem(poem);
-		
 	}
-	
+
+
+	private ArrayList<ArrayList<String>> generatePoem(String poemTitle, int poemVerses){
+		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
+		TemplateMutator templateMutator = new TemplateMutator(1);
+		TemplateFiller templateFiller = new TemplateFiller();
+		List<List<Document>> poemText = templateMutator.getPoemText();
+		List<List<Document>> template = templateMutator.getPoemTemplate();
+		poem = templateFiller.processTemplate(template, poemText);
+		return poem;
+	}
+
+
+
 	/**
 	 * Print out contents of poem input
 	 * @param poem - lines of poem are split into elements inside ArrayList
 	 */
 	public void printPoem(ArrayList<ArrayList<String>> poem) {
-		System.out.println("------------ " + title + " ------------");
+		System.out.println("------------ " + poemTitle + " ------------");
 		for(int i = 0; i < poem.size(); i++) {
 			ArrayList<String> lines = poem.get(i);
 			for(String line : lines) {
@@ -57,7 +61,7 @@ public class PoemGenerator {
 			}
 		}
 	}
-	
-	
+
+
 
 }
