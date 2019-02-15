@@ -26,7 +26,7 @@ public class TemplateFiller {
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","VBG","VBP", "VBZ"));
-	private String punctuation = ".,:;-'''!";
+	private String punctuation = ".,:;-'''``!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
 	//Flag for validity of current word
@@ -108,21 +108,16 @@ public class TemplateFiller {
 		String word = "";
 
 		//Only replace some words, keep others same as in original text
-		if ((retainOriginal.contains(templateWord) && wordValid) || templateWord == "-lrb-") {
+		if ((retainOriginal.contains(templateWord) && wordValid) || templateWord == "-lrb-" || punctuation.contains(templateWord)) {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
 			System.out.println(templateWord + ", " + originalWord);
-			if(originalWord == "`") {
-				word = originalWord;
-			} else {
-				ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
-				int numOfWords = words.size();
-				int randomIndex = random.nextInt(numOfWords);
-				word = words.get(randomIndex);	
-			}
-			
+			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
+			int numOfWords = words.size();
+			int randomIndex = random.nextInt(numOfWords);
+			word = words.get(randomIndex);	
 			System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
@@ -147,16 +142,17 @@ public class TemplateFiller {
 		line = line.replaceAll(" 'll", "'ll");
 		line = line.replaceAll(" 'd", "'d");
 		line = line.replaceAll("!", "! ");
-		
+		line = line.replaceAll(" !", "!");
+
 		//For consonants following 'an', change to 'a'
 		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
 		Matcher matcher = pattern.matcher(line);
 		while(matcher.find()){
-		    String match = line.substring(matcher.start(), matcher.start()+1);
-		    line.replace(match, "a");
+			String match = line.substring(matcher.start(), matcher.start()+1);
+			line.replace(match, "a");
 		}
-		
-	
+
+
 		String capitaliseResult = "";
 		boolean capitalise = true;
 		for(int i = 0; i < line.length(); i++) {
@@ -224,15 +220,12 @@ public class TemplateFiller {
 				langTool.enableRule(rule.getId());	
 			}
 			try {
+				System.out.println(line);
 				matches = langTool.check(line);
-				//Empty string is valid
+				System.out.println(matches.size());
 				if(matches.size() > 0) {
 					for(RuleMatch match : matches) {
-						if(match.getRule().getId() != "And") {
-							return true;
-						} else {
-							return false;
-						}
+						return false;
 					}
 				} else {
 					return true;
@@ -257,13 +250,11 @@ public class TemplateFiller {
 	 */
 	private String fixGrammar(String line, List<RuleMatch> matches) {
 		for (RuleMatch match : matches) {
-			//Don't check for ignored rules
 			String ruleId = match.getRule().getId();
-			if(ruleId != "And"){
+			if(!ruleId.equals("And") && !ruleId.equals("But")){
 				int from = match.getFromPos();
 				int to = match.getToPos();
 				System.out.println(line);
-				System.out.println(line.substring(from,to) +  "--> " + match.getRule().getId() + ": " + match.getMessage());
 				List<String> suggestions = match.getSuggestedReplacements();
 				if(suggestions.size() > 0) {
 					line = replaceWithSuggestion(line, from, to, suggestions);
@@ -274,13 +265,22 @@ public class TemplateFiller {
 				else if(ruleId == "E_PRIME_STRICT") {
 					line = replaceVerb(line, from, to);
 				}
+				else if(ruleId.contains("READABILITY_RULE")) {
+					line = fixReadability(line);
+				}
 				else {
 					System.out.println("other rule --> " + ruleId);
+					System.out.println(match.getRule().getDescription());
+					if(suggestions.size()>0) {
+						System.out.println(suggestions.get(0));
+					} else {
+						System.out.println("no suggestions");
+					}
 				}
 
 			}
 		}
-		System.out.println(line);
+		matches.clear();
 		return line;
 	}
 
@@ -308,6 +308,8 @@ public class TemplateFiller {
 	 * @param from
 	 * @param to
 	 * @return
+	 * TODO: check this works as expected
+	 * WORK IN PROGRESS
 	 */
 	private String replaceVerb(String line, int from, int to) {
 		System.out.println("REPLACING VERB");
@@ -318,14 +320,22 @@ public class TemplateFiller {
 			templateWord = langTool.analyzeText(toReplace);
 			for(AnalyzedSentence test : templateWord) {
 				System.out.println("---------------------------------------------------> " + test);
+				String newVerb = getWord(templateWord.toString(), toReplace);
+				line = line.replace(toReplace, newVerb);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		//String newVerb = getWord(templateWord, toReplace);
 		return line;
-
 	}
+
+
+	public String fixReadability(String line) {
+
+		return line;
+	}
+
+
+
 }
