@@ -25,7 +25,7 @@ public class TemplateFiller {
 	private MongoInterface mongo = new MongoInterface("poetryDB");
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
-	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","VBG","VBP", "VBZ"));
+	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBP", "VBZ"));
 	private String punctuation = ".,:;-'''``!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
@@ -107,9 +107,17 @@ public class TemplateFiller {
 		Random random = new Random();
 		String word = "";
 
+		
 		//Only replace some words, keep others same as in original text
-		if ((retainOriginal.contains(templateWord) && wordValid) || templateWord == "-lrb-" || punctuation.contains(templateWord)) {
-			word = originalWord;
+		if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
+			//-lrb- and -rrb- should be translated to ( and ) respectively
+			if(templateWord == "-lrb-" || templateWord == "-LRB-") {
+				word = "(";
+			} else if(templateWord == "-rrb-" || templateWord == "-RRB-") {
+				word = ")";
+			} else {
+				word = originalWord;
+			}
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
