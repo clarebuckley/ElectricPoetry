@@ -26,7 +26,7 @@ public class TemplateFiller {
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBP", "VBZ"));
-	private String punctuation = ".,:;-'''``!";
+	private String punctuation = ".,:;-'''`!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
 	//Flag for validity of current word
@@ -80,7 +80,7 @@ public class TemplateFiller {
 		for(int j = 0; j < templateLine.size(); j++) {
 			String word = "";
 			wordValid = false;
-			while(!checkValidWord(word)) {
+			while(!spellCheckWord(word) || !wordValid(word, line)) {
 				System.out.println("replacing word " + word);
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
@@ -91,7 +91,7 @@ public class TemplateFiller {
 				line += " ";
 			}
 			//Remove space before punctuation
-			line = line.replaceAll(" [.,:;``-]", word);
+			line = line.replaceAll(" [.,:;`-]", word);
 		}
 		line = postProcessLine(line);
 		return line;
@@ -106,18 +106,18 @@ public class TemplateFiller {
 	private String getWord(String templateWord, String originalWord){
 		Random random = new Random();
 		String word = "";
-
-
+		if(templateWord.contains("`")) {
+			word = "'";
+		}
+		//-lrb- and -rrb- should be translated to ( and ) respectively
+		else if(templateWord == "-lrb-" || templateWord == "-LRB-") {
+			word = "(";
+		} else if(templateWord == "-rrb-" || templateWord == "-RRB-") {
+			word = ")";
+		}
 		//Only replace some words, keep others same as in original text
-		if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
-			//-lrb- and -rrb- should be translated to ( and ) respectively
-			if(templateWord == "-lrb-" || templateWord == "-LRB-") {
-				word = "(";
-			} else if(templateWord == "-rrb-" || templateWord == "-RRB-") {
-				word = ")";
-			} else {
-				word = originalWord;
-			}
+		else if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
+			word = originalWord;
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
@@ -151,6 +151,7 @@ public class TemplateFiller {
 		line = line.replaceAll(" 'd", "'d");
 		line = line.replaceAll("!", "! ");
 		line = line.replaceAll(" !", "!");
+		line = line.replaceAll(" \\?", "?");
 
 		//For consonants following 'an', change to 'a'
 		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
@@ -183,15 +184,16 @@ public class TemplateFiller {
 
 
 	/**
-	 * Returns false if word is invalid
+	 * Returns false if word is spelled incorrectly
 	 * @param line
 	 * @return true if word is contained in dictionary
 	 */
-	public boolean checkValidWord(String word) {
-		if(word.length() == 0 || word.contains("`")) {
+	public boolean spellCheckWord(String word) {
+		if(word.length() == 0) {
 			wordValid = false;
 			return false;
-		} else {
+		} 
+		else {	
 			List<RuleMatch> matches;
 			for (Rule rule : langTool.getAllRules()) {
 				if (!rule.isDictionaryBasedSpellingRule()) {
@@ -215,6 +217,22 @@ public class TemplateFiller {
 			}
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * Checks whether word is valid in context of its containing line
+	 * @param word
+	 * @param line
+	 * @return
+	 */
+	public boolean wordValid(String word, String line) {
+		//Can't start line with 'because' --> ruleId SENTENCE_FRAGMENT
+		if(line.split(" ")[0] == word && word == "because") {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Checks that a poem line is valid before adding it to verse
@@ -225,7 +243,10 @@ public class TemplateFiller {
 		if(line.length() > 0) {
 			//Enable all grammar rules
 			for (Rule rule : langTool.getAllRules()) {
-				langTool.enableRule(rule.getId());	
+				String id = rule.getId();
+				if(id != "And" && id != "But") {
+					langTool.enableRule(rule.getId());	
+				}	
 			}
 			try {
 				System.out.println(line);
@@ -260,32 +281,28 @@ public class TemplateFiller {
 	private String fixGrammar(String line, List<RuleMatch> matches) {
 		for (RuleMatch match : matches) {
 			String ruleId = match.getRule().getId();
-			if(!ruleId.equals("And") && !ruleId.equals("But")){
+			if(ruleId !="And" && ruleId != "But"){
 				int from = match.getFromPos();
 				int to = match.getToPos();
-				System.out.println(line);
+				System.out.println(ruleId + ", " + line);
 				List<String> suggestions = match.getSuggestedReplacements();
 				if(suggestions.size() > 0) {
 					System.out.println("has suggestions");
 					line = replaceWithSuggestion(line, from, to, suggestions);
 				} 
 				else if(ruleId == "SENTENCE_FRAGMENT") {
-					if(line.substring(line.length()-1) == " ") {
-						line = line.substring(0, line.length()-1) + "?";
-					} else {
-						line += "?";
-					}
+					line += "?";
 				}
 				else if(ruleId == "EN_UNPAIRED_BRACKETS") {
 					line = line.replaceAll("'", "");
 				}
 				else if(ruleId == "E_PRIME_STRICT") {
-					line = replaceVerb(line, from, to);
+					line = replaceWord(line, from, to);
 				}
 				else if(ruleId.contains("READABILITY_RULE")) {
 					line = fixReadability(line);
 				}
-				else if(ruleId == "USELESS_THAT") {
+				else if(ruleId == "USELESS_THAT" || ruleId == "TIRED_INTENSIFIERS") {
 					System.out.println(match.getFromPos() + " - " + match.getToPos() + " in: " + line );
 					String toReplace = line.substring(match.getFromPos(), match.getToPos());
 					line = line.replace(toReplace, "");
@@ -315,10 +332,19 @@ public class TemplateFiller {
 	 */
 	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
 		Random random = new Random();
-		String toReplace = line.substring(from,to);
 		int randomIndex = random.nextInt(suggestions.size());
+		String toReplace = line.substring(from,to);
+		System.out.println("from " + from + " - to " + to);
 		String replacement = suggestions.get(randomIndex);
-		line = line.replace(toReplace, replacement);
+		
+		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
+		String contentBefore = line.substring(0, from);
+		String contentAfter = line.substring(to, line.length());
+		System.out.println("from " + from + " to " + to + " --> " + toReplace);
+		
+		line = contentBefore + replacement + contentAfter;
+		
+		
 		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);
 
 		return line;
@@ -333,8 +359,8 @@ public class TemplateFiller {
 	 * TODO: check this works as expected
 	 * WORK IN PROGRESS
 	 */
-	private String replaceVerb(String line, int from, int to) {
-		System.out.println("REPLACING VERB");
+	private String replaceWord(String line, int from, int to) {
+		System.out.println("CORRECTION: REPLACING WORD");
 		String toReplace = line.substring(from,to);
 		//TODO: get POS for toReplace
 		List<AnalyzedSentence> templateWord;
@@ -353,8 +379,16 @@ public class TemplateFiller {
 	}
 
 
+	/**
+	 * 
+	 * @param line
+	 * @return
+	 * WORK IN PROGRESS
+	 */
 	public String fixReadability(String line) {
-
+		System.out.println("fixing readability");
+		//this is bad, fix this
+		line = line.split(",")[0];
 		return line;
 	}
 
