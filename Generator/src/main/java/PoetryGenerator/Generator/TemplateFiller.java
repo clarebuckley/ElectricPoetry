@@ -247,9 +247,9 @@ public class TemplateFiller {
 			//Enable all grammar rules
 			for (Rule rule : langTool.getAllRules()) {
 				String id = rule.getId();
-				if(id != "And" && id != "But") {
+				if(!id.equals("And") && !id.equals("But")) {
 					langTool.enableRule(rule.getId());	
-				}	
+				}
 			}
 			try {
 				System.out.println(line);
@@ -284,7 +284,7 @@ public class TemplateFiller {
 	private String fixGrammar(String line, List<RuleMatch> matches) {
 		for (RuleMatch match : matches) {
 			String ruleId = match.getRule().getId();
-			if(ruleId !="And" && ruleId != "But"){
+			if(!ruleId.equals("And") && !ruleId.equals("But")){
 				int from = match.getFromPos();
 				int to = match.getToPos();
 				System.out.println(ruleId + ", " + line);
@@ -293,19 +293,19 @@ public class TemplateFiller {
 					System.out.println("has suggestions");
 					line = replaceWithSuggestion(line, from, to, suggestions);
 				} 
-				else if(ruleId == "SENTENCE_FRAGMENT") {
+				else if(ruleId.equals("SENTENCE_FRAGMENT")) {
 					line += "?";
 				}
-				else if(ruleId == "EN_UNPAIRED_BRACKETS") {
+				else if(ruleId.equals("EN_UNPAIRED_BRACKETS")) {
 					line = line.replaceAll("'", "");
 				}
-				else if(ruleId == "E_PRIME_STRICT" || ruleId == "MORFOLOGIK_RULE_EN_GB") {
+				else if(ruleId.equals("E_PRIME_STRICT") || ruleId.equals("MORFOLOGIK_RULE_EN_GB")) {
 					line = replaceWord(line, from, to);
 				}
-				else if(ruleId.contains("READABILITY_RULE") || ruleId == "SENTENCE_FRAGMENT") {
+				else if(ruleId.contains("READABILITY_RULE") || ruleId .equals("SENTENCE_FRAGMENT")) {
 					line = fixReadability(line);
 				}
-				else if(ruleId == "USELESS_THAT" || ruleId == "TIRED_INTENSIFIERS") {
+				else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
 					System.out.println(match.getFromPos() + " - " + match.getToPos() + " in: " + line );
 					String toReplace = line.substring(match.getFromPos(), match.getToPos());
 					line = line.replace(toReplace, "");
