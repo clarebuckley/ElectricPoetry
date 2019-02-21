@@ -1731,3 +1731,21 @@
 2019-02-21 14:15:39 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:26}] to localhost:27017
 2019-02-21 14:15:39 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=808941}
 2019-02-21 14:15:40 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:27}] to localhost:27017
+2019-02-21 14:28:45 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-21 14:28:45 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2019-02-21 14:28:45 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:28}] to localhost:27017
+2019-02-21 14:28:45 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2783845}
+2019-02-21 14:28:45 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:29}] to localhost:27017
+2019-02-21 14:28:45 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-21 14:28:45 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:30}] to localhost:27017
+2019-02-21 14:28:45 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=875626}
+2019-02-21 14:28:46 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:31}] to localhost:27017
+2019-02-21 14:32:15 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-21 14:32:15 INFO  cluster:71 - Cluster description not yet available. Waiting for 30000 ms before timing out
+2019-02-21 14:32:15 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:32}] to localhost:27017
+2019-02-21 14:32:15 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=7769323}
+2019-02-21 14:32:15 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:33}] to localhost:27017
+2019-02-21 14:32:15 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2019-02-21 14:32:15 INFO  connection:71 - Opened connection [connectionId{localValue:3, serverValue:34}] to localhost:27017
+2019-02-21 14:32:15 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[4, 0, 3]}, minWireVersion=0, maxWireVersion=7, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1152112}
+2019-02-21 14:32:16 INFO  connection:71 - Opened connection [connectionId{localValue:4, serverValue:35}] to localhost:27017

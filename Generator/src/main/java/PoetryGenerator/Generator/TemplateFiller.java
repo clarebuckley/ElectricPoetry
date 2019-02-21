@@ -107,7 +107,7 @@ public class TemplateFiller {
 		Random random = new Random();
 		String word = "";
 
-		
+
 		//Only replace some words, keep others same as in original text
 		if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
 			//-lrb- and -rrb- should be translated to ( and ) respectively
@@ -284,6 +284,11 @@ public class TemplateFiller {
 				}
 				else if(ruleId.contains("READABILITY_RULE")) {
 					line = fixReadability(line);
+				}
+				else if(ruleId == "USELESS_THAT") {
+					System.out.println(match.getFromPos() + " - " + match.getToPos() + " in: " + line );
+					String toReplace = line.substring(match.getFromPos(), match.getToPos());
+					line = line.replace(toReplace, "");
 				}
 				else {
 					System.out.println("other rule --> " + ruleId);
