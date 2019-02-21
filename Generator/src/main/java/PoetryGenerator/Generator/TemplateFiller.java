@@ -299,7 +299,7 @@ public class TemplateFiller {
 				else if(ruleId == "EN_UNPAIRED_BRACKETS") {
 					line = line.replaceAll("'", "");
 				}
-				else if(ruleId == "E_PRIME_STRICT") {
+				else if(ruleId == "E_PRIME_STRICT" || ruleId == "MORFOLOGIK_RULE_EN_GB") {
 					line = replaceWord(line, from, to);
 				}
 				else if(ruleId.contains("READABILITY_RULE") || ruleId == "SENTENCE_FRAGMENT") {

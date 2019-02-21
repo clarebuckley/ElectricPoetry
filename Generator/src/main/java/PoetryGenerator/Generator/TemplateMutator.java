@@ -18,14 +18,12 @@ import org.bson.Document;
 public class TemplateMutator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "verses";
-	private final int numVerses;
 	//Templates to be returned
 	private List<List<Document>> originalTemplate = new ArrayList<List<Document>>();
 	private List<List<Document>> verseTemplate = new ArrayList<List<Document>>();
 	
 
 	public TemplateMutator(int numVerses) {
-		this.numVerses = numVerses;
 		//Each verse to be added to the template
 		List<Document> originalTemplateEntry;
 		List<Document> verseTemplateEntry;
