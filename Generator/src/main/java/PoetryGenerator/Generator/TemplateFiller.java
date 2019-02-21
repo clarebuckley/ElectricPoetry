@@ -32,6 +32,9 @@ public class TemplateFiller {
 	//Flag for validity of current word
 	private boolean wordValid = false;
 
+	private List<String> templateLine;
+	private List<String> originalLine;
+
 	/**
 	 * Process the POS poem template to create meaningful poem
 	 * @param template - POS poem template
@@ -50,8 +53,8 @@ public class TemplateFiller {
 
 			//Process line by line
 			for(int i = 0; i < template.size(); i++) {
-				List<String> templateLine = (List<String>) template.get(i);
-				List<String> originalLine = (List<String>)poemText.get(i);
+				templateLine = (List<String>) template.get(i);
+				originalLine = (List<String>)poemText.get(i);
 				line = processLine(templateLine,  originalLine);
 				while(!checkValidLine(line)) {
 					System.out.println("fixing grammar: " + line);
@@ -217,8 +220,8 @@ public class TemplateFiller {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * Checks whether word is valid in context of its containing line
@@ -299,7 +302,7 @@ public class TemplateFiller {
 				else if(ruleId == "E_PRIME_STRICT") {
 					line = replaceWord(line, from, to);
 				}
-				else if(ruleId.contains("READABILITY_RULE")) {
+				else if(ruleId.contains("READABILITY_RULE") || ruleId == "SENTENCE_FRAGMENT") {
 					line = fixReadability(line);
 				}
 				else if(ruleId == "USELESS_THAT" || ruleId == "TIRED_INTENSIFIERS") {
@@ -336,15 +339,15 @@ public class TemplateFiller {
 		String toReplace = line.substring(from,to);
 		System.out.println("from " + from + " - to " + to);
 		String replacement = suggestions.get(randomIndex);
-		
+
 		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
 		String contentBefore = line.substring(0, from);
 		String contentAfter = line.substring(to, line.length());
 		System.out.println("from " + from + " to " + to + " --> " + toReplace);
-		
+
 		line = contentBefore + replacement + contentAfter;
-		
-		
+
+
 		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);
 
 		return line;
@@ -380,15 +383,14 @@ public class TemplateFiller {
 
 
 	/**
-	 * 
+	 * TODO: will this be needed after n-grams?
 	 * @param line
 	 * @return
 	 * WORK IN PROGRESS
 	 */
 	public String fixReadability(String line) {
 		System.out.println("fixing readability");
-		//this is bad, fix this
-		line = line.split(",")[0];
+		line = processLine(templateLine,  originalLine);
 		return line;
 	}
 
