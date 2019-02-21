@@ -225,6 +225,7 @@ public class TemplateFiller {
 				System.out.println(matches.size());
 				if(matches.size() > 0) {
 					for(RuleMatch match : matches) {
+						System.out.println(match.getMessage());
 						return false;
 					}
 				} else {
@@ -257,10 +258,18 @@ public class TemplateFiller {
 				System.out.println(line);
 				List<String> suggestions = match.getSuggestedReplacements();
 				if(suggestions.size() > 0) {
+					System.out.println("has suggestions");
 					line = replaceWithSuggestion(line, from, to, suggestions);
 				} 
 				else if(ruleId == "SENTENCE_FRAGMENT") {
-					line += "?";
+					if(line.substring(line.length()-1) == " ") {
+						line = line.substring(0, line.length()-1) + "?";
+					} else {
+						line += "?";
+					}
+				}
+				else if(ruleId == "EN_UNPAIRED_BRACKETS") {
+					line = line.replaceAll("'", "");
 				}
 				else if(ruleId == "E_PRIME_STRICT") {
 					line = replaceVerb(line, from, to);

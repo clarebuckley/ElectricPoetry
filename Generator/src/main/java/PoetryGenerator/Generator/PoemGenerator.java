@@ -16,7 +16,7 @@ import org.bson.Document;
 
 public class PoemGenerator {
 	//Title of poem
-	private String poemTitle;
+	private String poemTitle = "Androids Dream of Electric Sheep";
 
 	public static void main(String[] args) {
 		new PoemGenerator();
@@ -24,21 +24,16 @@ public class PoemGenerator {
 
 	public PoemGenerator() {
 		System.out.println("------------------------------------");
-		System.out.println("Please enter the title of your poem: ");
-		Scanner scanner = new Scanner(System.in);
-		poemTitle = scanner.nextLine();
-		scanner.close();
-		System.out.println("------------------------------------");
 		System.out.println("Writing your poem...");
 		
 		
-		ArrayList<ArrayList<String>> poem = generatePoem(poemTitle, 1);
+		ArrayList<ArrayList<String>> poem = generatePoem(1);
 		printPoem(poem);
 		
 	}
 
 
-	private ArrayList<ArrayList<String>> generatePoem(String poemTitle, int poemVerses){
+	private ArrayList<ArrayList<String>> generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateMutator templateMutator = new TemplateMutator(1);
 		TemplateFiller templateFiller = new TemplateFiller();
