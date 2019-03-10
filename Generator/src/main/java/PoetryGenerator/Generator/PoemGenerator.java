@@ -37,12 +37,13 @@ public class PoemGenerator {
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateMutator templateMutator = new TemplateMutator(1);
 		TemplateFiller templateFiller = new TemplateFiller();
+		MeaningGenerator meaningGenerator = new MeaningGenerator();
 		List<List<Document>> poemText = templateMutator.getPoemText();
 		List<List<Document>> template = templateMutator.getPoemTemplate();
 		poem = templateFiller.processTemplate(template, poemText);
+		poem = meaningGenerator.generateMeaning(poem);
 		return poem;
 	}
-
 
 
 	/**
