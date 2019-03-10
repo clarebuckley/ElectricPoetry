@@ -51,7 +51,7 @@ public class LanguageModelParser {
 						backoff = new Double(lineParts[2]);
 					}
 					WordModel model = new WordModel(word, ngramType, probability, backoff);
-			//		modelDocument = model.buildDocument();
+					//		modelDocument = model.buildDocument();
 				}
 
 				//For bigrams
@@ -63,8 +63,7 @@ public class LanguageModelParser {
 						word = words[1];
 						n1 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, n1);
-			//			modelDocument = model.buildDocument();
-
+						//			modelDocument = model.buildDocument();
 					} else {
 						//has backoff
 						backoff = new Double(lineParts[lineParts.length-1]);
@@ -72,7 +71,7 @@ public class LanguageModelParser {
 						word = words[1];
 						n1 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, backoff, n1);
-			//			modelDocument = model.buildDocument();
+						//			modelDocument = model.buildDocument();
 					}
 				}
 
@@ -86,7 +85,7 @@ public class LanguageModelParser {
 						n1 = words[1];
 						n2 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, n1, n2);
-				//		modelDocument = model.buildDocument();
+						//		modelDocument = model.buildDocument();
 					} else {
 						//has backoff
 						backoff = new Double(lineParts[lineParts.length-1]);
@@ -95,9 +94,24 @@ public class LanguageModelParser {
 						n1 = words[1];
 						n2 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, backoff, n1, n2);
-				//		modelDocument = model.buildDocument();
+						//		modelDocument = model.buildDocument();
 					}
 				}
+
+				//For 4-grams
+				if(ngramType.equals("4-gram") && !lineParts[0].contains("4-grams")) {
+					String n1, n2, n3;
+					System.out.println(Arrays.toString(lineParts));
+					//no backoff for 4-grams
+					String[] words = lineParts[lineParts.length-1].split(" ");
+					word = words[3];
+					n1 = words[2];
+					n2 = words[1];
+					n3 = words[0];
+					WordModel model = new WordModel(word, ngramType, probability, n1, n2, n3);
+					//modelDocument = model.buildDocument();
+				}
+
 			}
 
 
