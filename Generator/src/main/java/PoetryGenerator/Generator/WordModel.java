@@ -58,6 +58,8 @@ public class WordModel {
 
 
 	public Document buildDocument() {
+		String probAsString = Double.toString(probability);
+		String probKey = probAsString.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff", backoff);
 		
@@ -70,10 +72,11 @@ public class WordModel {
 		if(ngramType.equals("4-gram")) {
 			ngramData.append("n-3", n3);
 		}
-		Document associations = new Document(ngramType, ngramData);
+		
+		Document docKey = new Document(probKey, ngramData);
+		Document associations = new Document(ngramType, docKey);
 		Document document = new Document("word", word)
 				.append("associations", associations);
-		System.out.println(document.toJson());
 		return document;
 	}
 
