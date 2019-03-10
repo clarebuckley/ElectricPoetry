@@ -236,6 +236,7 @@ public class TemplateFiller {
 		}
 		return true;
 	}
+	
 
 	/**
 	 * Checks that a poem line is valid before adding it to verse

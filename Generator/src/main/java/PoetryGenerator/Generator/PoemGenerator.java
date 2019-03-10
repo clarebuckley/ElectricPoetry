@@ -26,10 +26,8 @@ public class PoemGenerator {
 		System.out.println("------------------------------------");
 		System.out.println("Writing your poem...");
 		
-		
 		ArrayList<ArrayList<String>> poem = generatePoem(1);
 		printPoem(poem);
-		
 	}
 
 

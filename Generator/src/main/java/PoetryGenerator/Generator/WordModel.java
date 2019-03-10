@@ -22,14 +22,14 @@ public class WordModel {
 //		this.n2 = n2;
 //		this.n3 = n3;
 //	}
-//	public WordModel(String word, String ngramType, double probability, double backoff, String n1, String n2) {
-//		this.word = word;
-//		this.ngramType = ngramType;
-//		this.probability = probability;
-//		this.backoff = backoff;
-//		this.n1 = n1;
-//		this.n2 = n2;
-//	}
+	public WordModel(String word, String ngramType, double probability, double backoff, String n1, String n2) {
+		this.word = word;
+		this.ngramType = ngramType;
+		this.probability = probability;
+		this.backoff = backoff;
+		this.n1 = n1;
+		this.n2 = n2;
+	}
 	public WordModel(String word, String ngramType, double probability, double backoff, String n1) {
 		this.word = word;
 		this.ngramType = ngramType;
@@ -53,6 +53,13 @@ public class WordModel {
 		this.ngramType = ngramType;
 		this.probability = probability;
 		this.n1 = n1;
+	}
+	public WordModel(String word, String ngramType, double probability, String n1, String n2) {
+		this.word = word;
+		this.ngramType = ngramType;
+		this.probability = probability;
+		this.n1 = n1;
+		this.n2 = n2;
 	}
 
 

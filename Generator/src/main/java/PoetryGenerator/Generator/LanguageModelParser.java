@@ -51,7 +51,7 @@ public class LanguageModelParser {
 						backoff = new Double(lineParts[2]);
 					}
 					WordModel model = new WordModel(word, ngramType, probability, backoff);
-					modelDocument = model.buildDocument();
+			//		modelDocument = model.buildDocument();
 				}
 
 				//For bigrams
@@ -63,8 +63,8 @@ public class LanguageModelParser {
 						word = words[1];
 						n1 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, n1);
-						modelDocument = model.buildDocument();
-						
+			//			modelDocument = model.buildDocument();
+
 					} else {
 						//has backoff
 						backoff = new Double(lineParts[lineParts.length-1]);
@@ -72,7 +72,30 @@ public class LanguageModelParser {
 						word = words[1];
 						n1 = words[0];
 						WordModel model = new WordModel(word, ngramType, probability, backoff, n1);
-						modelDocument = model.buildDocument();
+			//			modelDocument = model.buildDocument();
+					}
+				}
+
+				//For trigrams
+				if(ngramType.equals("3-gram") && !lineParts[0].contains("3-grams")) {
+					String n1, n2;
+					if(lineParts.length == 2) {
+						//no backoff
+						String[] words = lineParts[lineParts.length-1].split(" ");
+						word = words[2];
+						n1 = words[1];
+						n2 = words[0];
+						WordModel model = new WordModel(word, ngramType, probability, n1, n2);
+				//		modelDocument = model.buildDocument();
+					} else {
+						//has backoff
+						backoff = new Double(lineParts[lineParts.length-1]);
+						String[] words = lineParts[1].split(" ");
+						word = words[2];
+						n1 = words[1];
+						n2 = words[0];
+						WordModel model = new WordModel(word, ngramType, probability, backoff, n1, n2);
+				//		modelDocument = model.buildDocument();
 					}
 				}
 			}
