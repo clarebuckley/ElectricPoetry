@@ -20,27 +20,29 @@ public class PoemGenerator {
 
 	public static void main(String[] args) {
 		new PoemGenerator();
+		
 	}
 
 	public PoemGenerator() {
-		System.out.println("------------------------------------");
-		System.out.println("Writing your poem...");
-		
-		ArrayList<ArrayList<String>> poem = generatePoem(1);
-		printPoem(poem);
+//		System.out.println("------------------------------------");
+//		System.out.println("Writing your poem...");
+//		
+//		String poem = generatePoem(1);
+//		System.out.println(poem);
+//		printPoem(poem);
 	}
 
 
-	private ArrayList<ArrayList<String>> generatePoem(int poemVerses){
+	public String generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateMutator templateMutator = new TemplateMutator(1);
 		TemplateFiller templateFiller = new TemplateFiller();
-		MeaningGenerator meaningGenerator = new MeaningGenerator();
+	//	PoemGeneratorEA meaningGenerator = new PoemGeneratorEA(10, 0.70, 50);
 		List<List<Document>> poemText = templateMutator.getPoemText();
 		List<List<Document>> template = templateMutator.getPoemTemplate();
 		poem = templateFiller.processTemplate(template, poemText);
-		poem = meaningGenerator.generateMeaning(poem);
-		return poem;
+		String poemContent = buildPoem(poem);
+		return poemContent;
 	}
 
 
@@ -48,14 +50,17 @@ public class PoemGenerator {
 	 * Print out contents of poem input
 	 * @param poem - lines of poem are split into elements inside ArrayList
 	 */
-	public void printPoem(ArrayList<ArrayList<String>> poem) {
-		System.out.println("------------ " + poemTitle + " ------------");
+	private String buildPoem(ArrayList<ArrayList<String>> poem) {
+		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < poem.size(); i++) {
 			ArrayList<String> lines = poem.get(i);
 			for(String line : lines) {
-				System.out.println(line);
+				sb.append(line);
+				sb.append(System.getProperty("line.separator"));
 			}
+			sb.append(System.getProperty("line.separator"));
 		}
+		return sb.toString();
 	}
 
 
