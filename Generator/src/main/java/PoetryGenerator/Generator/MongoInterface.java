@@ -142,49 +142,6 @@ public class MongoInterface {
 
 		collection.updateOne(searchQuery, newDocument);
 	}
-	
-	public void updateLanguageModel(String collectionName, String word, Document modelDocument) {
-		//if word doesn't exist, add as a new document
-		if(!wordExists(collectionName, word)) {
-			insertDocument(collectionName, modelDocument);
-		} else {
-			//get document that exists
-			MongoCollection<Document> collection = getCollection(collectionName);
-			Document toFind = new Document().append("word", word);
-			List<Document> document = (List<Document>)collection.find(toFind).into(
-					new ArrayList<Document>());
-			Iterator<Document> iterator = document.iterator();
-			Document result = (Document) iterator.next();
-			Document inDatabase = (Document) ((Document)result.get("associations"));
-			
-			//check which data needs to be added
-			Document updateWith =  (Document) modelDocument.get("associations");
-			System.out.println(updateWith.toJson());
-			boolean updateOneGram = false, updateTwoGram = false, updateThreeGram = false, updateFourGram = false;
-			if(updateWith.containsKey("1-gram")) updateOneGram = true;
-			if(updateWith.containsKey("2-gram")) updateTwoGram = true;
-			if(updateWith.containsKey("3-gram")) updateThreeGram = true;
-			if(updateWith.containsKey("4-gram")) updateFourGram = true;
-
-			if(updateOneGram) {
-				System.out.println(updateWith.toJson());
-				System.out.println(inDatabase.values());
-				System.out.println("-------------------------------");
-			}
-			
-			
-			//update relevant parts of that document
-			
-			
-			
-			
-		}
-	}
-	
-	public boolean wordExists (String collectionName, String word) {
-	    FindIterable<Document> iterable = database.getCollection(collectionName).find(new Document("word", word));
-	    return iterable.first() != null;
-	}
 
 	/**
 	 * Delete document in a collection

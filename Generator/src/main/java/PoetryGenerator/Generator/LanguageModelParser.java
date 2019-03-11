@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.bson.Document;
 
@@ -27,14 +28,13 @@ public class LanguageModelParser {
 	}
 
 	private void parseModel(BufferedReader br) throws IOException {
+		HashMap<String, Document> entries = new HashMap<String, Document>();
 		String line = br.readLine();
 		String ngramType = "";
-
-		while(line != null) {
-			Document modelDocument = new Document();
+		while(line != null ) {
+			WordModel model = null;
 			String[] lineParts = line.split("	");
-			double probability = 0;
-			double backoff = 0;
+			double probability = 0, backoff = 0;
 			String word = "";
 
 			//Determine what type of n-gram is being built
@@ -51,8 +51,11 @@ public class LanguageModelParser {
 					if(lineParts.length == 3) {
 						backoff = new Double(lineParts[2]);
 					}
-					WordModel model = new WordModel(word, ngramType, probability, backoff);
-					modelDocument = model.buildDocument();
+					model = new WordModel(word, ngramType, probability, backoff);
+					Document doc = model.buildDocument();
+
+					//Update document in hashmap
+					entries.put(word, doc);
 				}
 
 				//For bigrams
@@ -63,16 +66,25 @@ public class LanguageModelParser {
 						String[] words = lineParts[lineParts.length-1].split(" ");
 						word = words[1];
 						n1 = words[0];
-						WordModel model = new WordModel(word, ngramType, probability, n1);
-						modelDocument = model.buildDocument();
+						model = new WordModel(word, ngramType, probability, n1);
+
 					} else {
 						//has backoff
 						backoff = new Double(lineParts[lineParts.length-1]);
 						String[] words = lineParts[1].split(" ");
 						word = words[1];
 						n1 = words[0];
-						WordModel model = new WordModel(word, ngramType, probability, backoff, n1);
-						modelDocument = model.buildDocument();
+						model = new WordModel(word, ngramType, probability, backoff, n1);
+					}
+					Document doc = model.buildDocument();
+
+					//Update document in hashmap
+					if(entries.containsKey(word)) {
+						Document entry = entries.get(word); 
+						WordModel wm = new WordModel(entry);
+						Document updated = wm.addTwoGram(n1, word, probability, backoff);
+					} else {
+						entries.put(word, doc);
 					}
 				}
 
@@ -85,8 +97,7 @@ public class LanguageModelParser {
 						word = words[2];
 						n1 = words[1];
 						n2 = words[0];
-						WordModel model = new WordModel(word, ngramType, probability, n1, n2);
-						modelDocument = model.buildDocument();
+						model = new WordModel(word, ngramType, probability, n1, n2);
 					} else {
 						//has backoff
 						backoff = new Double(lineParts[lineParts.length-1]);
@@ -94,8 +105,18 @@ public class LanguageModelParser {
 						word = words[2];
 						n1 = words[1];
 						n2 = words[0];
-						WordModel model = new WordModel(word, ngramType, probability, backoff, n1, n2);
-						modelDocument = model.buildDocument();
+						model = new WordModel(word, ngramType, probability, backoff, n1, n2);
+					}
+
+					Document doc = model.buildDocument();
+
+					//Update document in hashmap
+					if(entries.containsKey(word)) {
+						Document entry = entries.get(word); 
+						WordModel wm = new WordModel(entry);
+						Document updated = wm.addThreeGram(n2, n1, word, probability, backoff);
+					} else {
+						entries.put(word, doc);
 					}
 				}
 
@@ -108,15 +129,21 @@ public class LanguageModelParser {
 					n1 = words[2];
 					n2 = words[1];
 					n3 = words[0];
-					WordModel model = new WordModel(word, ngramType, probability, n1, n2, n3);
-					modelDocument = model.buildDocument();
+					model = new WordModel(word, ngramType, probability, n1, n2, n3);
+
+					Document doc = model.buildDocument();
+
+					//Update document in hashmap
+					if(entries.containsKey(word)) {
+						Document entry = entries.get(word); 
+						WordModel wm = new WordModel(entry);
+						Document updated = wm.addFourGram(n3, n2, n1, word, probability, backoff);
+					} else {
+						entries.put(word, doc);
+					}
 				}
 
 			}
-			
-			mongo.updateLanguageModel("languageModelTest", word, modelDocument);
-			
-
 
 			//Attempt to read next line
 			try {
@@ -127,7 +154,9 @@ public class LanguageModelParser {
 			}
 
 		}
+
 		br.close();
+		addToDatabase(entries);
 	}
 
 
@@ -140,7 +169,16 @@ public class LanguageModelParser {
 		}
 		return probability;
 	}
-	
+
+	private void addToDatabase(HashMap<String, Document> entries) {
+		for (Document entry : entries.values()) {
+		    System.out.println(entry.get("word"));
+		    mongo.insertDocument("languageModelTest", entry);
+		}
+		System.out.println(entries.size() + " documents added to the db");
+		
+	}
+
 
 
 }

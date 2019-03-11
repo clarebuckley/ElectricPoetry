@@ -10,6 +10,8 @@ public class WordModel {
 	private String n1;
 	private String n2;
 	private String n3;
+	Document wordModel = new Document();
+	Document existingDoc = new Document();
 	//Add syllables and rhyme in future 
 
 
@@ -55,6 +57,79 @@ public class WordModel {
 		this.n2 = n2;
 		this.n3 = n3;
 	}
+	public WordModel(Document existingDoc) {
+		this.existingDoc = existingDoc;
+	}
+
+	public Document addTwoGram(String n1, String n, double probability, double backoff) {
+
+		Document associations = (Document) existingDoc.get("associations");
+		String probAsString = Double.toString(probability);
+		String probKey = probAsString.replace(".","_");
+		Document ngramData = new Document("probability", probability)
+				.append("backoff",backoff)
+				.append("n-1", n1);
+		Document twoGrams;
+		if(associations.containsKey("2-gram")) {	
+			twoGrams = (Document) associations.get("2-gram");
+			twoGrams.append(probKey, ngramData);
+
+		} else {
+			twoGrams = new Document(probKey, ngramData);
+			associations.append("2-gram", twoGrams);
+		}
+		((Document) existingDoc.get("associations")).put("2-gram", twoGrams);
+
+		return existingDoc;
+	}
+
+	public Document addThreeGram(String n2, String n1, String n, double probability, double backoff) {
+
+		Document associations = (Document) existingDoc.get("associations");
+		String probAsString = Double.toString(probability);
+		String probKey = probAsString.replace(".","_");
+		Document ngramData = new Document("probability", probability)
+				.append("backoff",backoff)
+				.append("n-1", n1)
+				.append("n-2", n2);
+		
+		Document threeGrams;
+		if(associations.containsKey("3-gram")) {	
+			threeGrams = (Document) associations.get("3-gram");
+			threeGrams.append(probKey, ngramData);
+
+		} else {
+			threeGrams = new Document(probKey, ngramData);
+			associations.append("3-gram", threeGrams);
+		}
+		((Document) existingDoc.get("associations")).put("3-gram", threeGrams);
+
+		return existingDoc;
+	}
+
+	public Document addFourGram(String n3, String n2, String n1, String n, double probability, double backoff) {
+		Document associations = (Document) existingDoc.get("associations");
+		String probAsString = Double.toString(probability);
+		String probKey = probAsString.replace(".","_");
+		Document ngramData = new Document("probability", probability)
+				.append("backoff",backoff)
+				.append("n-1", n1)
+				.append("n-2", n2)
+				.append("n-3", n3);
+		
+		Document fourGrams;
+		if(associations.containsKey("4-gram")) {	
+			fourGrams = (Document) associations.get("4-gram");
+			fourGrams.append(probKey, ngramData);
+
+		} else {
+			fourGrams = new Document(probKey, ngramData);
+			associations.append("4-gram", fourGrams);
+		}
+		((Document) existingDoc.get("associations")).put("4-gram", fourGrams);
+
+		return existingDoc;
+	}
 
 
 	public Document buildDocument() {
@@ -62,7 +137,7 @@ public class WordModel {
 		String probKey = probAsString.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff", backoff);
-		
+
 		if(ngramType.equals("2-gram") ||  ngramType.equals("3-gram") || ngramType.equals("4-gram")) {
 			ngramData.append("n-1", n1);
 		}
@@ -72,12 +147,17 @@ public class WordModel {
 		if(ngramType.equals("4-gram")) {
 			ngramData.append("n-3", n3);
 		}
-		
+
 		Document docKey = new Document(probKey, ngramData);
 		Document associations = new Document(ngramType, docKey);
 		Document document = new Document("word", word)
 				.append("associations", associations);
+		wordModel = document;
 		return document;
 	}
 
+
+	public String getWord() {
+		return word;
+	}
 }
