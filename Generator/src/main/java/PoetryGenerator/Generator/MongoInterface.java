@@ -90,8 +90,8 @@ public class MongoInterface {
 	public int getLastEnteredId(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
 		Document document = collection.find().sort(Sorts.descending("id")).first();
-//		Double docId = (Double) document.get("id");
-//		Integer id = docId.intValue();
+	//	Double docId = (Double) document.get("id");
+	//	Integer id = docId.intValue();
 		int id = (Integer) document.get("id");
 		return id;
 	}

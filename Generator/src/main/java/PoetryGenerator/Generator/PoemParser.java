@@ -39,15 +39,15 @@ public class PoemParser {
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
 		File f = new File("./src/main/java/PoetryGenerator/Data"); // current directory
 		File[] files = f.listFiles();
-//		for (File file : files) {
-//			String newPath = file.getCanonicalPath().replace("\\", "/");
-//			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
-//			new PoemParser(newPath);
-//		}
-		
+		for (File file : files) {
+			String newPath = file.getCanonicalPath().replace("\\", "/");
+			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
+			new PoemParser(newPath);
+		}
+
 
 		new PoemParser();
-		
+
 		System.out.println("Complete!");
 	}
 
@@ -58,13 +58,13 @@ public class PoemParser {
 		} else {
 			this.docId = mongo.getLastEnteredId("verses") + 1;
 		}
-	
-//		parseLinesInFile(file);	
+
+		parseLinesInFile(file);	
 	}
 
 	public PoemParser()  {
 		reAssignIds();
-		
+
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class PoemParser {
 		// Getting the iterable object 
 		FindIterable<Document> iterDoc = collection.find(); 
 		Iterator<Document> it = iterDoc.iterator(); 
-		
+
 		int newId = 0;
 		while (it.hasNext()) {  
 			Document doc = it.next();
@@ -128,9 +128,10 @@ public class PoemParser {
 						posTags.add(pos);
 
 						//Add word to wordbank
-//						System.out.println(pos);
-//						System.out.println(word);
-//						mongo.updateDocumentArray("wordbank","tag", pos, "words", word);
+						System.out.println(pos);
+						System.out.println(word);
+						mongo.updateDocumentArray("wordbank","tag", pos, "words", word);
+						System.out.println("Added word to wordbank");
 					}
 				}
 				//Get POS tags and plain text for this verse
@@ -153,8 +154,8 @@ public class PoemParser {
 				verseLines = 0;
 				docId++;
 			}
-			
-		
+
+
 			//Attempt to read next line
 			try {
 				line = reader.readLine();
@@ -164,6 +165,6 @@ public class PoemParser {
 			}
 		}
 	}
-	
+
 
 }
