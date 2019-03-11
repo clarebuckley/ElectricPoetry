@@ -2,6 +2,13 @@ package PoetryGenerator.Generator;
 
 import org.bson.Document;
 
+/**
+ * Model for adding ngrams to the database
+ * @author Clare Buckley
+ * @version 11/03/19
+ *
+ */
+
 public class WordModel {
 	private String word;
 	private String ngramType;
@@ -57,12 +64,13 @@ public class WordModel {
 		this.n2 = n2;
 		this.n3 = n3;
 	}
+	//Used when updating an existing document
 	public WordModel(Document existingDoc) {
 		this.existingDoc = existingDoc;
 	}
 
+	//Adds a bigram to an already existing document
 	public Document addTwoGram(String n1, String n, double probability, double backoff) {
-
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
 		String probKey = probAsString.replace(".","_");
@@ -83,8 +91,8 @@ public class WordModel {
 		return existingDoc;
 	}
 
+	//Adds a trigram to an already existing document
 	public Document addThreeGram(String n2, String n1, String n, double probability, double backoff) {
-
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
 		String probKey = probAsString.replace(".","_");
@@ -107,6 +115,7 @@ public class WordModel {
 		return existingDoc;
 	}
 
+	//Adds a fourgram to an already existing document
 	public Document addFourGram(String n3, String n2, String n1, String n, double probability, double backoff) {
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
@@ -131,7 +140,7 @@ public class WordModel {
 		return existingDoc;
 	}
 
-
+	//Create document from this word model
 	public Document buildDocument() {
 		String probAsString = Double.toString(probability);
 		String probKey = probAsString.replace(".","_");

@@ -6,15 +6,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bson.Document;
 
+/**
+ * Used to parse an arpa langauge model file and add ngram contents to the database
+ * @author Clare Buckley
+ * @version 11/03/19
+ *
+ */
+
 public class LanguageModelParser {
 	private static File file = new File("./src/main/java/PoetryGenerator/Data/languageModel.arpa");
 	private static final float inf = 999999999;
-	private final MongoInterface mongo = new MongoInterface("test");
+	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public LanguageModelParser() throws IOException {
 		FileInputStream inputStream = new FileInputStream(file);
@@ -83,6 +89,7 @@ public class LanguageModelParser {
 						Document entry = entries.get(word); 
 						WordModel wm = new WordModel(entry);
 						Document updated = wm.addTwoGram(n1, word, probability, backoff);
+						entries.put(word,updated);
 					} else {
 						entries.put(word, doc);
 					}
@@ -115,6 +122,7 @@ public class LanguageModelParser {
 						Document entry = entries.get(word); 
 						WordModel wm = new WordModel(entry);
 						Document updated = wm.addThreeGram(n2, n1, word, probability, backoff);
+						entries.put(word,updated);
 					} else {
 						entries.put(word, doc);
 					}
@@ -138,6 +146,7 @@ public class LanguageModelParser {
 						Document entry = entries.get(word); 
 						WordModel wm = new WordModel(entry);
 						Document updated = wm.addFourGram(n3, n2, n1, word, probability, backoff);
+						entries.put(word,updated);
 					} else {
 						entries.put(word, doc);
 					}
@@ -172,13 +181,10 @@ public class LanguageModelParser {
 
 	private void addToDatabase(HashMap<String, Document> entries) {
 		for (Document entry : entries.values()) {
-		    System.out.println(entry.get("word"));
-		    mongo.insertDocument("languageModelTest", entry);
+		    mongo.insertDocument("languageModel", entry);
 		}
 		System.out.println(entries.size() + " documents added to the db");
 		
 	}
-
-
 
 }
