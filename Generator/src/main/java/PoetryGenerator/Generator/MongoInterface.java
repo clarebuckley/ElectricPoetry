@@ -66,6 +66,16 @@ public class MongoInterface {
 		return result;
 	}
 	
+	public Document getLanguageModel(String collectionName, Object word) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		Document toFind = new Document().append("word", word);
+		List<Document> document = (List<Document>)collection.find(toFind).into(
+				new ArrayList<Document>());
+		Iterator<Document> iterator = document.iterator();
+		Document result = (Document) iterator.next();
+		return result;
+	}
+	
 	/**
 	 * Get words associated with a POS tag
 	 * @param collectionName - collection to be used

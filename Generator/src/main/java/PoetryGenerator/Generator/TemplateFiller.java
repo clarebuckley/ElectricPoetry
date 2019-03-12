@@ -84,7 +84,7 @@ public class TemplateFiller {
 			String word = "";
 			wordValid = false;
 			while(!spellCheckWord(word) || !wordValid(word, line)) {
-				System.out.println("replacing word " + word);
+		//		System.out.println("replacing word " + word);
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
 
@@ -124,12 +124,12 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord + ", " + originalWord);
+		//	System.out.println(templateWord + ", " + originalWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);
 			word = words.get(randomIndex);	
-			System.out.println(originalWord + " --> " + word);
+		//	System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -206,7 +206,6 @@ public class TemplateFiller {
 			try {
 				matches = langTool.check(word);
 				if(matches.size() > 0) {
-					System.out.println("word not valid: " + word);
 					wordValid = false;
 					return false;
 				} else {
@@ -238,185 +237,6 @@ public class TemplateFiller {
 	}
 	
 
-	/**
-	 * Checks that a poem line is valid before adding it to verse
-	 * @param line
-	 * @return true if line is grammatically valid
-	 */
-//	public boolean checkValidLine(String line) {
-//		if(line.length() > 0) {
-//			//Enable all grammar rules
-//			for (Rule rule : langTool.getAllRules()) {
-//				String id = rule.getId();
-//				if(!id.equals("And") && !id.equals("But")) {
-//					langTool.enableRule(rule.getId());	
-//				}
-//			}
-//			try {
-//				System.out.println(line);
-//				matches = langTool.check(line);
-//				System.out.println(matches.size());
-//				if(matches.size() > 0) {
-//					for(RuleMatch match : matches) {
-//						System.out.println(match.getMessage());
-//						return false;
-//					}
-//				} else {
-//					return true;
-//				}
-//			} catch (IOException e) {
-//				System.out.println("Error checking valid line");
-//				e.printStackTrace();
-//			}
-//		} else {
-//			return false;
-//		}
-//
-//		return true;
-//	}
-
-
-
-	/**
-	 * Fix grammar for given line
-	 * @param line
-	 * @param matches
-	 */
-//	private String fixGrammar(String line, List<RuleMatch> matches) {
-//		for (RuleMatch match : matches) {
-//			String ruleId = match.getRule().getId();
-//			if(!ruleId.equals("And") && !ruleId.equals("But")){
-//				int from = match.getFromPos();
-//				int to = match.getToPos();
-//				System.out.println(ruleId + ", " + line);
-//				List<String> suggestions = match.getSuggestedReplacements();
-//				if(suggestions.size() > 0) {
-//					System.out.println("has suggestions");
-//					line = replaceWithSuggestion(line, from, to, suggestions);
-//				} 
-//				else if(ruleId.equals("SENTENCE_FRAGMENT")) {
-//					line += "?";
-//				}
-//				else if(ruleId.equals("EN_UNPAIRED_BRACKETS")) {
-//					line = line.replaceAll("'", "");
-//				}
-//				else if(ruleId.equals("E_PRIME_STRICT") || ruleId.equals("MORFOLOGIK_RULE_EN_GB") || ruleId.equals("E_PRIME_LOOSE")) {
-//					line = replaceWord(line, from, to);
-//				}
-//				else if(ruleId.contains("READABILITY_RULE") || ruleId .equals("SENTENCE_FRAGMENT")) {
-//					line = fixReadability(line);
-//				}
-//				else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
-//					System.out.println(match.getFromPos() + " - " + match.getToPos() + " in: " + line );
-//					String toReplace = line.substring(match.getFromPos(), match.getToPos());
-//					line = line.replace(toReplace, "");
-//				}
-//				//The most common meaning of the verb 'to respect' is 'to show deferential regard for'. It can also mean 'to avoid violation of' (rules, for example), but with this meaning it is over-used in EU texts and often in a grammatically awkward manner. Alternatives: comply with, adhere to, meet (a deadline), compliance with.
-//				else if(ruleId.equals("EUPUB_RESPECT")) {
-//					String alternatives = match.getMessage().split("Alternatives:")[1];
-//					String altArray[] = alternatives.split(",");
-//					int respectFrom = line.indexOf("respect");
-//					int respectTo = respectFrom + "respect".length(); 
-//					for(String alternative : altArray) {
-//						suggestions.add(alternative.trim());
-//					}
-//					line = replaceWithSuggestion(line, respectFrom, respectTo, suggestions);
-//				}
-//				else {
-//					System.out.println("other rule --> " + ruleId);
-//					System.out.println(match.getRule().getDescription());
-//					if(suggestions.size()>0) {
-//						System.out.println(suggestions.get(0));
-//					} else {
-//						System.out.println("no suggestions");
-//					}
-//				}
-//
-//			}
-//		}
-//		matches.clear();
-//		return line;
-//	}
-
-	/**
-	 * Replace incorrect grammar with suggestions
-	 * @param line - whole line containing error
-	 * @param from - start index of error
-	 * @param to - end index of error
-	 * @param suggestions - possible ways to correct issue
-	 */
-//	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
-//		Random random = new Random();
-//		int randomIndex = random.nextInt(suggestions.size());
-//		int fromIndex;
-//		int toIndex;
-//		if(from > 0) {
-//			fromIndex = from -1;
-//		} else {
-//			fromIndex = 0;
-//		}
-//		if(to == line.length()-1) {
-//			toIndex = to;
-//		} else {
-//			toIndex = to - 1;
-//		}
-//		String toReplace = line.substring(fromIndex, toIndex);
-//		System.out.println("from " + from + " - to " + to);
-//		String replacement = suggestions.get(randomIndex);
-//
-//		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
-//		String contentBefore = line.substring(0, from);
-//		String contentAfter = line.substring(to, line.length());
-//		System.out.println("from " + from + " to " + to + " --> " + toReplace);
-//
-//		line = contentBefore + replacement + contentAfter;
-//
-//
-//		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);
-//
-//		return line;
-//	}
-
-	/**
-	 * Replace verb in the given line
-	 * @param line
-	 * @param from
-	 * @param to
-	 * @return
-	 * TODO: check this works as expected
-	 * WORK IN PROGRESS
-	 */
-//	private String replaceWord(String line, int from, int to) {
-//		System.out.println("CORRECTION: REPLACING WORD");
-//		String toReplace = line.substring(from,to);
-//		//TODO: get POS for toReplace
-//		List<AnalyzedSentence> templateWord;
-//		try {
-//			templateWord = langTool.analyzeText(toReplace);
-//			for(AnalyzedSentence test : templateWord) {
-//				System.out.println("---------------------------------------------------> " + test);
-//				String newVerb = getWord(templateWord.toString(), toReplace);
-//				line = line.replace(toReplace, newVerb);
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return line;
-//	}
-
-
-	/**
-	 * TODO: will this be needed after n-grams?
-	 * @param line
-	 * @return
-	 * WORK IN PROGRESS
-	 */
-//	public String fixReadability(String line) {
-//		System.out.println("fixing readability");
-//		line = processLine(templateLine,  originalLine);
-//		return line;
-//	}
 
 
 

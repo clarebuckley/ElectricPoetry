@@ -20,16 +20,16 @@ public class PoemGenerator {
 
 	public static void main(String[] args) {
 		new PoemGenerator();
-		
+
 	}
 
 	public PoemGenerator() {
-//		System.out.println("------------------------------------");
-//		System.out.println("Writing your poem...");
-//		
-//		String poem = generatePoem(1);
-//		System.out.println(poem);
-//		printPoem(poem);
+		//		System.out.println("------------------------------------");
+		//		System.out.println("Writing your poem...");
+		//		
+		//		String poem = generatePoem(1);
+		//		System.out.println(poem);
+		//		printPoem(poem);
 	}
 
 
@@ -37,11 +37,14 @@ public class PoemGenerator {
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateMutator templateMutator = new TemplateMutator(1);
 		TemplateFiller templateFiller = new TemplateFiller();
-	//	PoemGeneratorEA meaningGenerator = new PoemGeneratorEA(10, 0.70, 50);
+		//	PoemGeneratorEA meaningGenerator = new PoemGeneratorEA(10, 0.70, 50);
 		List<List<Document>> poemText = templateMutator.getPoemText();
 		List<List<Document>> template = templateMutator.getPoemTemplate();
 		poem = templateFiller.processTemplate(template, poemText);
+		
 		String poemContent = buildPoem(poem);
+		NGramController ngram = new NGramController();
+		poemContent = ngram.addNGrams(3, poemContent);
 		return poemContent;
 	}
 
