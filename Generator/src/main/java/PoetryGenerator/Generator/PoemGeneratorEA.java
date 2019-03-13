@@ -1,11 +1,10 @@
 package PoetryGenerator.Generator;
 
 import java.util.ArrayList;
-import java.util.Random;
 
+import java.util.Random;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
-
 /**
  * Evolutionary algorithm to find the highest scoring poem
  * @author Clare Buckley
@@ -13,6 +12,7 @@ import org.languagetool.language.BritishEnglish;
  */
 
 public class PoemGeneratorEA {
+	
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	private PoemGenerator poemGenerator = new PoemGenerator();
 	//ArrayList of candidates to be used
@@ -134,33 +134,6 @@ public class PoemGeneratorEA {
 	private double getCostOfPoem(String poem) {
 		double totalCost = 0;
 		//TODO: FILL THIS IN
-
-//				//Enable all grammar rules
-//				for (Rule rule : langTool.getAllRules()) {
-//					String id = rule.getId();
-//					if(!id.equals("And") && !id.equals("But")) {
-//						langTool.enableRule(rule.getId());	
-//					}
-//				}
-//				try {
-//					System.out.println(line);
-//					matches = langTool.check(line);
-//					System.out.println(matches.size());
-//					if(matches.size() > 0) {
-//						for(RuleMatch match : matches) {
-//							System.out.println(match.getMessage());
-//							return false;
-//						}
-//					} else {
-//						return true;
-//					}
-//				} catch (IOException e) {
-//					System.out.println("Error checking valid line");
-//					e.printStackTrace();
-//				}
-//			} 
-
-
 		return totalCost;
 	}
 	
