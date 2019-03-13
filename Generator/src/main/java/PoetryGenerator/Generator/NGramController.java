@@ -49,7 +49,6 @@ public class NGramController {
 	}
 
 	private JsonObject getWordModelFromDB(int n, String word) {
-		System.out.println(word + ", size: " + word.length() + " , something: " + word.charAt(0));
 		try {
 			Document languageModel = mongo.getLanguageModel(collection, word.toLowerCase());
 			Document associations = (Document)languageModel.get("associations");
