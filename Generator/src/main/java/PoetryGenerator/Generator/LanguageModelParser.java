@@ -153,6 +153,7 @@ public class LanguageModelParser {
 				}
 
 			}
+			System.out.println("Added one entry to data structure");
 
 			//Attempt to read next line
 			try {
@@ -182,6 +183,7 @@ public class LanguageModelParser {
 	private void addToDatabase(HashMap<String, Document> entries) {
 		for (Document entry : entries.values()) {
 		    mongo.insertDocument("languageModel", entry);
+		    System.out.println("Inserted one entry to database");
 		}
 		System.out.println(entries.size() + " documents added to the db");
 		

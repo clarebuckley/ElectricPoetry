@@ -56,10 +56,10 @@ public class TemplateFiller {
 				templateLine = (List<String>) template.get(i);
 				originalLine = (List<String>)poemText.get(i);
 				line = processLine(templateLine,  originalLine);
-//				while(!checkValidLine(line)) {
-//					System.out.println("fixing grammar: " + line);
-//					line = fixGrammar(line, matches);
-//				} 
+				//				while(!checkValidLine(line)) {
+				//					System.out.println("fixing grammar: " + line);
+				//					line = fixGrammar(line, matches);
+				//				} 
 				poemVerse.add(line);
 				//Reset for next line
 				line = "";
@@ -84,7 +84,7 @@ public class TemplateFiller {
 			String word = "";
 			wordValid = false;
 			while(!spellCheckWord(word) || !wordValid(word, line)) {
-		//		System.out.println("replacing word " + word);
+				//		System.out.println("replacing word " + word);
 				word = getWord(templateLine.get(j), originalLine.get(j));
 			}
 
@@ -109,27 +109,30 @@ public class TemplateFiller {
 	private String getWord(String templateWord, String originalWord){
 		Random random = new Random();
 		String word = "";
-		if(templateWord.contains("`")) {
+		if(templateWord.contains("`") || originalWord.contains("`")) {
 			word = "'";
+			templateWord= "'";
+			originalWord= "'";
 		}
 		//-lrb- and -rrb- should be translated to ( and ) respectively
-		else if(templateWord == "-lrb-" || templateWord == "-LRB-" || originalWord == "-lrb-" || originalWord == "-LRB-") {
+		if(templateWord == "-lrb-" || templateWord == "-LRB-" || originalWord == "-lrb-" || originalWord == "-LRB-") {
 			word = "(";
-		} else if(templateWord == "-rrb-" || templateWord == "-RRB-" || originalWord == "-rrb-" || originalWord == "-RRB-") {
+		} 
+		if(templateWord == "-rrb-" || templateWord == "-RRB-" || originalWord == "-rrb-" || originalWord == "-RRB-") {
 			word = ")";
 		}
 		//Only replace some words, keep others same as in original text
-		else if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
+		if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-		//	System.out.println(templateWord + ", " + originalWord);
+			System.out.println(templateWord + ", " + originalWord);
 			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
 			int numOfWords = words.size();
 			int randomIndex = random.nextInt(numOfWords);
 			word = words.get(randomIndex);	
-		//	System.out.println(originalWord + " --> " + word);
+			//	System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -155,6 +158,11 @@ public class TemplateFiller {
 		line = line.replaceAll("!", "! ");
 		line = line.replaceAll(" !", "!");
 		line = line.replaceAll(" \\?", "?");
+		line = line.replaceAll("'", "");
+		line = line.replaceAll("-lrb-", "(");
+		line = line.replaceAll("-LRB-", "(");
+		line = line.replaceAll("-rrb-", ")");
+		line = line.replaceAll("-RRB-", ")");
 
 		//For consonants following 'an', change to 'a'
 		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
@@ -235,7 +243,7 @@ public class TemplateFiller {
 		}
 		return true;
 	}
-	
+
 
 
 
