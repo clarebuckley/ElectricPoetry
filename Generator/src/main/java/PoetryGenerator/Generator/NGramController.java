@@ -13,7 +13,6 @@ public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
 	private JsonObject model;
-	private String punctuation = ".,:;-'''`!---";
 
 	public NGramController() {}
 
@@ -22,7 +21,7 @@ public class NGramController {
 
 		for(int i = 0; i < words.length; i++) {
 			String word = words[i].toLowerCase();
-			if(!word.equals(" ") && !punctuation.contains(word)) {
+			if(word.length() > 0 && !word.equals(" ") && !containsPunctuation(word) && !word.contains(System.getProperty("line.separator"))) {
 				String prevWord;
 				if(i == 0){
 					prevWord = "<s>";
@@ -36,9 +35,21 @@ public class NGramController {
 		}
 		return poem;
 	}
+	
+	private boolean containsPunctuation(String word) {
+		boolean containsPunct = false;
+		String punctuation = ".,:;-'''`!---";
+		for(char wordChar : word.toCharArray()) {
+			String character = "" + wordChar;
+			if(punctuation.contains(character)) {
+				containsPunct = true;
+			}
+		}
+		return containsPunct;
+	}
 
 	private JsonObject getWordModelFromDB(int n, String word) {
-		System.out.println(word);
+		System.out.println(word + ", size: " + word.length() + " , something: " + word.charAt(0));
 		try {
 			Document languageModel = mongo.getLanguageModel(collection, word.toLowerCase());
 			Document associations = (Document)languageModel.get("associations");
@@ -48,7 +59,7 @@ public class NGramController {
 			jsonReader.close();
 			return ngramJson;
 		}
-		catch(Error err) {
+		catch(Exception err) {
 			System.out.println(err);
 			return null;
 		}	

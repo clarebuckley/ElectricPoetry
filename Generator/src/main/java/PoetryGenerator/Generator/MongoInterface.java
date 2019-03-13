@@ -83,6 +83,7 @@ public class MongoInterface {
 	 * @return words associated with POS tag
 	 */
 	public Object getTagWords(String collectionName, Object docId) {
+		System.out.println("--> " + docId);
 		MongoCollection<Document> collection = getCollection(collectionName);
 		Document toFind = new Document().append("tag", docId);
 		FindIterable<Document> document = collection.find(toFind);
