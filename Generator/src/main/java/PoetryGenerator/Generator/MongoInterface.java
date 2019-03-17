@@ -1,6 +1,8 @@
 package PoetryGenerator.Generator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Sorts;
 
 
@@ -73,7 +76,13 @@ public class MongoInterface {
 				new ArrayList<Document>());
 		Iterator<Document> iterator = document.iterator();
 		Document result = (Document) iterator.next();
+		System.out.println("result: " + result);
 		return result;
+	}
+
+	public Document getSampleDocument(String collectionName) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		return (Document) collection.aggregate(Arrays.asList(Aggregates.sample(1)));
 	}
 	
 	/**

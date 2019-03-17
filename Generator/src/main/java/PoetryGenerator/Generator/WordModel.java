@@ -73,17 +73,19 @@ public class WordModel {
 	public Document addTwoGram(String n1, String n, double probability, double backoff) {
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
-		String probKey = probAsString.replace(".","_");
+//		String ngramKey = probAsString.replace(".","_");
+			String ngramKey = n1 + " " + n;
+			ngramKey = ngramKey.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff",backoff)
 				.append("n-1", n1);
 		Document twoGrams;
 		if(associations.containsKey("2-gram")) {	
 			twoGrams = (Document) associations.get("2-gram");
-			twoGrams.append(probKey, ngramData);
+			twoGrams.append(ngramKey, ngramData);
 
 		} else {
-			twoGrams = new Document(probKey, ngramData);
+			twoGrams = new Document(ngramKey, ngramData);
 			associations.append("2-gram", twoGrams);
 		}
 		((Document) existingDoc.get("associations")).put("2-gram", twoGrams);
@@ -95,7 +97,9 @@ public class WordModel {
 	public Document addThreeGram(String n2, String n1, String n, double probability, double backoff) {
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
-		String probKey = probAsString.replace(".","_");
+//		String ngramKey = probAsString.replace(".","_");
+			String ngramKey = n2 + " " + n1 + " " + n;
+			ngramKey = ngramKey.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff",backoff)
 				.append("n-1", n1)
@@ -104,10 +108,10 @@ public class WordModel {
 		Document threeGrams;
 		if(associations.containsKey("3-gram")) {	
 			threeGrams = (Document) associations.get("3-gram");
-			threeGrams.append(probKey, ngramData);
+			threeGrams.append(ngramKey, ngramData);
 
 		} else {
-			threeGrams = new Document(probKey, ngramData);
+			threeGrams = new Document(ngramKey, ngramData);
 			associations.append("3-gram", threeGrams);
 		}
 		((Document) existingDoc.get("associations")).put("3-gram", threeGrams);
@@ -119,7 +123,9 @@ public class WordModel {
 	public Document addFourGram(String n3, String n2, String n1, String n, double probability, double backoff) {
 		Document associations = (Document) existingDoc.get("associations");
 		String probAsString = Double.toString(probability);
-		String probKey = probAsString.replace(".","_");
+//		String ngramKey = probAsString.replace(".","_");
+			String ngramKey = n3 + " " + n2 + " " + n1 + " " + n;
+			ngramKey = ngramKey.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff",backoff)
 				.append("n-1", n1)
@@ -129,10 +135,10 @@ public class WordModel {
 		Document fourGrams;
 		if(associations.containsKey("4-gram")) {	
 			fourGrams = (Document) associations.get("4-gram");
-			fourGrams.append(probKey, ngramData);
+			fourGrams.append(ngramKey, ngramData);
 
 		} else {
-			fourGrams = new Document(probKey, ngramData);
+			fourGrams = new Document(ngramKey, ngramData);
 			associations.append("4-gram", fourGrams);
 		}
 		((Document) existingDoc.get("associations")).put("4-gram", fourGrams);
@@ -143,7 +149,14 @@ public class WordModel {
 	//Create document from this word model
 	public Document buildDocument() {
 		String probAsString = Double.toString(probability);
-		String probKey = probAsString.replace(".","_");
+	//	String ngramKey = probAsString.replace(".","_");
+		String ngramKey;
+		if(n1 !=null) {
+			 ngramKey = n1;
+		} else {
+			ngramKey = word;
+		}
+		ngramKey = ngramKey.replace(".","_");
 		Document ngramData = new Document("probability", probability)
 				.append("backoff", backoff);
 
@@ -157,7 +170,7 @@ public class WordModel {
 			ngramData.append("n-3", n3);
 		}
 
-		Document docKey = new Document(probKey, ngramData);
+		Document docKey = new Document(ngramKey, ngramData);
 		Document associations = new Document(ngramType, docKey);
 		Document document = new Document("word", word)
 				.append("associations", associations);

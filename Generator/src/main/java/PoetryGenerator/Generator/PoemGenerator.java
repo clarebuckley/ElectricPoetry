@@ -44,7 +44,7 @@ public class PoemGenerator {
 		
 		String poemContent = buildPoem(poem);
 		NGramController ngram = new NGramController();
-		poemContent = ngram.addNGrams(3, poemContent);
+		poemContent = ngram.addNGrams(poemContent);
 		return poemContent;
 	}
 
