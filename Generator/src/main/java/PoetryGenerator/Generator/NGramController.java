@@ -17,7 +17,7 @@ public class NGramController {
 	public NGramController() {}
 
 	public String addNGrams(String poem) {
-		poem = "Glory and sadness? have passed forward";
+		poem = "bottle and sadness? have passed forward";
 		poem.replaceAll(".", ". * ");
 		poem = "* " + poem;
 
@@ -28,17 +28,16 @@ public class NGramController {
 			String word = words[i].toLowerCase();
 			if(word.length() > 0 && word != null && !word.equals(" ") && !word.contains(System.getProperty("line.separator"))) {
 				System.out.println(word);
-				
+
 				String prevWord1 = words[i-1];
 				String prevWord2 = null, prevWord3 = null;
 				prevWord2 = ((i>=2) ? words[i-2] : null);
 				prevWord3 = ((i>=3) ? words[i-3] : null);
-				
+
 				if(prevWord1.equals("*")) prevWord1 = "<s>";
 				if(prevWord2 != null && prevWord2.equals("*")) prevWord2 = "<s>";
 				word = getPoemWord(word, prevWord1, prevWord2, prevWord3);
 
-				//	Double threshold = getAvgProbability(model);
 			}
 
 			words[i] = word;
@@ -58,44 +57,40 @@ public class NGramController {
 	private String getPoemWord(String word, String prevWord1, String prevWord2, String prevWord3) {
 		String nGramVal = ((prevWord2 != null) ? "3-gram" : "2-gram");
 		if(prevWord3 != null) nGramVal = "4-gram";
-		
-		JsonObject existingGramData = getWordModelFromDB(nGramVal, word);
-		Set<String> existingGrams = existingGramData.keySet();
-		String result = "";
 
+		//WordModel for this word in the database
+		JsonObject existingGramData = getWordModelFromDB(nGramVal, word);
+		//All n-grams that exist for this word
+		Set<String> existingGrams = existingGramData.keySet();
+		//Average of all probabilities for this word
+		Double threshold = getThreshold(existingGramData, nGramVal);
+		String result = "";
+		
+
+		//For all n-grams that exist for this word
 		for(String existingSequence : existingGrams) {
-			System.out.println(existingSequence);
 			String[] sequenceWords = existingSequence.split(" ");
-			System.out.println(Arrays.toString(sequenceWords));
+			//n-1 value
 			String n1 = sequenceWords[sequenceWords.length-2];
-			//Process for bigrams, "2-gram"
 			if(nGramVal.equals("2-gram")) {
-				System.out.println("N-1: " + n1 + ", prev word" + prevWord1);
+				//if n-1 for the current poem sequence, keep it as it is
 				if(n1.equals(prevWord1)) {
 					result = word;
 				} else {
-					while(result.length() == 0) {
-						JsonObject ngramJson = getRandomDocument(2);
-						Set<String> newKeys = ngramJson.keySet();
-						for(String key : newKeys) {
-							String keyWords[] = key.split(" ");
-							String possibleReplacement = keyWords[0];
-							if(possibleReplacement.equals(prevWord1)) {
-								result = keyWords[1];
-							}
-						}
-					}
+					//find a word that makes sense, given n-1
+					result = replaceN1(prevWord1);
 				}
 			}
-			//Trigram process, "3-gram"
 			if(nGramVal.equals("3-gram")) {
+				//n-2 value for the current poem sequence
 				String n2 = sequenceWords[sequenceWords.length -3];
-				if(n1 == prevWord1 || n2 == prevWord2) {
+				//if the word makes sense given the previous word, keep it
+				if(n1.equals(prevWord1)) {
 					result = word;
 				} 
+				//find a replacement that will make sense given n-1 and n-2
 				else {
 					result = getHighestProbSequence("3-gram", existingSequence, existingGramData);
-
 				}
 			}
 			//word is words[words.length-1] --> 'n'
@@ -104,20 +99,56 @@ public class NGramController {
 		System.out.println("WORD: " + word + ", RESULT: " + result);
 		return result;
 	}
+	
+	
+	private String replaceN1(String prevWord1) {
+		String result = "";
+		while(result.length() == 0) {
+			JsonObject ngramJson = getRandomDocument(2);
+			Set<String> newKeys = ngramJson.keySet();
+			for(String key : newKeys) {
+				String keyWords[] = key.split(" ");
+				String possibleReplacement = keyWords[0];
+				if(possibleReplacement.equals(prevWord1)) {
+					result = keyWords[1];
+				}
+			}
+		}
+		return result;
+	}
+	
 
 
-	private String getHighestProbSequence(String nVal, String sequence, JsonObject model) {
-		Set<String> modelKeys = model.keySet();
-		double highestProb = -1;
-		for(String key : modelKeys) {
+
+	private double getThreshold(JsonObject model, String nGramVal) {
+		double totalThreshold = 0;
+		System.out.println("------------------> " + model.toString());
+		Set<String> keys = model.keySet();
+		for(String key : keys) {
 			JsonObject data = model.getJsonObject(key);
 			double probability = new Double(data.get("probability").toString());
+			totalThreshold =+ probability;
+		}
+		double avgThreshold = totalThreshold / keys.size();
+		return avgThreshold;
+	}
+
+
+	private String getHighestProbSequence(String nVal, String sequence, JsonObject sequenceModel) {
+		System.out.println("-----------------" + nVal + ", " + sequence + ", " + sequenceModel);
+		String[] nWords = sequence.split(" ");
+		Set<String> modelKeys = sequenceModel.keySet();
+		double highestProb = -1;
+		for(String key : modelKeys) {
+			JsonObject data = sequenceModel.getJsonObject(key);
+			double probability = new Double(data.get("probability").toString());
+			System.out.println(probability);
 			if(probability > highestProb) {
 				highestProb = probability;
 			}
 		}
 		String probKey  = "" + highestProb;
-		JsonObject mostLikelyModel = model.getJsonObject(probKey.replace(".","_"));
+		JsonObject mostLikelyModel = sequenceModel.getJsonObject(probKey.replace(".","_"));
 		return mostLikelyModel.get(nVal).toString();
 	}
 
@@ -155,7 +186,7 @@ public class NGramController {
 				String keyWords[] = key.split(" ");
 				String n1 = keyWords[0];
 				if(n1.equals("<s>")) {
-					substitute = keyWords[1];
+					substitute = keyWords[1];			//should probably find highest probability here
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.json.Json;
 
@@ -77,14 +78,17 @@ public class MongoInterface {
 				new ArrayList<Document>());
 		Iterator<Document> iterator = document.iterator();
 		Document result = (Document) iterator.next();
-		System.out.println("result: " + result);
 		return result;
 	}
 
 	public Document getSampleDocument(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-		AggregateIterable<Document> iterator = collection.aggregate(Arrays.asList(Aggregates.sample(1)));
-		Document result = (Document)  iterator.first();
+		AggregateIterable<Document> iterator = collection.aggregate(Arrays.asList(Aggregates.sample(10)));
+		Random random = new Random();
+		int randomIndex = random.nextInt(10);
+		ArrayList<Document> documents = new ArrayList<Document>();
+		iterator.into(documents);
+		Document result = documents.get(randomIndex);
 		return result;
 	}
 	
