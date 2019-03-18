@@ -11,6 +11,7 @@ import javax.json.Json;
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -82,7 +83,9 @@ public class MongoInterface {
 
 	public Document getSampleDocument(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-		return (Document) collection.aggregate(Arrays.asList(Aggregates.sample(1)));
+		AggregateIterable<Document> iterator = collection.aggregate(Arrays.asList(Aggregates.sample(1)));
+		Document result = (Document)  iterator.first();
+		return result;
 	}
 	
 	/**
