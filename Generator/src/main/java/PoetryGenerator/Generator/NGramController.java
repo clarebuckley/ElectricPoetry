@@ -32,35 +32,55 @@ public class NGramController {
 				case 0:
 					nNum = "2-gram";
 					prevWord = "<s>";
+					word = findFirstWord(word);
+					break;
 				case 1:
 					nNum = "3-gram";
+					prevWord = words[i-1];
+					word = getPoemWord(word);
+					break;
 				default:
 					nNum = "4-gram";
+					break;
 				}
 
-				if(i==0) {
-					word = findFirstWord(word);
-				} else {
-					prevWord = words[i-1];
-					JsonObject model = getWordModelFromDB(nNum, word);
-					System.out.println("model for " + word + ": " + model);
-					if(model != null) {
-						//find prevWord in word's associations (n-1)
-						prevWord = getPrevWord("n-1", prevWord, model);
-						System.out.println(prevWord);
-						if(i>0) {
-							words[i-1] = prevWord;
-						}
-					} else {
-						//choose most probable word instead
-					}
-				}
-
-				
 				//	Double threshold = getAvgProbability(model);
 			}
+			
+			words[i] = word;
 		}
-		return poem;
+		String newPoem = "";
+		for(String word : words) {
+			newPoem = newPoem + word + " ";
+		}
+		return newPoem;
+	}
+
+	/**
+	 * Get word to be used in poem, given the previous n words
+	 * @param word
+	 * @return
+	 */
+	private String getPoemWord(String word) {
+		String nGram = "3-gram";
+		Set<String> existingGrams = getNGrams(word, nGram);
+		for(String sequence : existingGrams) {
+			System.out.println(sequence);
+
+		}
+		return word;
+	}
+
+	/**
+	 * Retrieves ngram data for the given word and 'n'
+	 * @param word
+	 * @param nGramNum
+	 * @return
+	 */
+	private Set<String> getNGrams(String word, String nGramNum) {
+		JsonObject model = getWordModelFromDB(nGramNum, word);
+		Set<String> modelKeys = model.keySet();
+		return modelKeys;
 	}
 
 	/**
@@ -69,31 +89,22 @@ public class NGramController {
 	 * @return
 	 */
 	private String findFirstWord(String word) {
-		System.out.println(word);
-		JsonObject model = getWordModelFromDB("2-gram", word);
-		Set<String> modelKeys = model.keySet();
-		if(modelKeys.contains("<s>")) {
-			return word;
-		} else {
-			word = getSubstituteNextWord("<s>");
-		}	
-		return null;
-	}
+		Set<String> modelKeys = getNGrams(word, "2-gram");
+		for(String key : modelKeys) {
+			String start = key.split(" ")[0];
+			if(start.equals("<s>")) {
+				return word;
+			}
+		}
 
-	/**
-	 * Only works for bigrams atm
-	 * @param prevWord
-	 * @return
-	 */
-	private String getSubstituteNextWord(String prevWord) {
 		String substitute = "";
 		while(substitute.length() == 0) {
 			JsonObject ngramJson = getRandomDocument(2);
-			Set<String> modelKeys = ngramJson.keySet();
-			for(String key : modelKeys) {
+			Set<String> newKeys = ngramJson.keySet();
+			for(String key : newKeys) {
 				String keyWords[] = key.split(" ");
 				String n1 = keyWords[0];
-				if(n1.equals(prevWord)) {
+				if(n1.equals("<s>")) {
 					substitute = keyWords[1];
 				}
 			}
@@ -101,6 +112,11 @@ public class NGramController {
 		return substitute;
 	}
 
+	/**
+	 * Used for replacing words
+	 * @param n
+	 * @return
+	 */
 	private JsonObject getRandomDocument(int n) {
 		Document randomDoc = mongo.getSampleDocument(collection);
 		Document associations = (Document)randomDoc.get("associations");
@@ -109,28 +125,6 @@ public class NGramController {
 		JsonObject ngramJson = jsonReader.readObject();
 		return ngramJson;
 	}
-
-
-	/**
-	 * Gets most probable previous word
-	 * @param nVal
-	 * @param word
-	 * @return
-	 */
-	private String getPrevWord(String nVal, String prevWord, JsonObject model) {
-		Set<String> modelKeys = model.keySet();
-		for(String key : modelKeys) {
-			JsonObject ngramData = (JsonObject) model.get(key);
-			String nGram = ngramData.getString(nVal);
-			if(nGram.equals(prevWord)) {
-				return prevWord;
-			}	
-		}
-
-		return null;
-	}
-
-
 
 	private String findMostProbablePrevWord(String nVal, String word, JsonObject model) {
 		Set<String> modelKeys = model.keySet();
@@ -165,26 +159,5 @@ public class NGramController {
 			return null;
 		}	
 	}
-
-	/**
-	 * Get average probability of ngrams to be used as threshold
-	 * @param ngramJson
-	 * @return
-	 */
-	private Double getThreshold(JsonObject ngramJson) {
-		Set<String> keys = ngramJson.keySet();
-		//System.out.println("Max: " + Collections.max(keys));  --> need to convert to double
-		Double total = 0.0;
-		for(String key : keys) {
-			Double keyVal = new Double(key.replace("_", "."));
-			if(keyVal>1) {
-				keys.remove(key);
-			}
-			total += keyVal;
-		}
-		Double average = total/keys.size();
-		return average;
-	}
-
 
 }
