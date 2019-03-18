@@ -115,16 +115,16 @@ public class TemplateFiller {
 			originalWord= "'";
 		}
 		//-lrb- and -rrb- should be translated to ( and ) respectively
-		if(templateWord.equals("-lrb-") || templateWord.equals("-LRB-") || originalWord.equals("-lrb-") || originalWord.equals("-LRB-")) {
+		else if(templateWord.equals("-lrb-") || templateWord.equals("-LRB-") || originalWord.equals("-lrb-") || originalWord.equals("-LRB-")) {
 			word = "(";
 			templateWord = "(";
 		} 
-		if(templateWord.equals("-rrb-") || templateWord.equals("-RRB-") || originalWord.equals("-rrb-") || originalWord.equals("-RRB-")) {
+		else if(templateWord.equals("-rrb-") || templateWord.equals("-RRB-") || originalWord.equals("-rrb-") || originalWord.equals("-RRB-")) {
 			word = ")";
 			templateWord = "(";
 		}
 		//Only replace some words, keep others same as in original text
-		if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
+		else if ((retainOriginal.contains(templateWord) && wordValid) || punctuation.contains(templateWord)) {
 			word = originalWord;
 		}
 		//Replace tags with words from wordbank
