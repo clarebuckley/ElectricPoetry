@@ -37,13 +37,13 @@ public class PoemParser {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 
 	public static void main(String args[]) throws ClassNotFoundException, IOException {
-		File f = new File("./src/main/java/PoetryGenerator/Data"); // current directory
-		File[] files = f.listFiles();
-		for (File file : files) {
-			String newPath = file.getCanonicalPath().replace("\\", "/");
-			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
-			new PoemParser(newPath);
-		}
+//		File f = new File("./src/main/java/PoetryGenerator/Data"); // current directory
+//		File[] files = f.listFiles();
+//		for (File file : files) {
+//			String newPath = file.getCanonicalPath().replace("\\", "/");
+//			newPath = newPath.replace("C:/Users/Clare/Documents/Aston/Y3/FYP/ElectricPoetry/Generator/src/main/java", "");
+//			new PoemParser(newPath);
+//		}
 
 
 		new PoemParser();
