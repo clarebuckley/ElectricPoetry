@@ -34,6 +34,8 @@ public class TemplateFiller {
 
 	private List<String> templateLine;
 	private List<String> originalLine;
+	
+	public TemplateFiller() {}
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -106,7 +108,7 @@ public class TemplateFiller {
 	 * @param originalWord - original word in the current place in the poem
 	 * @return word - word to be used in this line
 	 */
-	private String getWord(String templateWord, String originalWord){
+	public String getWord(String templateWord, String originalWord){
 		Random random = new Random();
 		String word = "";
 		if(templateWord.contains("`") || originalWord.contains("`")) {
