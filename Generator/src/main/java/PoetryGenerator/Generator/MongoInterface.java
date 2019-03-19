@@ -83,9 +83,9 @@ public class MongoInterface {
 
 	public Document getSampleDocument(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
-		AggregateIterable<Document> iterator = collection.aggregate(Arrays.asList(Aggregates.sample(10)));
+		AggregateIterable<Document> iterator = collection.aggregate(Arrays.asList(Aggregates.sample(100)));
 		Random random = new Random();
-		int randomIndex = random.nextInt(10);
+		int randomIndex = random.nextInt(100);
 		ArrayList<Document> documents = new ArrayList<Document>();
 		iterator.into(documents);
 		Document result = documents.get(randomIndex);
