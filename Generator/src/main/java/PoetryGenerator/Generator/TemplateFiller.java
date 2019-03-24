@@ -87,7 +87,7 @@ public class TemplateFiller {
 			wordValid = false;
 			while(!spellCheckWord(word) || !wordValid(word, line)) {
 				//		System.out.println("replacing word " + word);
-				word = getWord(templateLine.get(j), originalLine.get(j));
+				word = getWord(templateLine.get(j), originalLine.get(j), null, null, null);
 			}
 
 			line += word;
@@ -108,7 +108,7 @@ public class TemplateFiller {
 	 * @param originalWord - original word in the current place in the poem
 	 * @return word - word to be used in this line
 	 */
-	public String getWord(String templateWord, String originalWord){
+	public String getWord(String templateWord, String originalWord, String n1, String n2, String n3){
 		Random random = new Random();
 		String word = "";
 		if(templateWord.contains("`") || originalWord.contains("`")) {

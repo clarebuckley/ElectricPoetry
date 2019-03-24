@@ -37,7 +37,7 @@ public class LanguageModelParser {
 		HashMap<String, Document> entries = new HashMap<String, Document>();
 		String line = br.readLine();
 		String ngramType = "";
-		while(line != null ) {
+		while(line != null) {
 			WordModel model = null;
 			String[] lineParts = line.split("	");
 			double probability = 0, backoff = 0;

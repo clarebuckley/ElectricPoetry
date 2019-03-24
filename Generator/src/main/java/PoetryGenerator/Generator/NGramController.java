@@ -76,6 +76,9 @@ public class NGramController {
 		while(replacement.equals("")) {
 			JsonObject ngramJson = getRandomDocument(1);
 			String potentialReplacement = (String) ngramJson.keySet().toArray()[0];
+			System.out.println(ngramJson.keySet().toString());
+			System.out.println("here: " + potentialReplacement);
+			System.out.println(ngramJson.toString());
 			BigDecimal prob = getWordProbability(potentialReplacement);
 			if(prob.compareTo(replaceThreshold) > 0 || iterations > 200) {
 				replacement = potentialReplacement;
