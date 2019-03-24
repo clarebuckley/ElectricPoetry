@@ -89,6 +89,11 @@ public class NGramController {
 		return replacement;
 	}
 	
+	/**
+	 * Get probability of given word
+	 * @param word
+	 * @return
+	 */
 	private BigDecimal getWordProbability(String word) {
 		//WordModel for this word in the database
 		JsonObject data = getWordModelFromDB("1-gram", word);
@@ -153,6 +158,13 @@ public class NGramController {
 	}
 
 
+	/**
+	 * Check if word/phrase exists in the database
+	 * @param poemText
+	 * @param existingGrams
+	 * @param ngramJson
+	 * @return
+	 */
 	private boolean poemTextExists(String poemText, Set<String> existingGrams, JsonObject ngramJson) {
 		System.out.println("Checking exists");
 		boolean exists = false;
@@ -211,14 +223,6 @@ public class NGramController {
 	}
 
 
-	private String trigramReplace(String prevWord1, String prevWord2) {
-		String result = "";
-		while(result.length() == 0) {
-
-		}
-		return result;
-	}
-
 	/**
 	 * Get probability from JsonObject and format it to avoid scientific notation
 	 * @param sequenceModel
@@ -228,48 +232,6 @@ public class NGramController {
 		Double probability =  new Double(sequenceModel.get("probability").toString());
 		return probability;
 	}
-
-
-
-
-	private BigDecimal getThreshold(JsonObject model, String nGramVal) {
-		Set<String> keys = model.keySet();
-		double highest = -1;
-		double lowest = 10000;
-		for(String key : keys) {
-			JsonObject data = model.getJsonObject(key);
-			double probability = getProbability(data);
-			if(probability > highest) {
-				highest = probability;
-			}
-			if(probability < lowest) {
-				lowest = probability;
-			}
-		}
-		double threshold = (highest + lowest) / 2;
-		return new BigDecimal(threshold);
-	}
-
-
-//	private String getHighestProbSequence(String nVal, String sequence, JsonObject sequenceModel) {
-//		System.out.println("-----------------" + nVal + ", " + sequence + ", " + sequenceModel);
-//		String[] nWords = sequence.split(" ");
-//		Set<String> modelKeys = sequenceModel.keySet();
-//		double highestProb = -1;
-//		for(String key : modelKeys) {
-//			JsonObject data = sequenceModel.getJsonObject(key);
-//			double probability = new Double(data.get("probability").toString());
-//			System.out.println(probability);
-//			if(probability > highestProb) {
-//				highestProb = probability;
-//			}
-//		}
-//		String probKey  = "" + highestProb;
-//		JsonObject mostLikelyModel = sequenceModel.getJsonObject(probKey.replace(".","_"));
-//		return mostLikelyModel.get(nVal).toString();
-//	}
-
-
 
 
 	/**
@@ -285,7 +247,6 @@ public class NGramController {
 		JsonObject ngramJson = jsonReader.readObject();
 		return ngramJson;
 	}
-
 
 
 	/**
