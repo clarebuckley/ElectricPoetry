@@ -3,12 +3,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bson.Document;
-import org.languagetool.AnalyzedSentence;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.Rule;
@@ -59,6 +57,7 @@ public class TemplateFiller {
 				templateLine = (List<String>) template.get(i);
 				originalLine = (List<String>)poemText.get(i);
 				line = processLine(templateLine,  originalLine);
+				line = postProcessLine(line);
 				poemVerse.add(line);
 				//Reset for next line
 				line = "";
@@ -84,7 +83,7 @@ public class TemplateFiller {
 			String prevWord1 = "", prevWord2 = "";
 			prevWord1 = ((i>=1) ? completedWords[i-1].toLowerCase() : "");
 			prevWord2 = ((i>=2) ? completedWords[i-2].toLowerCase() : "");
-			String prevWord1POS = "", prevWord2POS = "", prevWord3POS = "";
+			String prevWord1POS = "", prevWord2POS = "";
 			prevWord1POS = ((i>=1) ? templateLine.get(i-1) : "");
 			prevWord2POS = ((i>=2) ? templateLine.get(i-2): "");
 
@@ -99,10 +98,7 @@ public class TemplateFiller {
 			if(i < templateLine.size()) {
 				line += " ";
 			}
-			//Remove space before punctuation
-			//		line = line.replaceAll(" [.,:;`-]", word);
 		}
-		//line = postProcessLine(line);
 
 		return line;
 	}
@@ -139,7 +135,7 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord + ", " + originalWord + ", " + n1);
+			System.out.println(templateWord + ", " + originalWord);
 			word = ngram.getWord(templateWord, originalWord, n1, n2, n1POS, n2POS);
 			if(word == null) {
 				word = originalWord;
@@ -161,7 +157,6 @@ public class TemplateFiller {
 		//Set start of lines to have capital letters
 		line = line.substring(0, 1).toUpperCase() + line.substring(1);
 
-		//A apple --> an apple
 		line = line.replaceAll(" i ", " I ");
 		line = line.replaceAll("::", ":");
 		line = line.replaceAll(" 's", "'s");
@@ -171,10 +166,8 @@ public class TemplateFiller {
 		line = line.replaceAll(" !", "!");
 		line = line.replaceAll(" \\?", "?");
 		line = line.replaceAll("'", "");
-		line = line.replaceAll("-lrb-", "(");
-		line = line.replaceAll("-LRB-", "(");
-		line = line.replaceAll("-rrb-", ")");
-		line = line.replaceAll("-RRB-", ")");
+		//Remove space before punctuation
+		line = line.replaceAll("\\s+(?=\\p{Punct})", "");
 
 		//For consonants following 'an', change to 'a'
 		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");

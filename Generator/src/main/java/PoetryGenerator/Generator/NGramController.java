@@ -32,12 +32,12 @@ public class NGramController {
 	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord1POS, String prevWord2POS) {
 		String result;
 
-	//	System.out.println("getting sequence matches for: " + word);
-	//	if(prevWord2 == null | prevWord2.equals("")) {
+		System.out.println("getting sequence matches for: " + word);
+		if(prevWord2 == null | prevWord2.equals("")) {
 			result	= findWordUsingBigram(prevWord1POS, prevWord1,  word);
-	//	} else {
-	//		result = findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
-	//	}
+		} else {
+			result = findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
+		}
 
 		return result;
 	}
@@ -146,7 +146,7 @@ public class NGramController {
 					//should favour results using trigram over bigram
 					double probIncrease;
 					if(prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) {
-						probIncrease = 0.002;
+						probIncrease = 0.005;
 					} else {
 						probIncrease = 0;
 					}
