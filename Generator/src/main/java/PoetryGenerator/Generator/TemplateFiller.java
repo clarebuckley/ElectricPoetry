@@ -17,12 +17,11 @@ import org.languagetool.rules.RuleMatch;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 21/02/19
+ * @version 25/03/19
  *
  */
 
 public class TemplateFiller {
-	private MongoInterface mongo = new MongoInterface("poetryDB");
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBP", "VBZ"));
@@ -34,7 +33,7 @@ public class TemplateFiller {
 
 	private List<String> templateLine;
 	private List<String> originalLine;
-	
+
 	private NGramController ngram = new NGramController();
 
 	public TemplateFiller() {}
@@ -60,10 +59,6 @@ public class TemplateFiller {
 				templateLine = (List<String>) template.get(i);
 				originalLine = (List<String>)poemText.get(i);
 				line = processLine(templateLine,  originalLine);
-				//				while(!checkValidLine(line)) {
-				//					System.out.println("fixing grammar: " + line);
-				//					line = fixGrammar(line, matches);
-				//				} 
 				poemVerse.add(line);
 				//Reset for next line
 				line = "";
@@ -85,24 +80,19 @@ public class TemplateFiller {
 		String line = "";
 		//Each word in a line
 		for(int i = 0; i < templateLine.size(); i++) {
-			System.out.println("--------------------------------------------------line so far: " + line + " -------> original line size: " + originalLine.size());
-
 			String[] completedWords = line.split(" ");
-			String prevWord1 = "", prevWord2 = "", prevWord3 = "";
+			String prevWord1 = "", prevWord2 = "";
 			prevWord1 = ((i>=1) ? completedWords[i-1].toLowerCase() : "");
 			prevWord2 = ((i>=2) ? completedWords[i-2].toLowerCase() : "");
-			prevWord3 = ((i>=3) ? completedWords[i-3].toLowerCase(): "");
 			String prevWord1POS = "", prevWord2POS = "", prevWord3POS = "";
 			prevWord1POS = ((i>=1) ? templateLine.get(i-1) : "");
 			prevWord2POS = ((i>=2) ? templateLine.get(i-2): "");
-			prevWord3POS = ((i>=3) ? templateLine.get(i-3): "");
 
 			String word = "";
-		//	wordValid = false;
-		//	while(!spellCheckWord(word) || !wordValid(word, line)) {
-				System.out.println("replacing word " + word);
-				word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, line, prevWord1POS, prevWord2POS, prevWord3POS);
-		//	}
+
+			System.out.println("replacing word " + word);
+			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord1POS, prevWord2POS);
+
 
 			line += word;
 			//Don't add space after word if it's the end of a line
@@ -110,10 +100,10 @@ public class TemplateFiller {
 				line += " ";
 			}
 			//Remove space before punctuation
-	//		line = line.replaceAll(" [.,:;`-]", word);
+			//		line = line.replaceAll(" [.,:;`-]", word);
 		}
 		//line = postProcessLine(line);
-		System.out.println("FINISHED LINE!!!!***************************************************************************************************");
+
 		return line;
 	}
 
@@ -127,8 +117,7 @@ public class TemplateFiller {
 	 * @param line - the poem line so far
 	 * @return word - word to be used in this line
 	 */
-	public String getWord(String templateWord, String originalWord, String n1, String n2, String n3, String line, String n1POS, String n2POS, String n3POS){
-		Random random = new Random();
+	public String getWord(String templateWord, String originalWord, String n1, String n2, String n1POS, String n2POS){
 		String word = "";
 		if(templateWord.contains("`") || originalWord.contains("`")) {
 			word = "'";
@@ -151,11 +140,11 @@ public class TemplateFiller {
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
 			System.out.println(templateWord + ", " + originalWord + ", " + n1);
-			word = ngram.getWord(templateWord, originalWord, n1, n2, n3, line, n1POS, n2POS, n3POS);
+			word = ngram.getWord(templateWord, originalWord, n1, n2, n1POS, n2POS);
 			if(word == null) {
 				word = originalWord;
 			}
-				System.out.println(originalWord + " --> " + word);
+			System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -255,25 +244,6 @@ public class TemplateFiller {
 			}
 		}
 	}
-
-
-	/**
-	 * 
-	 * Checks whether word is valid in context of its containing line
-	 * @param word
-	 * @param line
-	 * @return
-	 */
-	public boolean wordValid(String word, String line) {
-		//Can't start line with 'because' --> ruleId SENTENCE_FRAGMENT
-		if(line.split(" ")[0] == word && word == "because") {
-			return false;
-		}
-		return true;
-	}
-
-
-
 
 
 }
