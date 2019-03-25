@@ -43,8 +43,6 @@ public class PoemGenerator {
 		poem = templateFiller.processTemplate(template, poemText);
 		
 		String poemContent = buildPoem(poem);
-		NGramController ngram = new NGramController();
-		poemContent = ngram.addNGrams(poemContent);
 		return poemContent;
 	}
 

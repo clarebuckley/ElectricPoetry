@@ -182,7 +182,7 @@ public class LanguageModelParser {
 
 	private void addToDatabase(HashMap<String, Document> entries) {
 		for (Document entry : entries.values()) {
-		    mongo.insertDocument("languageModel", entry);
+		    mongo.insertDocument("languageModelTest", entry);
 		    System.out.println("Inserted one entry to database");
 		}
 		System.out.println(entries.size() + " documents added to the db");

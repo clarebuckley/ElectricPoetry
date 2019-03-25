@@ -2,11 +2,15 @@ package PoetryGenerator.Generator;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 import org.bson.Document;
 
@@ -18,6 +22,79 @@ public class NGramController {
 
 	public NGramController() {}
 
+	/**
+	 * 
+	 * @param word - current POS tag
+	 * @param originalWord - current word from original poem
+	 * @param prevWord1 - n-1
+	 * @param prevWord2 - n-2
+	 * @param prevWord3 - n-3
+	 * @param poemLine - poem line progress so far
+	 * @return phrase generated from input values to replace POS tags in templateFiller
+	 */
+	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord3, String poemLine, String prevWord1POS, String prevWord2POS, String prevWord3POS) {
+		poemLine = poemLine + "<s>";
+		String result = findWordUsingBigram(prevWord1POS, prevWord1,  word, poemLine);
+		return result;
+	}
+
+
+	//bigram implementation
+	private String findWordUsingBigram(String prevWord1POS, String prevWord1, String wordPOS, String poemLine) {
+		String result = null;
+
+		if(prevWord1 == null || prevWord1.equals("")) {
+			prevWord1 = "<s>";
+		}
+		if(prevWord1.equals("<s>")) {
+			prevWord1POS = "";
+		}
+
+		System.out.println("getting sequence matches for: " + wordPOS);
+		List<Document> matches = mongo.getSequenceMatches("languageModel", wordPOS, "POS");
+		int i = 0;
+		BigDecimal highestProbability = new BigDecimal(0);
+		for(Document match : matches) {
+			//System.out.println(match);
+			Document associations = (Document) match.get("associations");
+			Document bigramData = (Document) associations.get("2-gram");
+			Set<String> bigramWords = bigramData.keySet();
+			String bigramN1, bigramWord;
+			
+			int j = 0;
+			for(String word : bigramWords ) {
+				if(j == 100) {
+					break;
+				}
+				bigramN1 = word.split(" ")[0];
+				bigramWord = word.split(" ")[1];
+				System.out.println(prevWord1 + " = " + bigramN1 + " ?   --> poetential word: " + bigramWord); 
+				if(prevWord1.trim().equals(bigramN1.trim())) {
+					System.out.println("hit");
+					//check probability
+					Document thisWord = (Document) bigramData.get(word);
+					Double probability = new Double(thisWord.get("probability").toString());
+					BigDecimal thisProb = new BigDecimal(probability);
+					if(thisProb.compareTo(highestProbability) > 0) {
+						System.out.println(thisProb +" > " + highestProbability);
+						highestProbability = thisProb;
+						result = bigramWord;
+						break;
+					}
+				}
+				j++;
+			}
+			i++;
+			if(i == 100) {
+				System.out.println("--------------------------limit reached--------------------------");
+				break;
+			}
+		}
+		System.out.println("result --> " + result);
+		return result;
+	}
+
+
 	public String addNGrams(String poem) {
 		poem.replaceAll(".", ". * ");
 		poem = "* " + poem;
@@ -25,13 +102,13 @@ public class NGramController {
 		for(int i = 1; i < words.length; i++) {
 			System.out.println(Arrays.toString(words));
 			String word = words[i].toLowerCase();
-			
+
 			BigDecimal wordProb = getWordProbability(word);
 			System.out.println(wordProb);
 			if(wordProb.compareTo(replaceThreshold) < 0) {
 				word = findMoreProbableWord(word);
 			}
-			
+
 			if(word.length() > 0 && word != null && !word.equals(" ") && !word.equals(System.getProperty("line.separator"))) {
 				System.out.println(word);
 
@@ -44,7 +121,7 @@ public class NGramController {
 				if(prevWord2 != "" && prevWord2.equals("*")) prevWord2 = "<s>";
 				word = getPoemWord(word, prevWord1, prevWord2, prevWord3);
 			} 
-			
+
 			String[] replacements = word.split(" ");
 			int nGramLength = replacements.length;
 			System.out.println(nGramLength);
@@ -63,7 +140,7 @@ public class NGramController {
 		}
 		return newPoem;
 	}
-	
+
 	/**
 	 * Replace 'word' with word of higher probability in database
 	 * @param word
@@ -88,7 +165,7 @@ public class NGramController {
 		}
 		return replacement;
 	}
-	
+
 	/**
 	 * Get probability of given word
 	 * @param word
@@ -142,7 +219,7 @@ public class NGramController {
 				//fourgrams
 				result = bigramReplace(prevWord1, word);
 			break;
-			
+
 
 			}
 
@@ -171,9 +248,9 @@ public class NGramController {
 		//int n = poemText.split(" ").length;
 		int n = 2;  //change this once you start making 3/4 grams
 		for(String existingSequence : existingGrams) {
-//			JsonObject sequenceModel = (JsonObject) ngramJson.get(existingSequence);
-//			BigDecimal threshold = getThreshold(ngramJson, n +"-gram");
-//			BigDecimal probability = new BigDecimal(getProbability(sequenceModel));
+			//			JsonObject sequenceModel = (JsonObject) ngramJson.get(existingSequence);
+			//			BigDecimal threshold = getThreshold(ngramJson, n +"-gram");
+			//			BigDecimal probability = new BigDecimal(getProbability(sequenceModel));
 			//if n-1 for the current poem sequence, keep it as it is
 			if(existingSequence.equals(poemText) /*&& probability.compareTo(threshold) > 0*/) {
 				exists = true;
@@ -202,14 +279,14 @@ public class NGramController {
 					resultN1 = prevWord1;
 					replacementFound = true;
 				}
-				
+
 				String keyWords[] = key.split(" ");
 				String possibleReplacementN1 = keyWords[0].toLowerCase();
 				String possibleReplacementWord = keyWords[1].toLowerCase();
-//				JsonObject sequenceModel = (JsonObject) ngramJson.get(key);
-//				BigDecimal threshold = getThreshold(ngramJson, "2-gram");
-//				BigDecimal probability = new BigDecimal(getProbability(sequenceModel));
-		//		System.out.println(possibleReplacementWord + " = " + word + " OR " + possibleReplacementN1 + " = " + prevWord1); 
+				//				JsonObject sequenceModel = (JsonObject) ngramJson.get(key);
+				//				BigDecimal threshold = getThreshold(ngramJson, "2-gram");
+				//				BigDecimal probability = new BigDecimal(getProbability(sequenceModel));
+				//		System.out.println(possibleReplacementWord + " = " + word + " OR " + possibleReplacementN1 + " = " + prevWord1); 
 				if(possibleReplacementN1.equals(prevWord1) || possibleReplacementWord.equals(word)/*&& probability.compareTo(threshold) > 0*/) {
 					resultN1 = possibleReplacementN1;
 					resultWord = possibleReplacementWord;

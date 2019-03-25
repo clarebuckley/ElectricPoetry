@@ -35,6 +35,8 @@ public class TemplateFiller {
 	private List<String> templateLine;
 	private List<String> originalLine;
 	
+	private NGramController ngram = new NGramController();
+
 	public TemplateFiller() {}
 
 	/**
@@ -82,23 +84,36 @@ public class TemplateFiller {
 	private String processLine(List<String> templateLine, List<String> originalLine) {
 		String line = "";
 		//Each word in a line
-		for(int j = 0; j < templateLine.size(); j++) {
+		for(int i = 0; i < templateLine.size(); i++) {
+			System.out.println("--------------------------------------------------line so far: " + line + " -------> original line size: " + originalLine.size());
+
+			String[] completedWords = line.split(" ");
+			String prevWord1 = "", prevWord2 = "", prevWord3 = "";
+			prevWord1 = ((i>=1) ? completedWords[i-1].toLowerCase() : "");
+			prevWord2 = ((i>=2) ? completedWords[i-2].toLowerCase() : "");
+			prevWord3 = ((i>=3) ? completedWords[i-3].toLowerCase(): "");
+			String prevWord1POS = "", prevWord2POS = "", prevWord3POS = "";
+			prevWord1POS = ((i>=1) ? templateLine.get(i-1) : "");
+			prevWord2POS = ((i>=2) ? templateLine.get(i-2): "");
+			prevWord3POS = ((i>=3) ? templateLine.get(i-3): "");
+
 			String word = "";
-			wordValid = false;
-			while(!spellCheckWord(word) || !wordValid(word, line)) {
-				//		System.out.println("replacing word " + word);
-				word = getWord(templateLine.get(j), originalLine.get(j), null, null, null);
-			}
+		//	wordValid = false;
+		//	while(!spellCheckWord(word) || !wordValid(word, line)) {
+				System.out.println("replacing word " + word);
+				word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, line, prevWord1POS, prevWord2POS, prevWord3POS);
+		//	}
 
 			line += word;
 			//Don't add space after word if it's the end of a line
-			if(j < templateLine.size()) {
+			if(i < templateLine.size()) {
 				line += " ";
 			}
 			//Remove space before punctuation
-			line = line.replaceAll(" [.,:;`-]", word);
+	//		line = line.replaceAll(" [.,:;`-]", word);
 		}
-		line = postProcessLine(line);
+		//line = postProcessLine(line);
+		System.out.println("FINISHED LINE!!!!***************************************************************************************************");
 		return line;
 	}
 
@@ -106,9 +121,13 @@ public class TemplateFiller {
 	 * Replace tags in the given line with words
 	 * @param templateWord - POS tag
 	 * @param originalWord - original word in the current place in the poem
+	 * @param n1 - previous word in the poem
+	 * @param n2 - n-2nd word in the poem
+	 * @param n3 - n-3rd word in the poem
+	 * @param line - the poem line so far
 	 * @return word - word to be used in this line
 	 */
-	public String getWord(String templateWord, String originalWord, String n1, String n2, String n3){
+	public String getWord(String templateWord, String originalWord, String n1, String n2, String n3, String line, String n1POS, String n2POS, String n3POS){
 		Random random = new Random();
 		String word = "";
 		if(templateWord.contains("`") || originalWord.contains("`")) {
@@ -131,12 +150,12 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord + ", " + originalWord);
-			ArrayList<String> words = (ArrayList<String>) mongo.getTagWords("wordbank", templateWord);
-			int numOfWords = words.size();
-			int randomIndex = random.nextInt(numOfWords);
-			word = words.get(randomIndex);	
-			//	System.out.println(originalWord + " --> " + word);
+			System.out.println(templateWord + ", " + originalWord + ", " + n1);
+			word = ngram.getWord(templateWord, originalWord, n1, n2, n3, line, n1POS, n2POS, n3POS);
+			if(word == null) {
+				word = originalWord;
+			}
+				System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -204,6 +223,10 @@ public class TemplateFiller {
 	 * @return true if word is contained in dictionary
 	 */
 	public boolean spellCheckWord(String word) {
+		if(word == null) {
+			wordValid = false;
+			return false;
+		}
 		if(word.length() == 0) {
 			wordValid = false;
 			return false;
@@ -216,6 +239,7 @@ public class TemplateFiller {
 				}
 			}
 			try {
+				System.out.println(word);
 				matches = langTool.check(word);
 				if(matches.size() > 0) {
 					wordValid = false;

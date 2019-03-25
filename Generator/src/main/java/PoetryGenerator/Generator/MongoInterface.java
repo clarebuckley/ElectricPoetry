@@ -80,6 +80,14 @@ public class MongoInterface {
 		Document result = (Document) iterator.next();
 		return result;
 	}
+	
+	//Sequence type can be either POS or word
+	public List<Document> getSequenceMatches(String collectionName, String sequence, String sequenceType) {
+		MongoCollection<Document> collection = getCollection(collectionName);
+		Document toFind = new Document().append(sequenceType, sequence);
+		List<Document> documents = (List<Document>)collection.find(toFind).into(new ArrayList<Document>());
+		return documents;
+	}
 
 	public Document getSampleDocument(String collectionName) {
 		MongoCollection<Document> collection = getCollection(collectionName);
