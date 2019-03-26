@@ -89,7 +89,7 @@ public class TemplateFiller {
 
 			String word = "";
 
-			System.out.println("replacing word " + word);
+	//		System.out.println("replacing word " + word);
 			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord1POS, prevWord2POS);
 
 
@@ -135,12 +135,11 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println(templateWord + ", " + originalWord);
 			word = ngram.getWord(templateWord, originalWord, n1, n2, n1POS, n2POS);
 			if(word == null) {
 				word = originalWord;
 			}
-			System.out.println(originalWord + " --> " + word);
+	//		System.out.println(originalWord + " --> " + word);
 		} else {
 			word = templateWord;
 		}
@@ -193,6 +192,10 @@ public class TemplateFiller {
 				capitalise = false;
 			}
 			capitaliseResult += c;
+			
+			if(i == line.length() && line.charAt(i) == ',') {
+				line = line.substring(0, line.length()-1) + ".";
+			}
 		}
 		line = capitaliseResult.trim();
 		return line;
@@ -221,7 +224,7 @@ public class TemplateFiller {
 				}
 			}
 			try {
-				System.out.println(word);
+			//	System.out.println(word);
 				matches = langTool.check(word);
 				if(matches.size() > 0) {
 					wordValid = false;

@@ -1,13 +1,12 @@
 package PoetryGenerator.Generator;
 
-import java.math.BigDecimal;
 
+import java.math.BigDecimal;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 /**
@@ -34,7 +33,7 @@ public class PoemGeneratorEA {
 	private final int tournamentSize;
 
 	public static void main(String[] args) {
-		new PoemGeneratorEA(1, 0.70, 1);
+		new PoemGeneratorEA(2, 0.70, 1);
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam){
@@ -54,10 +53,9 @@ public class PoemGeneratorEA {
 		evolve();
 
 		System.out.println("\nFinding best cost from final population...");
-		System.out.println("----------------------------");
-		double bestCost = evaluateFinalPopulation();
-		System.out.println("Best cost: " + bestCost);
-		System.out.println("----------------------------");
+		System.out.println("-------------------------------------------------------------");
+		evaluateFinalPopulation();
+		System.out.println("-------------------------------------------------------------");
 		return null;
 	}
 
@@ -88,25 +86,25 @@ public class PoemGeneratorEA {
 	 */
 	private void oneGeneration() {
 		//Select parents
-		String parent1 = tournamentParentSelection();
-		String parent2 = tournamentParentSelection();
+		String tournamentSelection = tournamentParentSelection();
+//		String parent2 = tournamentParentSelection();
 		//Recombine parents
-		String child = generateCrossover(parent1, parent2);
+//		String child = generateCrossover(parent1, parent2);
 		//Mutate resulting offspring and add to possible solutions
 
 		if(Math.random() < mutationProbability) {
-			child =	mutatePoem(child);
+			tournamentSelection =	mutatePoem(tournamentSelection);
 		}
 
 		ArrayList<String> newPopulation = population;
-		newPopulation.add(child);
+		newPopulation.add(tournamentSelection);
 		//Replace weakest member of population
 		population = replaceWeakestIndividual(newPopulation);
 
 	}
 
 	/**
-	 * Select one parent from the poem with lowest cost from
+	 * Select one parent from the poem with highest probability from
 	 * a subgroup of the population
 	 * @return
 	 */
@@ -123,10 +121,10 @@ public class PoemGeneratorEA {
 
 		//Get best candidate from selection
 		String bestCandidate = "";
-		double bestCost = 0;
+		BigDecimal bestCost = new BigDecimal(0);
 		for(String candidate : candidates) {
-			double thisCost = getCostOfPoem(candidate);
-			if(thisCost > bestCost) {
+			BigDecimal thisCost = getCostOfPoem(candidate);
+			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestCandidate = candidate;
 			}
@@ -138,54 +136,64 @@ public class PoemGeneratorEA {
 	 * Calculate cost of a candidate poem
 	 * @return
 	 */
-	private double getCostOfPoem(String poem) {
-		double totalCost = 0;
-		//TODO: FILL THIS IN
+	private BigDecimal getCostOfPoem(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
 		BigDecimal probability = new BigDecimal(1);
 		for(String sentence : poemSentences) {
+			sentence = sentence.replace(",", " ,");
+			sentence = sentence.replace("?", " ?");
+			sentence = sentence.replace("!", " !");
 			String[] words = sentence.split(" ");
-			for(int i = 1; i < words.length-1; i++) {
-				String sequence =  words[i-1] + " " + words[i];
-				BigDecimal sequenceProbability = getSequenceProbability(sequence);
-				probability =  probability.multiply(sequenceProbability);
-				//P(w1⋯wn)=P(w1)P(w2|w1)P(w3|w1w2)P(w4|w2w3)⋯P(wn|wn−2wn−1).
+			for(int i = 0; i < words.length; i++) {
+				if(words[i].trim().length() != 0) {
+					String sequence;
+					if(i == 0) {
+						sequence = "<s> " + words[i];
+					}
+					else if(i == words.length) {
+						sequence = words[i] + "</s>";
+					}
+					else {
+						sequence =  words[i-1] + " " + words[i];
+						}
+					BigDecimal sequenceProbability = getSequenceProbability(sequence);
+					 probability =  probability.multiply(sequenceProbability);
+					//P(w1⋯wn)=P(w1)P(w2|w1)P(w3|w1w2)P(w4|w2w3)⋯P(wn|wn−2wn−1).
+				}
+				
 			}
 		}
-		return totalCost;
+		return probability;
 	}
 
 	private BigDecimal getSequenceProbability(String sequence) {
-		System.out.println(sequence);
+		BigDecimal sequenceProb = new BigDecimal(0.000000000000000000000000000001);
+	//	System.out.println(sequence);
 		String word = sequence.split(" ")[1];
 		List<Document> sequenceMatches = mongo.getSequenceMatches(collection, word, "word");
-		Document docMatch;
 		for(Document match : sequenceMatches) {
 			Document associations = (Document) match.get("associations");
 			Document ngramData = (Document) associations.get("2-gram");
 			Set<String> words = ngramData.keySet();
 			for(String keyWord : words) {
-				System.out.println(keyWord + " = " + sequence);
 				if(keyWord.equalsIgnoreCase(sequence)) {
 					Document thisWord = (Document) ngramData.get(keyWord);
 					Double probability = new Double(thisWord.get("probability").toString());
 					BigDecimal thisProb = new BigDecimal(probability);
-					System.out.println(thisProb);
 					return thisProb;
 				}
 			}
 		}
-		System.out.println("not found");
-		return null;
+		return sequenceProb;
 	}
 
 
-	private String generateCrossover(String parent1, String parent2){
-		Random random = new Random();
-		String child = "";
-		//TODO: FILL THIS IN
-		return child;
-	}
+//	private String generateCrossover(String parent1, String parent2){
+//		Random random = new Random();
+//		String child = "";
+//		//TODO: FILL THIS IN
+//		return child;
+//	}
 
 	private String mutatePoem(String poem){
 		Random random = new Random();
@@ -194,29 +202,30 @@ public class PoemGeneratorEA {
 	}
 
 
-	public double evaluateFinalPopulation() {
+	public BigDecimal evaluateFinalPopulation() {
 		//Find best poem from end population
-		double bestCost = 10000;
+		BigDecimal bestCost = new BigDecimal(0);
 		String bestPoem = "";
 		for(int i = 0; i < population.size(); i++) {
 			String thisPoem = population.get(i);
-			double thisCost = getCostOfPoem(thisPoem);
-			if(thisCost < bestCost) {
+			BigDecimal thisCost = getCostOfPoem(thisPoem);
+			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestPoem = thisPoem;
 			}
 		}
+		System.out.println("Best cost: " + bestCost);
 		System.out.println("Best poem: " + bestPoem); 
 		return bestCost;
 	}
 
 
 	private ArrayList<String> replaceWeakestIndividual(ArrayList<String> candidates){
-		double highestCost = 0;
+		BigDecimal highestCost = new BigDecimal(0);
 		String weakestCandidate = "";
 		for(String candidate : candidates) {
-			double thisCost = getCostOfPoem(candidate);
-			if(getCostOfPoem(candidate) > highestCost) {
+			BigDecimal thisCost = getCostOfPoem(candidate);
+			if(thisCost.compareTo(highestCost) > 0) {
 				highestCost = thisCost;
 				weakestCandidate = candidate;
 			}

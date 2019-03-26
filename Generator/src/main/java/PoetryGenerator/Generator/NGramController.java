@@ -32,7 +32,7 @@ public class NGramController {
 	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord1POS, String prevWord2POS) {
 		String result;
 
-		System.out.println("getting sequence matches for: " + word);
+	//	System.out.println("getting sequence matches for: " + word);
 		if(prevWord2 == null | prevWord2.equals("")) {
 			result	= findWordUsingBigram(prevWord1POS, prevWord1,  word);
 		} else {
@@ -93,7 +93,7 @@ public class NGramController {
 				break;
 			}
 		}
-		System.out.println("result --> " + result);
+//		System.out.println("result --> " + result);
 		return result;
 	}
 
@@ -171,7 +171,7 @@ public class NGramController {
 				break;
 			}
 		}
-		System.out.println("result --> " + result);
+	//	System.out.println("result --> " + result);
 		return result;
 	}
 
