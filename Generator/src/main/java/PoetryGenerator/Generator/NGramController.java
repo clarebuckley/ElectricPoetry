@@ -118,7 +118,7 @@ public class NGramController {
 
 			int j = 0;
 			for(String word : trigramWords ) {
-				if(j == 150) {
+				if(j == 100) {
 					break;
 				}
 				if(!useBigram) {
@@ -167,7 +167,7 @@ public class NGramController {
 				j++;
 			}
 			i++;
-			if(i == 150) {
+			if(i == 100) {
 				break;
 			}
 		}

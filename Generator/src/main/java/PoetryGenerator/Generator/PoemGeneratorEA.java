@@ -1,20 +1,27 @@
 package PoetryGenerator.Generator;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 
+import org.bson.Document;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 /**
  * Evolutionary algorithm to find the highest scoring poem
  * @author Clare Buckley
- * @version 11/03/19
+ * @version 26/03/19
  */
 
 public class PoemGeneratorEA {
-	
+
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	private PoemGenerator poemGenerator = new PoemGenerator();
+	private final MongoInterface mongo = new MongoInterface("poetryDB");
+	private final String collection = "languageModel";
 	//ArrayList of candidates to be used
 	private ArrayList<String> population;
 	//Number of candidate solutions
@@ -25,7 +32,7 @@ public class PoemGeneratorEA {
 	private final int numberOfGenerations;
 	//Sample size for tournament parent selection
 	private final int tournamentSize;
-	
+
 	public static void main(String[] args) {
 		new PoemGeneratorEA(1, 0.70, 1);
 	}
@@ -35,17 +42,17 @@ public class PoemGeneratorEA {
 		mutationProbability = mutationProbabilityParam;
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
-		
+
 		findBestPoem();
 	}
-	
+
 	private ArrayList<ArrayList<String>> findBestPoem(){
 		System.out.println("Initialising population");
 		initialisePopulation();
-		
+
 		System.out.println("\nGoing through " + numberOfGenerations + " generations...");
 		evolve();
-		
+
 		System.out.println("\nFinding best cost from final population...");
 		System.out.println("----------------------------");
 		double bestCost = evaluateFinalPopulation();
@@ -53,7 +60,7 @@ public class PoemGeneratorEA {
 		System.out.println("----------------------------");
 		return null;
 	}
-	
+
 	/**
 	 * Initialise population for evolutionary algorithm
 	 */
@@ -75,7 +82,7 @@ public class PoemGeneratorEA {
 			generations++;
 		}
 	}
-	
+
 	/**
 	 * One generation of the algorithm
 	 */
@@ -97,7 +104,7 @@ public class PoemGeneratorEA {
 		population = replaceWeakestIndividual(newPopulation);
 
 	}
-	
+
 	/**
 	 * Select one parent from the poem with lowest cost from
 	 * a subgroup of the population
@@ -116,17 +123,17 @@ public class PoemGeneratorEA {
 
 		//Get best candidate from selection
 		String bestCandidate = "";
-		double bestCost = 10000;
+		double bestCost = 0;
 		for(String candidate : candidates) {
 			double thisCost = getCostOfPoem(candidate);
-			if(thisCost < bestCost) {
+			if(thisCost > bestCost) {
 				bestCost = thisCost;
 				bestCandidate = candidate;
 			}
 		}
 		return bestCandidate;
 	}
-	
+
 	/**
 	 * Calculate cost of a candidate poem
 	 * @return
@@ -134,23 +141,59 @@ public class PoemGeneratorEA {
 	private double getCostOfPoem(String poem) {
 		double totalCost = 0;
 		//TODO: FILL THIS IN
+		String[] poemSentences = poem.split("\\?|\\.|\\!");
+		BigDecimal probability = new BigDecimal(1);
+		for(String sentence : poemSentences) {
+			String[] words = sentence.split(" ");
+			for(int i = 1; i < words.length-1; i++) {
+				String sequence =  words[i-1] + " " + words[i];
+				BigDecimal sequenceProbability = getSequenceProbability(sequence);
+				probability =  probability.multiply(sequenceProbability);
+				//P(w1⋯wn)=P(w1)P(w2|w1)P(w3|w1w2)P(w4|w2w3)⋯P(wn|wn−2wn−1).
+			}
+		}
 		return totalCost;
 	}
-	
+
+	private BigDecimal getSequenceProbability(String sequence) {
+		System.out.println(sequence);
+		String word = sequence.split(" ")[1];
+		List<Document> sequenceMatches = mongo.getSequenceMatches(collection, word, "word");
+		Document docMatch;
+		for(Document match : sequenceMatches) {
+			Document associations = (Document) match.get("associations");
+			Document ngramData = (Document) associations.get("2-gram");
+			Set<String> words = ngramData.keySet();
+			for(String keyWord : words) {
+				System.out.println(keyWord + " = " + sequence);
+				if(keyWord.equalsIgnoreCase(sequence)) {
+					Document thisWord = (Document) ngramData.get(keyWord);
+					Double probability = new Double(thisWord.get("probability").toString());
+					BigDecimal thisProb = new BigDecimal(probability);
+					System.out.println(thisProb);
+					return thisProb;
+				}
+			}
+		}
+		System.out.println("not found");
+		return null;
+	}
+
+
 	private String generateCrossover(String parent1, String parent2){
 		Random random = new Random();
 		String child = "";
 		//TODO: FILL THIS IN
 		return child;
 	}
-	
+
 	private String mutatePoem(String poem){
 		Random random = new Random();
 		//TODO: FILL THIS IN
 		return poem;
 	}
 
-	
+
 	public double evaluateFinalPopulation() {
 		//Find best poem from end population
 		double bestCost = 10000;
