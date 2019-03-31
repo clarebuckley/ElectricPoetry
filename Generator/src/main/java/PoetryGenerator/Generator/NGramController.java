@@ -16,6 +16,7 @@ import org.bson.Document;
 public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
+	private double probIncrease = 0;
 
 	public NGramController() {}
 
@@ -29,15 +30,19 @@ public class NGramController {
 	 * @param prevWord2POS - POS tag for n-2
 	 * @return
 	 */
-	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord1POS, String prevWord2POS) {
+	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord3, String prevWord1POS, String prevWord2POS, String prevWord3POS) {
 		String result;
 
-	//	System.out.println("getting sequence matches for: " + word);
-		if(prevWord2 == null | prevWord2.equals("")) {
+		//	System.out.println("getting sequence matches for: " + word);
+		if(prevWord2 == null || prevWord2.equals("")) {
 			result	= findWordUsingBigram(prevWord1POS, prevWord1,  word);
-		} else {
+		} 
+		else /*if(prevWord3 == null || prevWord3.equals("")) */{
 			result = findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
 		}
+	/*	else {
+			result = findWordUsingFourGram(prevWord3POS, prevWord2POS, prevWord1POS, prevWord3, prevWord2, prevWord1, word);
+		}*/
 
 		return result;
 	}
@@ -75,15 +80,22 @@ public class NGramController {
 				}
 				bigramN1 = word.split(" ")[0];
 				bigramWord = word.split(" ")[1];
-				if(prevWord1.trim().equals(bigramN1.trim())) {
-					//check probability
+				if(prevWord1.equals(bigramN1)) {
+					//check pos tag of previous words
 					Document thisWord = (Document) bigramData.get(word);
-					Double probability = new Double(thisWord.get("probability").toString());
-					BigDecimal thisProb = new BigDecimal(probability);
-					if(thisProb.compareTo(highestProbability) > 0) {
-						highestProbability = thisProb;
-						result = bigramWord;
-						break;
+					String posTags = thisWord.get("POS").toString();
+					
+					String prevWordPOS = posTags.split(" ")[0];
+					if(prevWordPOS.equals(prevWord1POS)) {
+						//check probability
+						
+						Double probability = new Double(thisWord.get("probability").toString());
+						BigDecimal thisProb = new BigDecimal(probability);
+						if(thisProb.compareTo(highestProbability) > 0) {
+							highestProbability = thisProb;
+							result = bigramWord;
+							break;
+						}
 					}
 				}
 				j++;
@@ -93,7 +105,7 @@ public class NGramController {
 				break;
 			}
 		}
-//		System.out.println("result --> " + result);
+		//		System.out.println("result --> " + result);
 		return result;
 	}
 
@@ -130,10 +142,16 @@ public class NGramController {
 					trigramN1 = word.split(" ")[0];
 					trigramWord = word.split(" ")[1];
 				}
-				if(useBigram) {
-					if(prevWord1.equals(trigramN1)) {
+
+				if(useBigram && prevWord1.equals(trigramN1) || (prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2))) {
+					//check pos tag of previous words
+					Document thisWord = (Document) ngramData.get(word);
+					String posTags = thisWord.get("POS").toString();
+					String[] posParts = posTags.split(" ");
+					String trigramPrev2POS = posParts[2];
+					String trigramPrev1POS = posParts[1];
+					if(trigramPrev2POS.equals(prevWord2POS) || trigramPrev1POS.equals(prevWord1POS)) {
 						//check probability
-						Document thisWord = (Document) ngramData.get(word);
 						Double probability = new Double(thisWord.get("probability").toString());
 						BigDecimal thisProb = new BigDecimal(probability);
 						if(thisProb.compareTo(highestProbability) > 0) {
@@ -142,28 +160,8 @@ public class NGramController {
 							break;
 						}
 					}
-				} else {
-					//should favour results using trigram over bigram
-					double probIncrease;
-					if(prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) {
-						probIncrease = 0.005;
-					} else {
-						probIncrease = 0;
-					}
-
-					if(prevWord1.equals(trigramN1)) {
-						//check probability
-						Document thisWord = (Document) ngramData.get(word);
-						Double probability = new Double(thisWord.get("probability").toString()) + probIncrease;  
-						BigDecimal thisProb = new BigDecimal(probability);
-						if(thisProb.compareTo(highestProbability) > 0) {
-							highestProbability = thisProb;
-							result = trigramWord;
-							break;
-						}
-					}
-
 				}
+
 				j++;
 			}
 			i++;
@@ -171,7 +169,91 @@ public class NGramController {
 				break;
 			}
 		}
-	//	System.out.println("result --> " + result);
+		//	System.out.println("result --> " + result);
+		return result;
+	}
+
+	private String findWordUsingFourGram(String prevWord3POS, String prevWord2POS, String prevWord1POS, String prevWord3, String prevWord2,  String prevWord1, String wordPOS) {
+		String result = null;
+		boolean useBigram = false;
+		boolean useTrigram = false;
+		List<Document> matches = mongo.getSequenceMatches(collection, wordPOS, "POS");
+		int i = 0;
+		BigDecimal highestProbability = new BigDecimal(0);
+
+		for(Document match : matches) {
+			Document associations = (Document) match.get("associations");
+			Document ngramData = (Document) associations.get("4-gram");
+
+			if(ngramData == null) {
+				useTrigram = true;
+				ngramData = (Document) associations.get("3-gram");
+				if(ngramData == null) {
+					useBigram = true;
+					useTrigram = false;
+					ngramData = (Document) associations.get("2-gram");
+				}
+			}
+
+			Set<String> trigramWords = ngramData.keySet();
+			String trigramN3 = "", trigramN2 = "", trigramN1, trigramWord;      	
+
+			int j = 0;
+			for(String word : trigramWords ) {
+				if(j == 100) {
+					break;
+				}
+				//Get words to use in four-gram
+				if(!useTrigram && !useBigram) {
+					trigramN3 = word.split(" ")[0];
+					trigramN2 = word.split(" ")[1];
+					trigramN1 = word.split(" ")[2];
+					trigramWord = word.split(" ")[3];
+				}
+				//Get words to use in trigram
+				if(!useBigram) {
+					trigramN2 = word.split(" ")[0];
+					trigramN1 = word.split(" ")[1];
+					trigramWord = word.split(" ")[2];
+				} else {
+					//Bigram
+					trigramN1 = "";
+					trigramN1 = word.split(" ")[0];
+					trigramWord = word.split(" ")[1];
+				}
+
+
+				if((useBigram && prevWord1.equals(trigramN1)) || 
+						(useTrigram && prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) ||
+						(prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) && prevWord3.equals(trigramN3)) {
+
+					//check pos tag of previous words
+					Document thisWord = (Document) ngramData.get(word);
+					String posTags = thisWord.get("POS").toString();
+					String[] posParts = posTags.split(" ");
+					String fourgramPrev3POS = posParts[3];
+					String fourgramPrev2POS = posParts[2];
+					String fourgramPrev1POS = posParts[1];
+					if(fourgramPrev3POS.equals(prevWord3POS) && fourgramPrev2POS.equals(prevWord2POS) && fourgramPrev1POS.equals(prevWord1POS)) {
+						//check probability
+						Double probability = new Double(thisWord.get("probability").toString());
+						BigDecimal thisProb = new BigDecimal(probability);
+						if(thisProb.compareTo(highestProbability) > 0) {
+							highestProbability = thisProb;
+							result = trigramWord;
+							break;
+						}
+					}
+				}
+
+				j++;
+			}
+			i++;
+			if(i == 100) {
+				break;
+			}
+		}
+		//	System.out.println("result --> " + result);
 		return result;
 	}
 

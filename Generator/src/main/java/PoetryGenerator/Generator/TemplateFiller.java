@@ -22,7 +22,9 @@ import org.languagetool.rules.RuleMatch;
 public class TemplateFiller {
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
-	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBP", "VBZ"));
+	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN", "PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"));
+	//private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("-RRB-","-LRB-","-lrb-","-rrb-"));
+	
 	private String punctuation = ".,:;-'''`!";
 	//List of grammar rules a line breaks
 	private List<RuleMatch> matches;
@@ -80,17 +82,19 @@ public class TemplateFiller {
 		//Each word in a line
 		for(int i = 0; i < templateLine.size(); i++) {
 			String[] completedWords = line.split(" ");
-			String prevWord1 = "", prevWord2 = "";
+			String prevWord1 = "", prevWord2 = "", prevWord3 = "";
 			prevWord1 = ((i>=1) ? completedWords[i-1].toLowerCase() : "");
 			prevWord2 = ((i>=2) ? completedWords[i-2].toLowerCase() : "");
-			String prevWord1POS = "", prevWord2POS = "";
+			prevWord3 = ((i>=3) ? completedWords[i-3].toLowerCase() : "");
+			String prevWord1POS = "", prevWord2POS = "", prevWord3POS = "";
 			prevWord1POS = ((i>=1) ? templateLine.get(i-1) : "");
-			prevWord2POS = ((i>=2) ? templateLine.get(i-2): "");
+			prevWord2POS = ((i>=2) ? templateLine.get(i-2) : "");
+			prevWord3POS = ((i>=3) ? templateLine.get(i-3) : "");
 
 			String word = "";
 
 	//		System.out.println("replacing word " + word);
-			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord1POS, prevWord2POS);
+			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, prevWord1POS, prevWord2POS, prevWord3POS);
 
 
 			line += word;
@@ -113,7 +117,7 @@ public class TemplateFiller {
 	 * @param line - the poem line so far
 	 * @return word - word to be used in this line
 	 */
-	public String getWord(String templateWord, String originalWord, String n1, String n2, String n1POS, String n2POS){
+	public String getWord(String templateWord, String originalWord, String n1, String n2, String n3, String n1POS, String n2POS, String n3POS){
 		String word = "";
 		if(templateWord.contains("`") || originalWord.contains("`")) {
 			word = "'";
@@ -135,7 +139,7 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			word = ngram.getWord(templateWord, originalWord, n1, n2, n1POS, n2POS);
+			word = ngram.getWord(templateWord, originalWord, n1, n2, n3, n1POS, n2POS, n3POS);
 			if(word == null) {
 				word = originalWord;
 			}
@@ -165,6 +169,7 @@ public class TemplateFiller {
 		line = line.replaceAll(" !", "!");
 		line = line.replaceAll(" \\?", "?");
 		line = line.replaceAll("'", "");
+		line = line.replaceAll("_", ".");
 		//Remove space before punctuation
 		line = line.replaceAll("\\s+(?=\\p{Punct})", "");
 

@@ -1,6 +1,7 @@
 package PoetryGenerator.Generator;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import org.bson.Document;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Random;
 import java.util.Set;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
+import org.languagetool.rules.Rule;
+import org.languagetool.rules.RuleMatch;
 /**
  * Evolutionary algorithm to find the highest scoring poem
  * @author Clare Buckley
@@ -33,7 +36,7 @@ public class PoemGeneratorEA {
 	private final int tournamentSize;
 
 	public static void main(String[] args) {
-		new PoemGeneratorEA(2, 0.70, 1);
+		new PoemGeneratorEA(1,0,1);
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam){
@@ -133,19 +136,24 @@ public class PoemGeneratorEA {
 	}
 
 	/**
-	 * Calculate cost of a candidate poem
+	 * Calculate cost of a candidate poem using chain rule on bigrams
+	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
 	 * @return
 	 */
 	private BigDecimal getCostOfPoem(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
-		BigDecimal probability = new BigDecimal(1);
+		
+		//probability += joint probability of words
+		BigDecimal probability = new BigDecimal(0);
 		for(String sentence : poemSentences) {
 			sentence = sentence.replace(",", " ,");
 			sentence = sentence.replace("?", " ?");
 			sentence = sentence.replace("!", " !");
 			String[] words = sentence.split(" ");
+			//Find probability of words[i]
 			for(int i = 0; i < words.length; i++) {
 				if(words[i].trim().length() != 0) {
+					//sequence: n-1, n
 					String sequence;
 					if(i == 0) {
 						sequence = "<s> " + words[i];
@@ -156,24 +164,32 @@ public class PoemGeneratorEA {
 					else {
 						sequence =  words[i-1] + " " + words[i];
 						}
-					BigDecimal sequenceProbability = getSequenceProbability(sequence);
-					 probability =  probability.multiply(sequenceProbability);
-					//P(w1⋯wn)=P(w1)P(w2|w1)P(w3|w1w2)P(w4|w2w3)⋯P(wn|wn−2wn−1).
+					//BigDecimal probOfXGivenY = 
+					//prob of this sequence = P(words[i]) * P(words[i-1] words[i])
+					String[] sequenceParts = sequence.split(" ");
+					BigDecimal thisProbability = getSequenceProbability(sequenceParts[0]).multiply(getSequenceProbability(sequenceParts[1]));
+					probability =  probability.add(thisProbability);
 				}
 				
 			}
 		}
+		System.out.println("probability: " + probability);
 		return probability;
 	}
 
 	private BigDecimal getSequenceProbability(String sequence) {
-		BigDecimal sequenceProb = new BigDecimal(0.000000000000000000000000000001);
-	//	System.out.println(sequence);
-		String word = sequence.split(" ")[1];
+		BigDecimal defaultProb = new BigDecimal(0.000000000000000000000000000001);
+		String word = sequence;
+		String gramVal = "1-gram";
+		if(sequence.split(" ").length > 1) {
+			word = sequence.split(" ")[1];
+			gramVal = "2-gram";
+		}
+		
 		List<Document> sequenceMatches = mongo.getSequenceMatches(collection, word, "word");
 		for(Document match : sequenceMatches) {
 			Document associations = (Document) match.get("associations");
-			Document ngramData = (Document) associations.get("2-gram");
+			Document ngramData = (Document) associations.get(gramVal);
 			Set<String> words = ngramData.keySet();
 			for(String keyWord : words) {
 				if(keyWord.equalsIgnoreCase(sequence)) {
@@ -184,7 +200,7 @@ public class PoemGeneratorEA {
 				}
 			}
 		}
-		return sequenceProb;
+		return defaultProb;
 	}
 
 
@@ -196,8 +212,24 @@ public class PoemGeneratorEA {
 //	}
 
 	private String mutatePoem(String poem){
-		Random random = new Random();
-		//TODO: FILL THIS IN
+		List<RuleMatch> matches;
+		
+			try {
+				matches = langTool.check(poem);
+				if(matches.size() > 0) {
+					for(RuleMatch match : matches) {
+						System.out.println(match);
+					}
+					
+				} else {
+					System.out.println("no matches");
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		
 		return poem;
 	}
 
@@ -221,12 +253,12 @@ public class PoemGeneratorEA {
 
 
 	private ArrayList<String> replaceWeakestIndividual(ArrayList<String> candidates){
-		BigDecimal highestCost = new BigDecimal(0);
+		BigDecimal lowestProb = new BigDecimal(100);
 		String weakestCandidate = "";
 		for(String candidate : candidates) {
 			BigDecimal thisCost = getCostOfPoem(candidate);
-			if(thisCost.compareTo(highestCost) > 0) {
-				highestCost = thisCost;
+			if(thisCost.compareTo(lowestProb) < 0) {
+				lowestProb = thisCost;
 				weakestCandidate = candidate;
 			}
 		}
