@@ -36,7 +36,7 @@ public class PoemGeneratorEA {
 	private final int tournamentSize;
 
 	public static void main(String[] args) {
-		new PoemGeneratorEA(1,0,1);
+		new PoemGeneratorEA(5,0,1);
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam){
@@ -138,6 +138,9 @@ public class PoemGeneratorEA {
 	/**
 	 * Calculate cost of a candidate poem using chain rule on bigrams
 	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
+	 * try fourgram with bigram generation, etc
+	 * discuss why results have given that result, interpret results and explore combinations
+	 * allow config for different grams/cost generations
 	 * @return
 	 */
 	private BigDecimal getCostOfPoem(String poem) {
@@ -247,7 +250,7 @@ public class PoemGeneratorEA {
 			}
 		}
 		System.out.println("Best cost: " + bestCost);
-		System.out.println("Best poem: " + bestPoem); 
+		System.out.println("Best poem: \n" + bestPoem); 
 		return bestCost;
 	}
 
