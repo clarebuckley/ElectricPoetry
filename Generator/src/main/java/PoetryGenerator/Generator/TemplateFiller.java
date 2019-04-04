@@ -22,14 +22,10 @@ import org.languagetool.rules.RuleMatch;
 public class TemplateFiller {
 	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
-	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN","PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"));
+	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN"/*,"PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"*/));
 	//private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("-RRB-","-LRB-","-lrb-","-rrb-"));
 
 	private String punctuation = ".,:;-'''`!";
-	//List of grammar rules a line breaks
-	private List<RuleMatch> matches;
-	//Flag for validity of current word
-	private boolean wordValid = false;
 
 	private List<String> templateLine;
 	private List<String> originalLine;
@@ -96,7 +92,7 @@ public class TemplateFiller {
 			//		System.out.println("replacing word " + word);
 	
 			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, prevWord1POS, prevWord2POS, prevWord3POS);
-			System.out.println(word);
+	
 
 			line += word;
 			//Don't add space after word if it's the end of a line
@@ -132,12 +128,11 @@ public class TemplateFiller {
 		}
 		//Replace tags with words from wordbank
 		else if(!punctuation.contains(templateWord)) {
-			System.out.println("Input: " + templateWord + ", original: " + originalWord);
 			word = ngram.getWord(templateWord, originalWord, n1, n2, n3, n1POS, n2POS, n3POS);
 			if(word == null) {
 				word = originalWord;
 			}
-			System.out.println(originalWord + " --> " + word);
+		
 		} else {
 			word = templateWord;
 		}
@@ -206,7 +201,7 @@ public class TemplateFiller {
 	 * @param line
 	 * @return true if word is contained in dictionary
 	 */
-	public boolean spellCheckWord(String word) {
+/*	public boolean spellCheckWord(String word) {
 		if(word == null) {
 			wordValid = false;
 			return false;
@@ -238,7 +233,7 @@ public class TemplateFiller {
 				return false;
 			}
 		}
-	}
+	}*/
 
 
 }

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import javax.measure.quantity.Length;
+
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.Rule;
@@ -36,7 +39,7 @@ public class PoemGeneratorEA {
 	private final int tournamentSize;
 
 	public static void main(String[] args) {
-		new PoemGeneratorEA(5,0,1);
+		new PoemGeneratorEA(2,1,1);
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam){
@@ -90,9 +93,9 @@ public class PoemGeneratorEA {
 	private void oneGeneration() {
 		//Select parents
 		String tournamentSelection = tournamentParentSelection();
-//		String parent2 = tournamentParentSelection();
+		//		String parent2 = tournamentParentSelection();
 		//Recombine parents
-//		String child = generateCrossover(parent1, parent2);
+		//		String child = generateCrossover(parent1, parent2);
 		//Mutate resulting offspring and add to possible solutions
 
 		if(Math.random() < mutationProbability) {
@@ -126,7 +129,7 @@ public class PoemGeneratorEA {
 		String bestCandidate = "";
 		BigDecimal bestCost = new BigDecimal(0);
 		for(String candidate : candidates) {
-			BigDecimal thisCost = getCostOfPoem(candidate);
+			BigDecimal thisCost = getCostOfPoemThreeGram(candidate);
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestCandidate = candidate;
@@ -145,10 +148,11 @@ public class PoemGeneratorEA {
 	 */
 	private BigDecimal getCostOfPoem(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
-		
+
 		//probability += joint probability of words
 		BigDecimal probability = new BigDecimal(0);
 		for(String sentence : poemSentences) {
+			//Split punctuation to help with process
 			sentence = sentence.replace(",", " ,");
 			sentence = sentence.replace("?", " ?");
 			sentence = sentence.replace("!", " !");
@@ -162,33 +166,83 @@ public class PoemGeneratorEA {
 						sequence = "<s> " + words[i];
 					}
 					else if(i == words.length) {
-						sequence = words[i] + "</s>";
+						sequence = words[i] + " </s>";
 					}
 					else {
 						sequence =  words[i-1] + " " + words[i];
-						}
+					}
 					//BigDecimal probOfXGivenY = 
 					//prob of this sequence = P(words[i]) * P(words[i-1] words[i])
 					String[] sequenceParts = sequence.split(" ");
 					BigDecimal thisProbability = getSequenceProbability(sequenceParts[0]).multiply(getSequenceProbability(sequenceParts[1]));
 					probability =  probability.add(thisProbability);
 				}
-				
+
 			}
 		}
 		System.out.println("probability: " + probability);
 		return probability;
 	}
 
+
+	private BigDecimal getCostOfPoemThreeGram(String poem) {
+		String[] poemSentences = poem.split("\\?|\\.|\\!");
+
+		//probability += joint probability of words
+		BigDecimal probability = new BigDecimal(0);
+		for(String sentence : poemSentences) {
+			sentence = sentence.trim();
+			if(sentence.length() > 0) {
+				System.out.println("Probability of " + sentence);
+				//Split punctuation to help with process
+				sentence = sentence.replace(",", " ,");
+				sentence = sentence.replace("?", " ?");
+				sentence = sentence.replace("!", " !");
+				String[] words = sentence.split(" ");
+				//Find probability of words[i]
+				for(int i = 1; i < words.length; i++) {
+					if(words[i].trim().length() != 0) {
+						//sequence: n-1, n
+						String sequence;
+						if(i == 1) {
+							sequence = "<s> " + words[i-1] + " " + words[i];
+						}
+						else if(i == words.length) {
+							sequence = words[i-1] + " " + words[i] + "</s>";
+						}
+						else {
+							sequence =  words[i-2] + " " + words[i-1] + " " + words[i];
+						}
+						//BigDecimal probOfXGivenY = 
+						//prob of this sequence = P(words[i]) * P(words[i-1] words[i])
+						String[] sequenceParts = sequence.split(" ");
+						BigDecimal thisProbability = getSequenceProbability(sequenceParts[0]).multiply(getSequenceProbability(sequenceParts[1] + " " + sequenceParts[2]));
+						probability =  probability.add(thisProbability);
+					}
+
+				}
+			}
+		}
+		System.out.println("probability: " + probability);
+		return probability;
+	}
+
+
+
+
 	private BigDecimal getSequenceProbability(String sequence) {
 		BigDecimal defaultProb = new BigDecimal(0.000000000000000000000000000001);
 		String word = sequence;
 		String gramVal = "1-gram";
-		if(sequence.split(" ").length > 1) {
+		if(sequence.split(" ").length == 2) {
 			word = sequence.split(" ")[1];
 			gramVal = "2-gram";
 		}
-		
+		if(sequence.split(" ").length == 3) {
+			word = sequence.split(" ")[2];
+			gramVal = "3-gram";
+		}
+
 		List<Document> sequenceMatches = mongo.getSequenceMatches(collection, word, "word");
 		for(Document match : sequenceMatches) {
 			Document associations = (Document) match.get("associations");
@@ -207,32 +261,22 @@ public class PoemGeneratorEA {
 	}
 
 
-//	private String generateCrossover(String parent1, String parent2){
-//		Random random = new Random();
-//		String child = "";
-//		//TODO: FILL THIS IN
-//		return child;
-//	}
-
 	private String mutatePoem(String poem){
 		List<RuleMatch> matches;
-		
-			try {
-				matches = langTool.check(poem);
-				if(matches.size() > 0) {
-					for(RuleMatch match : matches) {
-						System.out.println(match);
-					}
-					
-				} else {
-					System.out.println("no matches");
+		try {
+			matches = langTool.check(poem);
+			if(matches.size() > 0) {
+				for(RuleMatch match : matches) {
+					System.out.println(match);
+					System.out.println(match.getRule());
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} else {
+				System.out.println("no matches");
 			}
-			
-		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return poem;
 	}
 
@@ -243,7 +287,7 @@ public class PoemGeneratorEA {
 		String bestPoem = "";
 		for(int i = 0; i < population.size(); i++) {
 			String thisPoem = population.get(i);
-			BigDecimal thisCost = getCostOfPoem(thisPoem);
+			BigDecimal thisCost = getCostOfPoemThreeGram(thisPoem);
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestPoem = thisPoem;
@@ -259,12 +303,13 @@ public class PoemGeneratorEA {
 		BigDecimal lowestProb = new BigDecimal(100);
 		String weakestCandidate = "";
 		for(String candidate : candidates) {
-			BigDecimal thisCost = getCostOfPoem(candidate);
+			BigDecimal thisCost = getCostOfPoemThreeGram(candidate);
 			if(thisCost.compareTo(lowestProb) < 0) {
 				lowestProb = thisCost;
 				weakestCandidate = candidate;
 			}
 		}
+
 		int weakIndex = population.indexOf(weakestCandidate);
 		candidates.remove(weakIndex);
 		return candidates;

@@ -202,7 +202,7 @@ public class NGramController {
 				trigramN1 = word.split(" ")[2];
 				trigramWord = word.split(" ")[3];
 
-				if((prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) /*& prevWord3.equals(trigramN3)*/) {
+				if((prevWord1.equals(trigramN1) && prevWord2.equals(trigramN2)) & prevWord3.equals(trigramN3)) {
 
 					//check pos tag of previous words
 					Document thisWord = (Document) ngramData.get(word);
