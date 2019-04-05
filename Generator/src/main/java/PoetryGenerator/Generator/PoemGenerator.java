@@ -1,8 +1,6 @@
 package PoetryGenerator.Generator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import org.bson.Document;
 
@@ -10,34 +8,24 @@ import org.bson.Document;
  * Generate poem using TemplateMutator and TemplateFiller
  * Contains main method to print out poem
  * @author Clare Buckley
- * @version 15/02/2019
+ * @version 05/04/19
  *
  */
 
 public class PoemGenerator {
-	//Title of poem
-	private String poemTitle = "Androids Dream of Electric Sheep";
+	private String generationGram;
 
-	public static void main(String[] args) {
-		new PoemGenerator();
 
-	}
 
-	public PoemGenerator() {
-		//		System.out.println("------------------------------------");
-		//		System.out.println("Writing your poem...");
-		//		
-		//		String poem = generatePoem(1);
-		//		System.out.println(poem);
-		//		printPoem(poem);
+	public PoemGenerator(String generationGram) {
+		this.generationGram = generationGram;
 	}
 
 
 	public String generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateMutator templateMutator = new TemplateMutator(1);
-		TemplateFiller templateFiller = new TemplateFiller();
-		//	PoemGeneratorEA meaningGenerator = new PoemGeneratorEA(10, 0.70, 50);
+		TemplateFiller templateFiller = new TemplateFiller(generationGram);
 		List<List<Document>> poemText = templateMutator.getPoemText();
 		List<List<Document>> template = templateMutator.getPoemTemplate();
 		poem = templateFiller.processTemplate(template, poemText);

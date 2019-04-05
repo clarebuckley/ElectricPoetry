@@ -9,16 +9,18 @@ import org.bson.Document;
 /**
  * Generate word sequences using n-grams stored in database
  * @author Clare Buckley
- * @version 03/04/19
+ * @version 05/04/19
  *
  */
 
 public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
-	private double probIncrease = 0;
+	private String generationGram;
 
-	public NGramController() {}
+	public NGramController(String generationGram) {
+		this.generationGram = generationGram;
+	}
 
 	/**
 	 * 
@@ -32,18 +34,16 @@ public class NGramController {
 	 */
 	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord3, String prevWord1POS, String prevWord2POS, String prevWord3POS) {
 		String result;
-
-		if(prevWord2 == null || prevWord2.equals("")) {
-			result	= findWordUsingBigram(prevWord1POS, prevWord1,  word);
-		} 
-		else if(prevWord3 == null || prevWord3.equals("")){
-			result = findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
+		switch(generationGram) {
+		case "2-gram":
+			return findWordUsingBigram(prevWord1POS, prevWord1,  word);
+		case "3-gram":
+			return findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
+		case "4-gram":
+			return findWordUsingFourGram(prevWord3POS, prevWord2POS, prevWord1POS, prevWord3, prevWord2, prevWord1, word);
+		default:
+			throw new Error("Generation-gram must be either 2, 3, or 4-gram");
 		}
-		else {
-			result = findWordUsingFourGram(prevWord3POS, prevWord2POS, prevWord1POS, prevWord3, prevWord2, prevWord1, word);
-		}
-
-		return result;
 	}
 
 

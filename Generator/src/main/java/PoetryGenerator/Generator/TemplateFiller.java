@@ -1,5 +1,4 @@
 package PoetryGenerator.Generator;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,18 +8,15 @@ import java.util.regex.Pattern;
 import org.bson.Document;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
-import org.languagetool.rules.Rule;
-import org.languagetool.rules.RuleMatch;
 
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 25/03/19
+ * @version 05/04/19
  *
  */
 
 public class TemplateFiller {
-	private JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN"/*,"PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"*/));
 	//private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("-RRB-","-LRB-","-lrb-","-rrb-"));
@@ -30,9 +26,12 @@ public class TemplateFiller {
 	private List<String> templateLine;
 	private List<String> originalLine;
 
-	private NGramController ngram = new NGramController();
+	private NGramController ngram ;
 
-	public TemplateFiller() {}
+	public TemplateFiller(String generationGram) {
+		ngram  = new NGramController(generationGram);
+	}
+
 
 	/**
 	 * Process the POS poem template to create meaningful poem
@@ -90,9 +89,9 @@ public class TemplateFiller {
 			String word = "";
 
 			//		System.out.println("replacing word " + word);
-	
+
 			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, prevWord1POS, prevWord2POS, prevWord3POS);
-	
+
 
 			line += word;
 			//Don't add space after word if it's the end of a line
@@ -121,7 +120,7 @@ public class TemplateFiller {
 			templateWord= "'";
 			originalWord= "'";
 		}
-	
+
 		//Only replace some words, keep others same as in original text
 		else if (retainOriginal.contains(templateWord) || punctuation.contains(templateWord)) {
 			word = originalWord;
@@ -132,7 +131,7 @@ public class TemplateFiller {
 			if(word == null) {
 				word = originalWord;
 			}
-		
+
 		} else {
 			word = templateWord;
 		}
@@ -201,7 +200,7 @@ public class TemplateFiller {
 	 * @param line
 	 * @return true if word is contained in dictionary
 	 */
-/*	public boolean spellCheckWord(String word) {
+	/*	public boolean spellCheckWord(String word) {
 		if(word == null) {
 			wordValid = false;
 			return false;
