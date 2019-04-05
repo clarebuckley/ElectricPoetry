@@ -1,18 +1,7 @@
 package PoetryGenerator.Generator;
-
-
-import java.io.IOException;
 import java.math.BigDecimal;
-import org.bson.Document;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-
-import org.languagetool.JLanguageTool;
-import org.languagetool.language.BritishEnglish;
-import org.languagetool.rules.Rule;
-import org.languagetool.rules.RuleMatch;
 /**
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
@@ -23,6 +12,7 @@ import org.languagetool.rules.RuleMatch;
 public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
+	private BigDecimal costIncrease = new BigDecimal(0);
 	//ArrayList of candidates to be used
 	private ArrayList<String> population;
 	//Number of candidate solutions
@@ -91,13 +81,11 @@ public class PoemGeneratorEA {
 	private void oneGeneration() {
 		//Select parents
 		String tournamentSelection = tournamentParentSelection();
-		//		String parent2 = tournamentParentSelection();
-		//Recombine parents
-		//		String child = generateCrossover(parent1, parent2);
+	//			String child = generateCrossover(parent1, parent2);   TODO: child = languageTool fixed version of parent
+		
 		//Mutate resulting offspring and add to possible solutions
-
 		if(Math.random() < mutationProbability) {
-			tournamentSelection =	mutatePoem(tournamentSelection);
+			tournamentSelection =	mutatePoem(tournamentSelection);  //TODO: this will be child mutated
 		}
 
 		ArrayList<String> newPopulation = population;
@@ -138,7 +126,7 @@ public class PoemGeneratorEA {
 	
 
 	private String mutatePoem(String poem){
-		
+		//add rhyme --> costIncreased after mutation
 		return poem;
 	}
 
