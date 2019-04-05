@@ -18,7 +18,6 @@ public class CostCalculator {
 	}
 
 	public BigDecimal getCost(String poem) {
-		System.out.println(evaluationGram);
 		switch(evaluationGram) {
 		case "2-gram":
 			return getCostOfPoemBigram(poem);
