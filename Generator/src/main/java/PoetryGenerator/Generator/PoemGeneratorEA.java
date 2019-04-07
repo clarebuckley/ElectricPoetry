@@ -1,7 +1,16 @@
 package PoetryGenerator.Generator;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.BritishEnglish;
+import org.languagetool.rules.RuleMatch;
 /**
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
@@ -12,9 +21,8 @@ import java.util.Random;
 public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
-	private BigDecimal costIncrease = new BigDecimal(0);
 	//ArrayList of candidates to be used
-	private ArrayList<String> population;
+	private HashMap<String,BigDecimal> population = new HashMap<String,BigDecimal>();    
 	//Number of candidate solutions
 	private final int populationSize;
 	//Probability of mutation being performed on candidates
@@ -24,11 +32,11 @@ public class PoemGeneratorEA {
 	//Sample size for tournament parent selection
 	private final int tournamentSize;
 
-	public static void main(String[] args) {
-		new PoemGeneratorEA(5,1,1, "2-gram", "3-gram");
+	public static void main(String[] args) throws IOException {
+		new PoemGeneratorEA(2,1,1, "4-gram", "3-gram");
 	}
 
-	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram){
+	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
 		costCalculator = new CostCalculator(evaluatorGram);
 		poemGenerator = new PoemGenerator(generatorGram);
 		populationSize = populationSizeParam;
@@ -39,9 +47,10 @@ public class PoemGeneratorEA {
 		findBestPoem();
 	}
 
-	private ArrayList<ArrayList<String>> findBestPoem(){
+	private ArrayList<ArrayList<String>> findBestPoem() throws IOException{
 		System.out.println("Initialising population\n");
 		initialisePopulation();
+		initialisePopulationProbabilities();
 
 		System.out.println("\nGoing through " + numberOfGenerations + " generations...");
 		evolve();
@@ -57,17 +66,24 @@ public class PoemGeneratorEA {
 	 * Initialise population for evolutionary algorithm
 	 */
 	private void initialisePopulation() {
-		population = new ArrayList<String>();
 		for(int i = 0; i < populationSize; i++) {
-			population.add(poemGenerator.generatePoem(1));
-			System.out.println(population.get(i));
+			String poem = poemGenerator.generatePoem(1);
+			population.put(poem, new BigDecimal(0));
+			System.out.println(poem);
 		}
 	}
 
+	private void initialisePopulationProbabilities() {
+		for(Map.Entry<String, BigDecimal> poem : population.entrySet()) {
+			BigDecimal poemCost = costCalculator.getCost(poem.getKey());
+			population.replace(poem.getKey(), poemCost);
+		}
+	}
 	/**
 	 * Go through number of generations and improve potential solutions
+	 * @throws IOException 
 	 */
-	private void evolve() {
+	private void evolve() throws IOException {
 		int generations = 0;
 		while(generations < numberOfGenerations) {
 			oneGeneration();
@@ -77,19 +93,22 @@ public class PoemGeneratorEA {
 
 	/**
 	 * One generation of the algorithm
+	 * @throws IOException 
 	 */
-	private void oneGeneration() {
+	private void oneGeneration() throws IOException {
 		//Select parents
-		String tournamentSelection = tournamentParentSelection();
-	//			String child = generateCrossover(parent1, parent2);   TODO: child = languageTool fixed version of parent
-		
+		String parent = tournamentParentSelection();
+		String child = fixGrammar(parent); 
+		System.out.println("Child: " + child);
+
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
-			tournamentSelection =	mutatePoem(tournamentSelection);  //TODO: this will be child mutated
+			//		child =	addRhyme(child);  //TODO: this will be child mutated
+			//		System.out.println("Fixed grammar: " + child);
 		}
 
-		ArrayList<String> newPopulation = population;
-		newPopulation.add(tournamentSelection);
+		HashMap<String, BigDecimal> newPopulation = population;
+		newPopulation.put(child, new BigDecimal(0));
 		//Replace weakest member of population
 		population = replaceWeakestIndividual(newPopulation);
 
@@ -107,15 +126,15 @@ public class PoemGeneratorEA {
 
 		//Get candidate parents
 		for(int i = 0; i < sampleSize; i++) {
-			int randomIndex = random.nextInt(populationSize);
-			candidates.add(population.get(randomIndex));
+			String randomPoem = (String) population.keySet().toArray()[random.nextInt(population.keySet().toArray().length)];
+			candidates.add(randomPoem);
 		}
 
 		//Get best candidate from selection
 		String bestCandidate = "";
 		BigDecimal bestCost = new BigDecimal(0);
 		for(String candidate : candidates) {
-			BigDecimal thisCost = costCalculator.getCost(candidate);
+			BigDecimal thisCost = population.get(candidate);
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestCandidate = candidate;
@@ -123,11 +142,89 @@ public class PoemGeneratorEA {
 		}
 		return bestCandidate;
 	}
-	
 
-	private String mutatePoem(String poem){
+
+	private String addRhyme(String poem){
+		System.out.println("Adding rhyme");
 		//add rhyme --> costIncreased after mutation
+		String[] poemLines = poem.split("\\r?\\n");
+		ArrayList<String> rhymeCandidates = new ArrayList<String>();
+		//Get alternate ending words
+		for(int i = 0; i < poemLines.length; i++) {
+			System.out.println(poemLines[i]);
+			if (i % 2 == 0) {
+				String[] lineWords = poemLines[i].split(" ");
+				String lastWord = lineWords[lineWords.length-1];
+				rhymeCandidates.add(lastWord);
+			}
+		}
 		return poem;
+	}
+
+	private String fixGrammar(String poem) throws IOException {
+		JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
+		List<RuleMatch> matches = langTool.check(poem);
+		System.out.println(matches.size() + " matches");
+		if(matches.size() > 0) {
+			for (RuleMatch match : matches) {
+				String ruleId = match.getRule().getId();
+
+				int from = match.getFromPos();
+				int to = match.getToPos();
+				System.out.println(ruleId);
+				List<String> suggestions =  match.getSuggestedReplacements();
+				if(suggestions.size() > 0) {
+					System.out.println("has suggestions");
+					poem = replaceWithSuggestion(poem, from, to, suggestions);
+				} 
+				else if(ruleId.equals("SENTENCE_FRAGMENT")) {
+					//
+				}
+				else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
+					String toReplace = poem.substring(match.getFromPos(), match.getToPos());
+					poem = poem.replace(toReplace, "");
+				}
+				else {
+					System.out.println("other rule --> " + ruleId);
+					System.out.println(match.getRule().getDescription());
+					if(suggestions.size()>0) {
+						System.out.println(suggestions.get(0));
+					} else {
+						System.out.println("no suggestions");
+					}
+
+				}
+
+			}
+		}
+		return poem;
+	}
+
+	/**
+	 * Replace incorrect grammar with suggestions
+	 * @param line - whole line containing error
+	 * @param from - start index of error
+	 * @param to - end index of error
+	 * @param suggestions - possible ways to correct issue
+	 */
+	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
+		Random random = new Random();
+		int randomIndex = random.nextInt(suggestions.size());
+		String toReplace = line.substring(from, to);
+		System.out.println("from " + from + " - to " + to);
+		String replacement = suggestions.get(randomIndex);
+
+		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
+		String contentBefore = line.substring(0, from);
+		String contentAfter = line.substring(to, line.length());
+		System.out.println("from " + from + " to " + to + " --> " + toReplace);
+
+		line = contentBefore + replacement + contentAfter;
+
+
+		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);
+
+		return line;
 	}
 
 
@@ -135,12 +232,11 @@ public class PoemGeneratorEA {
 		//Find best poem from end population
 		BigDecimal bestCost = new BigDecimal(0);
 		String bestPoem = "";
-		for(int i = 0; i < population.size(); i++) {
-			String thisPoem = population.get(i);
-			BigDecimal thisCost = costCalculator.getCost(thisPoem);
+		for(Map.Entry<String, BigDecimal> poem:population.entrySet())   {
+			BigDecimal thisCost = poem.getValue();
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
-				bestPoem = thisPoem;
+				bestPoem = poem.getKey();
 			}
 		}
 		System.out.println("Best cost: " + bestCost);
@@ -149,19 +245,17 @@ public class PoemGeneratorEA {
 	}
 
 
-	private ArrayList<String> replaceWeakestIndividual(ArrayList<String> candidates){
+	private HashMap<String, BigDecimal>  replaceWeakestIndividual(HashMap<String, BigDecimal> candidates){
 		BigDecimal lowestProb = new BigDecimal(100);
 		String weakestCandidate = "";
-		for(String candidate : candidates) {
-			BigDecimal thisCost = costCalculator.getCost(candidate);
+		for(Map.Entry<String, BigDecimal> candidate:candidates.entrySet())   {
+			BigDecimal thisCost = candidate.getValue();
 			if(thisCost.compareTo(lowestProb) < 0) {
 				lowestProb = thisCost;
-				weakestCandidate = candidate;
+				weakestCandidate = candidate.getKey();
 			}
 		}
-
-		int weakIndex = population.indexOf(weakestCandidate);
-		candidates.remove(weakIndex);
+		candidates.remove(weakestCandidate);
 		return candidates;
 	}
 
