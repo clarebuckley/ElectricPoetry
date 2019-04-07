@@ -162,6 +162,10 @@ public class PoemGeneratorEA {
 	}
 
 	private String fixGrammar(String poem) throws IOException {
+		//More probable after fixing grammar
+		BigDecimal newProb = population.get(poem).add(new BigDecimal(0.0001));
+		population.replace(poem, newProb);
+		
 		JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 		List<RuleMatch> matches = langTool.check(poem);
 		System.out.println(matches.size() + " matches");
@@ -177,9 +181,6 @@ public class PoemGeneratorEA {
 					System.out.println("has suggestions");
 					poem = replaceWithSuggestion(poem, from, to, suggestions);
 				} 
-				else if(ruleId.equals("SENTENCE_FRAGMENT")) {
-					//
-				}
 				else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
 					String toReplace = poem.substring(match.getFromPos(), match.getToPos());
 					poem = poem.replace(toReplace, "");
@@ -192,9 +193,7 @@ public class PoemGeneratorEA {
 					} else {
 						System.out.println("no suggestions");
 					}
-
 				}
-
 			}
 		}
 		return poem;
@@ -215,7 +214,7 @@ public class PoemGeneratorEA {
 		String replacement = suggestions.get(randomIndex);
 
 		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
-		String contentBefore = line.substring(0, from);
+		String contentBefore = line.substring(0, from-1);
 		String contentAfter = line.substring(to, line.length());
 		System.out.println("from " + from + " to " + to + " --> " + toReplace);
 

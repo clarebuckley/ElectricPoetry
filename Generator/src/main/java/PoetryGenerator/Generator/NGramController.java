@@ -33,17 +33,20 @@ public class NGramController {
 	 * @return
 	 */
 	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord3, String prevWord1POS, String prevWord2POS, String prevWord3POS) {
-		String result;
+		String wordToReturn = "";
 		switch(generationGram) {
 		case "2-gram":
-			return findWordUsingBigram(prevWord1POS, prevWord1,  word);
+			wordToReturn = findWordUsingBigram(prevWord1POS, prevWord1,  word);
 		case "3-gram":
-			return findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
+			wordToReturn = findWordUsingTrigram(prevWord2POS, prevWord1POS, prevWord2, prevWord1, word);
 		case "4-gram":
-			return findWordUsingFourGram(prevWord3POS, prevWord2POS, prevWord1POS, prevWord3, prevWord2, prevWord1, word);
-		default:
-			throw new Error("Generation-gram must be either 2, 3, or 4-gram");
+			wordToReturn = findWordUsingFourGram(prevWord3POS, prevWord2POS, prevWord1POS, prevWord3, prevWord2, prevWord1, word);
 		}
+		
+		if(word == 	"NNP" || word == "NNPS") {
+			wordToReturn = wordToReturn.substring(0, 1).toUpperCase() + wordToReturn.substring(1);
+		}
+		return wordToReturn;
 	}
 
 
