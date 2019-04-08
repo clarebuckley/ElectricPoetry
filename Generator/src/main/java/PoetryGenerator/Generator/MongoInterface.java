@@ -2,13 +2,9 @@ package PoetryGenerator.Generator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import javax.json.Json;
-
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;

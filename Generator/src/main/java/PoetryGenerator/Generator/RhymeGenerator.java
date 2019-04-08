@@ -16,10 +16,14 @@ public class RhymeGenerator {
 	}
 
 	public String getRhymingWord(String prevWord3, String prevWord2, String prevWord1, String wordToReplace, String wordToRhymeWith) {
+		System.out.println(wordToRhymeWith);
+		//Default: return original word
+				String rhymingWord = wordToReplace;
 		wordToReplace = wordToReplace.split("[\\p{Punct}\\s]+")[0];
-		prevWord3 = prevWord3 + " ";
-		prevWord2 = prevWord2 + " ";
-		prevWord1 = prevWord1 + " ";
+		wordToRhymeWith = wordToRhymeWith.split("[\\p{Punct}\\s]+")[0];
+//		prevWord3 = prevWord3 + " ";
+//		prevWord2 = prevWord2 + " ";
+//		prevWord1 = prevWord1 + " ";
 		switch(generationGram) {
 		case "2-gram":
 			prevWord3 = "";
@@ -28,8 +32,7 @@ public class RhymeGenerator {
 			prevWord3 = "";
 		}
 
-		//Default: return original word
-		String rhymingWord = wordToReplace;
+		
 		String prevSequence = prevWord3 + prevWord2 + prevWord1;
 
 		Document wordFromDb = mongo.getSequenceMatches(collection, wordToReplace, "word").get(0);
@@ -42,18 +45,20 @@ public class RhymeGenerator {
 			if(doWordsRhyme(wordMatch, wordToRhymeWith)) {
 				System.out.println("Rhyme found!");
 				Document associations = (Document) match.get("associations");
-				Document gramData = (Document) associations.get(generationGram);
-				if(gramData != null) {
-					Set<String> gramWords = gramData.keySet();
-					for(String word : gramWords ) {
-						String prevParts = word.replace(wordMatch, "");
-						Double probability;
-						if(prevSequence.equals(prevParts) && !wordMatch.split("[\\p{Punct}\\s]+")[0].equals(wordToReplace)) {
-							 probability = new Double(match.get("probability").toString());
-						}
-						else {
-							 probability = 0.00000001;
-						}
+				Document ngram = (Document) associations.get("2-gram");
+				for(String ngramSequence : ngram.keySet()) {
+					String ngramPrev1 = ngramSequence.split(" ")[0].replaceAll("_", ".");
+					System.out.println(ngramPrev1 + ", " + prevWord1);
+					Document ngramPrev1Db = mongo.getSequenceMatches(collection, ngramPrev1, "word").get(0);
+					Document prevWord1Db = mongo.getSequenceMatches(collection, prevWord1, "word").get(0);
+					String ngramPrev1POS = ngramPrev1Db.getString("POS");
+					String prevWord1POS = prevWord1Db.getString("POS");
+					System.out.println("...but does " + ngramPrev1POS + " = " + prevWord1POS +"?");
+					if(!wordMatch.split("[\\p{Punct}\\s]+")[0].equals(wordToReplace) && ngramPrev1POS.equals(prevWord1POS)) {
+						System.out.println("-----> YES");
+						System.out.println(ngram.get(ngramSequence));
+						Document thisDoc = (Document) ngram.get(ngramSequence);
+						Double probability = new Double(thisDoc.get("probability").toString());
 						BigDecimal thisProb = new BigDecimal(probability);
 						if(thisProb.compareTo(highestProbability) > 0) {
 							highestProbability = thisProb;
@@ -61,9 +66,10 @@ public class RhymeGenerator {
 						}
 					} 
 				}
+				
 			}
 		}
-		if(rhymingWord == wordToReplace) System.out.println("No rhymes found");
+
 		return rhymingWord;
 	}
 

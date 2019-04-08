@@ -36,6 +36,7 @@ public class TemplateFiller {
 	 * @param poemText - original poem text
 	 * @return poem made of words from wordbank
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<ArrayList<String>> processTemplate(List<List<Document>> templateVerses, List<List<Document>> poemTextVerses) {
 		ArrayList<ArrayList<String>> poemVerses = new ArrayList<ArrayList<String>>();
 		String line = "";
