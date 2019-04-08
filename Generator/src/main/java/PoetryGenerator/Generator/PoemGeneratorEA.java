@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
@@ -21,6 +23,7 @@ import org.languagetool.rules.RuleMatch;
 public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
+	private RhymeGenerator rhymeGenerator;
 	//ArrayList of candidates to be used
 	private HashMap<String,BigDecimal> population = new HashMap<String,BigDecimal>();    
 	//Number of candidate solutions
@@ -31,14 +34,21 @@ public class PoemGeneratorEA {
 	private final int numberOfGenerations;
 	//Sample size for tournament parent selection
 	private final int tournamentSize;
+	//Value of n for n-gram generation
+	private final String generatorGram;
+	//Value of n for n-gram evaluation
+	private final String evaluatorGram;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(2,1,1, "4-gram", "3-gram");
+		new PoemGeneratorEA(2,1,1, "3-gram", "4-gram");
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
-		costCalculator = new CostCalculator(evaluatorGram);
+		this.generatorGram = generatorGram;
+		this.evaluatorGram = evaluatorGram;
+		costCalculator = new CostCalculator(evaluatorGram, generatorGram);
 		poemGenerator = new PoemGenerator(generatorGram);
+		rhymeGenerator = new RhymeGenerator(generatorGram);
 		populationSize = populationSizeParam;
 		mutationProbability = mutationProbabilityParam;
 		numberOfGenerations = generationsParam;
@@ -98,13 +108,12 @@ public class PoemGeneratorEA {
 	private void oneGeneration() throws IOException {
 		//Select parents
 		String parent = tournamentParentSelection();
-		String child = fixGrammar(parent); 
+		String child = addRhyme(parent); 
 		System.out.println("Child: " + child);
 
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
-			//		child =	addRhyme(child);  //TODO: this will be child mutated
-			//		System.out.println("Fixed grammar: " + child);
+	//		child =	fixGrammar(child);  
 		}
 
 		HashMap<String, BigDecimal> newPopulation = population;
@@ -146,16 +155,43 @@ public class PoemGeneratorEA {
 
 	private String addRhyme(String poem){
 		System.out.println("Adding rhyme");
+		
 		//add rhyme --> costIncreased after mutation
 		String[] poemLines = poem.split("\\r?\\n");
-		ArrayList<String> rhymeCandidates = new ArrayList<String>();
 		//Get alternate ending words
+		ArrayList<String> wordsToRhymeWith = new ArrayList<String>();
 		for(int i = 0; i < poemLines.length; i++) {
-			System.out.println(poemLines[i]);
-			String[] lineWords = poemLines[i].split(" ");
-			String lastWord = lineWords[lineWords.length-1];
-			rhymeCandidates.add(lastWord);
+			if(i % 2 == 0) {
+				String[] lineWords = poemLines[i].split(" ");
+				wordsToRhymeWith.add(lineWords[lineWords.length-1]);
+			}
 		}
+		String randomwordToRhymeWith = wordsToRhymeWith.get(new Random().nextInt(wordsToRhymeWith.size()));
+		System.out.println("Word to rhyme with: " + randomwordToRhymeWith);
+		//Add rhyme to even lines
+		for(int i = 0; i < poemLines.length; i++) {
+			if(i % 2 == 0) {
+				String[] lineWords = poemLines[i].split(" ");
+				String wordToReplace = lineWords[lineWords.length-1];
+				Pattern pattern = Pattern.compile("([^\\s]+\\s+[^\\s]+\\s+[^\\s]+)\\s+"+wordToReplace);
+		        Matcher matcher = pattern.matcher(poemLines[i]);
+		        String sequence = "";
+		        while (matcher.find())
+		        {
+		            sequence = matcher.group(1);
+		        }
+		        String prevWord3 = sequence.split(" ")[0];
+		        String prevWord2 = sequence.split(" ")[1];
+		        String prevWord1 = sequence.split(" ")[2];
+				String rhymingWord = rhymeGenerator.getRhymingWord(prevWord3, prevWord2, prevWord1, wordToReplace, randomwordToRhymeWith);
+				System.out.println("line before: " + poemLines[i]);
+				poemLines[i] = poemLines[i].replace(wordToReplace, rhymingWord);
+				System.out.println("line after: " + poemLines[i]);
+				
+				System.out.println("replaced " + wordToReplace + " with " + rhymingWord);
+			}
+		}
+		//([^\s]+\s+[^\s]+\s+[^\s]+)\s+find
 		return poem;
 	}
 
@@ -164,7 +200,6 @@ public class PoemGeneratorEA {
 		boolean poemChanged = false;
 		JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 		List<RuleMatch> matches = langTool.check(poem);
-		System.out.println(matches.size() + " matches");
 		if(matches.size() > 0) {
 			for (RuleMatch match : matches) {
 				String ruleId = match.getRule().getId();
@@ -218,11 +253,11 @@ public class PoemGeneratorEA {
 		String replacement = suggestions.get(randomIndex);
 
 		//line.replace doesn't work: can't be sure that toReplace pattern won't be repeated throughout line
-		String contentBefore = line.substring(0, from-1);
+		String contentBefore = line.substring(0, from);
 		String contentAfter = line.substring(to, line.length());
-		System.out.println("from " + from + " to " + to + " --> " + toReplace);
+		System.out.println("from " + contentBefore + " to " + contentAfter.split(" ")[0] + " --> " + toReplace);
 
-		line = contentBefore + replacement + contentAfter;
+		line = contentBefore + " " + replacement + contentAfter;
 
 
 		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);

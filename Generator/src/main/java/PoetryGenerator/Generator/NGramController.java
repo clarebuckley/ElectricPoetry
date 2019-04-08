@@ -108,6 +108,8 @@ public class NGramController {
 		//system.out.println("result --> " + result);
 		return result;
 	}
+	
+	
 
 	private String findWordUsingTrigram(String prevWord2POS, String prevWord1POS, String prevWord2, String prevWord1, String wordPOS) {
 		String result = null;

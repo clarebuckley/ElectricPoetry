@@ -24,7 +24,7 @@ public class PoemGenerator {
 
 	public String generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
-		TemplateMutator templateMutator = new TemplateMutator(1);
+		TemplateController templateMutator = new TemplateController(1);
 		TemplateFiller templateFiller = new TemplateFiller(generationGram);
 		List<List<Document>> poemText = templateMutator.getPoemText();
 		List<List<Document>> template = templateMutator.getPoemTemplate();

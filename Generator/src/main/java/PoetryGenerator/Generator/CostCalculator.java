@@ -10,12 +10,15 @@ import java.util.Set;
 import org.bson.Document;
 
 public class CostCalculator {
-	String evaluationGram;
+	private String evaluationGram;
+	private String generationGram;
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
+	private RhymeGenerator rhyme = new RhymeGenerator(generationGram);
 
-	public CostCalculator(String evaluationGram) {
+	public CostCalculator(String evaluationGram, String generationGram) {
 		this.evaluationGram = evaluationGram;
+		this.generationGram = generationGram;
 	}
 
 	public BigDecimal getCost(String poem) {
@@ -50,7 +53,7 @@ public class CostCalculator {
 		    for(int j = 0; j < rhymeCandidates.size(); j++) {
 		        if(j == i) continue; // will  increase j
 		        String candidate2 = rhymeCandidates.get(j);
-		        if(doWordsRhyme(candidate1, candidate2)) {
+		        if(rhyme.doWordsRhyme(candidate1, candidate2)) {
 		        	if(!candidate1.equals(candidate2)) {
 		        		costIncrease = costIncrease.add(new BigDecimal(0.002));
 		        	} else {
@@ -62,19 +65,7 @@ public class CostCalculator {
 		return costIncrease;
 	}
 	
-	private boolean doWordsRhyme(String word1, String word2) {
-		if (word1.length() >= 2 && word2.length() >= 2) {
-            String lastTwo1 = word1.substring(word1.length()-2).toLowerCase();
-            String lastTwo2 = word2.substring(word2.length()-2).toLowerCase();
-            if (lastTwo1.equals(lastTwo2)) {
-                return true;
-            } else {
-            	return false;
-            }
-        } else {
-        	return false;
-        }
-	}
+	
 
 	/**
 	 * Calculate cost of a candidate poem using chain rule on bigrams

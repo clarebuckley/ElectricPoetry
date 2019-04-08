@@ -6,8 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bson.Document;
-import org.languagetool.JLanguageTool;
-import org.languagetool.language.BritishEnglish;
 
 /**
  * Fill in a POS template using wordbank stored in database
@@ -19,7 +17,6 @@ import org.languagetool.language.BritishEnglish;
 public class TemplateFiller {
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN"/*,"PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"*/));
-	//private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("-RRB-","-LRB-","-lrb-","-rrb-"));
 
 	private String punctuation = ".,:;-'''`!";
 

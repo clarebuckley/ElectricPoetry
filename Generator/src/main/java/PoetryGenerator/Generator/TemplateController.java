@@ -1,21 +1,18 @@
 package PoetryGenerator.Generator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.bson.Document;
 
 /**
  * Retrieves a poem POS template from the database to be filled
  * @author Clare Buckley
- * @version 01/02/19
+ * @version 08/04/19
  *
  */
 
-public class TemplateMutator {
+public class TemplateController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "verses";
 	//Templates to be returned
@@ -23,7 +20,7 @@ public class TemplateMutator {
 	private List<List<Document>> verseTemplate = new ArrayList<List<Document>>();
 	
 
-	public TemplateMutator(int numVerses) {
+	public TemplateController(int numVerses) {
 		//Each verse to be added to the template
 		List<Document> originalTemplateEntry;
 		List<Document> verseTemplateEntry;
