@@ -15,7 +15,7 @@ import org.languagetool.rules.RuleMatch;
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
  * @author Clare Buckley
- * @version 05/04/19
+ * @version 07/04/19
  */
 
 public class PoemGeneratorEA {
@@ -152,20 +152,16 @@ public class PoemGeneratorEA {
 		//Get alternate ending words
 		for(int i = 0; i < poemLines.length; i++) {
 			System.out.println(poemLines[i]);
-			if (i % 2 == 0) {
-				String[] lineWords = poemLines[i].split(" ");
-				String lastWord = lineWords[lineWords.length-1];
-				rhymeCandidates.add(lastWord);
-			}
+			String[] lineWords = poemLines[i].split(" ");
+			String lastWord = lineWords[lineWords.length-1];
+			rhymeCandidates.add(lastWord);
 		}
 		return poem;
 	}
 
 	private String fixGrammar(String poem) throws IOException {
-		//More probable after fixing grammar
-		BigDecimal newProb = population.get(poem).add(new BigDecimal(0.0001));
-		population.replace(poem, newProb);
-		
+		String originalPoem = poem;
+		boolean poemChanged = false;
 		JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 		List<RuleMatch> matches = langTool.check(poem);
 		System.out.println(matches.size() + " matches");
@@ -180,10 +176,12 @@ public class PoemGeneratorEA {
 				if(suggestions.size() > 0) {
 					System.out.println("has suggestions");
 					poem = replaceWithSuggestion(poem, from, to, suggestions);
+					poemChanged = true;
 				} 
 				else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
 					String toReplace = poem.substring(match.getFromPos(), match.getToPos());
 					poem = poem.replace(toReplace, "");
+					poemChanged = true;
 				}
 				else {
 					System.out.println("other rule --> " + ruleId);
@@ -195,6 +193,12 @@ public class PoemGeneratorEA {
 					}
 				}
 			}
+		}
+
+		if(poemChanged) {
+			//More probable after fixing grammar
+			BigDecimal newProb = population.get(originalPoem).add(new BigDecimal(0.0001));
+			population.replace(poem, newProb);
 		}
 		return poem;
 	}
@@ -233,9 +237,11 @@ public class PoemGeneratorEA {
 		String bestPoem = "";
 		for(Map.Entry<String, BigDecimal> poem:population.entrySet())   {
 			BigDecimal thisCost = poem.getValue();
+			System.out.println("this cost:" + thisCost);
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestPoem = poem.getKey();
+				System.out.println("Best cost updated");
 			}
 		}
 		System.out.println("Best cost: " + bestCost);

@@ -2,6 +2,7 @@ package PoetryGenerator.Generator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,18 +19,61 @@ public class CostCalculator {
 	}
 
 	public BigDecimal getCost(String poem) {
+		BigDecimal cost = new BigDecimal(0);
 		switch(evaluationGram) {
 		case "2-gram":
-			return getCostOfPoemBigram(poem);
+			cost = getCostOfPoemBigram(poem);
 		case "3-gram":
-			return getCostOfPoemThreeGram(poem);
-//		case "4-gram":
-//			return getCostOfPoemThreeGram(poem);
-			
-			default:
-				throw new Error("Evaluation n-gram must be 2, 3, or 4 gram");
+			cost =  getCostOfPoemThreeGram(poem);
+		case "4-gram":
+			cost =  getCostOfPoemFourGram(poem);
+		}
+		cost = cost.add(checkRhymeCost(poem));
+		return cost;
+		
+	}
+	
+	public BigDecimal checkRhymeCost(String poem) {
+		BigDecimal costIncrease = new BigDecimal(0);
+		String[] poemLines = poem.split("\\r?\\n");
+		ArrayList<String> rhymeCandidates = new ArrayList<String>();
+		//Get alternate ending words
+		for(int i = 0; i < poemLines.length; i++) {
+			System.out.println(poemLines[i]);
+			String[] lineWords = poemLines[i].split(" ");
+			String lastWord = lineWords[lineWords.length-1];
+			rhymeCandidates.add(lastWord);
 		}
 		
+		for(int i = 0; i < rhymeCandidates.size(); i++) {
+		    String candidate1 = rhymeCandidates.get(i);
+		    for(int j = 0; j < rhymeCandidates.size(); j++) {
+		        if(j == i) continue; // will  increase j
+		        String candidate2 = rhymeCandidates.get(j);
+		        if(doWordsRhyme(candidate1, candidate2)) {
+		        	if(!candidate1.equals(candidate2)) {
+		        		costIncrease = costIncrease.add(new BigDecimal(0.002));
+		        	} else {
+		        		costIncrease = costIncrease.add(new BigDecimal(0.001));
+		        	}
+				}
+		    }
+		} 
+		return costIncrease;
+	}
+	
+	private boolean doWordsRhyme(String word1, String word2) {
+		if (word1.length() >= 2 && word2.length() >= 2) {
+            String lastTwo1 = word1.substring(word1.length()-2).toLowerCase();
+            String lastTwo2 = word2.substring(word2.length()-2).toLowerCase();
+            if (lastTwo1.equals(lastTwo2)) {
+                return true;
+            } else {
+            	return false;
+            }
+        } else {
+        	return false;
+        }
 	}
 
 	/**
@@ -121,6 +165,51 @@ public class CostCalculator {
 		System.out.println("probability: " + probability);
 		return probability;
 	}
+	
+	
+	private BigDecimal getCostOfPoemFourGram(String poem) {
+		String[] poemSentences = poem.split("\\?|\\.|\\!");
+
+		//probability += joint probability of words
+		BigDecimal probability = new BigDecimal(0);
+		for(String sentence : poemSentences) {
+			sentence = sentence.trim();
+			if(sentence.length() > 0) {
+				//Split punctuation to help with process
+				sentence = sentence.replace(",", " ,");
+				sentence = sentence.replace("?", " ?");
+				sentence = sentence.replace("!", " !");
+				String[] words = sentence.split(" ");
+				//Find probability of words[i]
+				for(int i = 2; i < words.length; i++) {
+					if(words[i].trim().length() != 0) {
+						//sequence: n-1, n
+						String sequence;
+						if(i == 2) {
+							sequence = "<s> " + words[i-2] + " " +  words[i-1] + " " + words[i];
+						}
+						else if(i == words.length) {
+							sequence = words[i-1] + " " + words[i] + "</s>";
+						}
+						else {
+							sequence = words[i-3] + " " +  words[i-2] + " " + words[i-1] + " " + words[i];
+						}
+						//BigDecimal probOfXGivenY = 
+						//prob of this sequence = P(words[i]) * P(words[i-1] words[i])
+						String[] sequenceParts = sequence.split(" ");
+						BigDecimal thisProbability = getSequenceProbability(sequenceParts[0]).multiply(getSequenceProbability(sequenceParts[1] + " " + sequenceParts[2] + " " + sequenceParts[3]));
+						probability =  probability.add(thisProbability);
+					}
+				}
+			}
+		}
+		
+		probability = probability.divide(new BigDecimal(poemSentences.length), MathContext.DECIMAL64);
+		System.out.println("probability: " + probability);
+		return probability;
+	}
+	
+	
 
 	private BigDecimal getSequenceProbability(String sequence) {
 		BigDecimal defaultProb = new BigDecimal(0.000000000000000000000000000001);
