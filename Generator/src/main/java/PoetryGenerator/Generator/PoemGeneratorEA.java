@@ -167,11 +167,16 @@ public class PoemGeneratorEA {
 				final String originalWord = wordToReplace;
 				String rhymingWord = "";
 				System.out.println(rhymingWord + " - " + originalWord);
-				while(rhymingWord.equals("")) {
+				int j =0;
+				while(rhymingWord.equals("") && j <10) {
 					String wordToRhymeWith = wordsToRhymeWith.get(wordsToRhymeWith.size()-1);
 					System.out.println("Word to rhyme with: " + wordToRhymeWith + " for line " + poemLines[i]);
 					rhymingWord = rhymeGenerator.getRhymingWord(/*prevWord3, prevWord2, */prevWord1, wordToReplace, wordToRhymeWith);
 					System.out.println("RESULT ------------------------------------------>" + rhymingWord);
+					j++;
+				}
+				if(rhymingWord.equals("")) {
+					//get random word of that POS tag to fill the gap
 				}
 
 				System.out.println("line before: " + poemLines[i]);

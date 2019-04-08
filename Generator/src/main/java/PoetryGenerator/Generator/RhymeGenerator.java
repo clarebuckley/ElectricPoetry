@@ -42,7 +42,7 @@ public class RhymeGenerator {
 		int i = 0;
 		//For all words that have the same POS tag as the original word
 		for(Document match : matches) {
-			if(i == 100) {
+			if(i == 30) {
 				break;
 			}
 			String wordMatch = match.getString("word");
@@ -66,7 +66,7 @@ public class RhymeGenerator {
 					int j = 0;
 					//Make sure word isn't replaced by same word
 					if(!wordMatch.equals(wordToReplace) && ngramPrev1POS.equals(prevWord1POS)) {
-						if(j == 50) {
+						if(j == 60) {
 							break;
 						}
 						System.out.println("-----> YES");
