@@ -2,7 +2,6 @@ package PoetryGenerator.Generator;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ import org.languagetool.rules.RuleMatch;
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
  * @author Clare Buckley
- * @version 07/04/19
+ * @version 08/04/19
  */
 
 public class PoemGeneratorEA {
@@ -34,18 +33,12 @@ public class PoemGeneratorEA {
 	private final int numberOfGenerations;
 	//Sample size for tournament parent selection
 	private final int tournamentSize;
-	//Value of n for n-gram generation
-	private final String generatorGram;
-	//Value of n for n-gram evaluation
-	private final String evaluatorGram;
-
+	
 	public static void main(String[] args) throws IOException {
 		new PoemGeneratorEA(2,1,1, "3-gram", "4-gram");
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
-		this.generatorGram = generatorGram;
-		this.evaluatorGram = evaluatorGram;
 		costCalculator = new CostCalculator(evaluatorGram, generatorGram);
 		poemGenerator = new PoemGenerator(generatorGram);
 		rhymeGenerator = new RhymeGenerator(generatorGram);
@@ -267,10 +260,11 @@ public class PoemGeneratorEA {
 
 
 	public BigDecimal evaluateFinalPopulation() {
+		System.out.println("end population size: " + population.size());
 		//Find best poem from end population
 		BigDecimal bestCost = new BigDecimal(0);
 		String bestPoem = "";
-		for(Map.Entry<String, BigDecimal> poem:population.entrySet())   {
+		for(Map.Entry<String, BigDecimal> poem : population.entrySet())   {
 			BigDecimal thisCost = poem.getValue();
 			System.out.println("this cost:" + thisCost);
 			if(thisCost.compareTo(bestCost) > 0) {
