@@ -36,7 +36,7 @@ public class CostCalculator {
 		
 	}
 	
-	public BigDecimal checkRhymeCost(String poem) {
+	private BigDecimal checkRhymeCost(String poem) {
 		BigDecimal costIncrease = new BigDecimal(0);
 		String[] poemLines = poem.split("\\r?\\n");
 		ArrayList<String> rhymeCandidates = new ArrayList<String>();

@@ -110,7 +110,8 @@ public class PoemGeneratorEA {
 		}
 
 		HashMap<String, BigDecimal> newPopulation = population;
-		newPopulation.put(child, new BigDecimal(0));
+		BigDecimal childProb = costCalculator.getCost(child);
+		newPopulation.put(child, childProb);
 		//Replace weakest member of population
 		population = replaceWeakestIndividual(newPopulation);
 
@@ -148,16 +149,12 @@ public class PoemGeneratorEA {
 
 	private String addRhyme(String poem){
 		System.out.println("Adding rhyme");
-
-		//add rhyme --> costIncreased after mutation
 		String[] poemLines = poem.split("\\r?\\n");
-		//Get alternate ending words
+		//Get  ending words
 		ArrayList<String> wordsToRhymeWith = new ArrayList<String>();
 		for(int i = 0; i < poemLines.length; i++) {
-			if(i % 2 == 0) {
-				String[] lineWords = poemLines[i].split(" ");
-				wordsToRhymeWith.add(lineWords[lineWords.length-1]);
-			}
+			String[] lineWords = poemLines[i].split(" ");
+			wordsToRhymeWith.add(lineWords[lineWords.length-1]);
 		}
 
 		//Add rhyme to even lines
@@ -165,29 +162,20 @@ public class PoemGeneratorEA {
 			if(i % 2 == 0) {
 				String[] lineWords = poemLines[i].split(" ");
 				String wordToReplace = lineWords[lineWords.length-1];
-				Pattern pattern = Pattern.compile("([^\\s]+\\s+[^\\s]+\\s+[^\\s]+)\\s+"+wordToReplace);
-				Matcher matcher = pattern.matcher(poemLines[i]);
-				String sequence = "";
-				while (matcher.find())
-				{
-					sequence = matcher.group(1);
-				}
-				String prevWord3 = sequence.split(" ")[0];
-				String prevWord2 = sequence.split(" ")[1];
-				String prevWord1 = sequence.split(" ")[2];
+				String prevWord1 = lineWords[lineWords.length-2];
 
 				final String originalWord = wordToReplace;
 				String rhymingWord = "";
 				System.out.println(rhymingWord + " - " + originalWord);
-				while(rhymingWord.equals(originalWord)) {
+				while(rhymingWord.equals("")) {
 					String wordToRhymeWith = wordsToRhymeWith.get(wordsToRhymeWith.size()-1);
-					System.out.println("Word to rhyme with: " + wordToRhymeWith);
-					rhymingWord = rhymeGenerator.getRhymingWord(prevWord3, prevWord2, prevWord1, wordToReplace, wordToRhymeWith);
-					wordsToRhymeWith.remove(wordsToRhymeWith.size()-1);
+					System.out.println("Word to rhyme with: " + wordToRhymeWith + " for line " + poemLines[i]);
+					rhymingWord = rhymeGenerator.getRhymingWord(/*prevWord3, prevWord2, */prevWord1, wordToReplace, wordToRhymeWith);
+					System.out.println("RESULT ------------------------------------------>" + rhymingWord);
 				}
 
 				System.out.println("line before: " + poemLines[i]);
-				poemLines[i] = poemLines[i].replace(wordToReplace, rhymingWord);
+				poemLines[i] = poemLines[i].substring(0, poemLines[i].length()-1-wordToReplace.length()) + " " + rhymingWord;
 				System.out.println("line after: " + poemLines[i]);
 
 				System.out.println("replaced " + wordToReplace + " with " + rhymingWord);
