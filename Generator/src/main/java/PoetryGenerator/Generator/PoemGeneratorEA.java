@@ -53,6 +53,7 @@ public class PoemGeneratorEA {
 	private ArrayList<ArrayList<String>> findBestPoem() throws IOException{
 		System.out.println("Initialising population\n");
 		initialisePopulation();
+		System.out.println("Initialising population probabilities\n");
 		initialisePopulationProbabilities();
 
 		System.out.println("\nGoing through " + numberOfGenerations + " generations...");
@@ -79,6 +80,7 @@ public class PoemGeneratorEA {
 	private void initialisePopulationProbabilities() {
 		for(Map.Entry<String, BigDecimal> poem : population.entrySet()) {
 			BigDecimal poemCost = costCalculator.getCost(poem.getKey());
+			System.out.println(poemCost);
 			population.replace(poem.getKey(), poemCost);
 		}
 	}
@@ -101,16 +103,19 @@ public class PoemGeneratorEA {
 	private void oneGeneration() throws IOException {
 		//Select parents
 		String parent = tournamentParentSelection();
+		System.out.println("Adding child to population\n");
 		String child = addRhyme(parent); 
-		System.out.println("Child: " + child);
+		
 
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
-			//		child =	fixGrammar(child);  
+			child =	fixGrammar(child);  
 		}
 
 		HashMap<String, BigDecimal> newPopulation = population;
 		BigDecimal childProb = costCalculator.getCost(child);
+		System.out.println("Child: \n" + child);
+		System.out.println("probability: " + childProb);
 		newPopulation.put(child, childProb);
 		//Replace weakest member of population
 		population = replaceWeakestIndividual(newPopulation);
@@ -156,41 +161,50 @@ public class PoemGeneratorEA {
 			String[] lineWords = poemLines[i].split(" ");
 			wordsToRhymeWith.add(lineWords[lineWords.length-1]);
 		}
-		
+
 		String updatedPoem = "";
+
+
 
 		//Add rhyme to even lines
 		for(int i = 0; i < poemLines.length; i++) {
+			String wordToRhymeWith;
 			if(i % 2 == 0) {
-				String[] lineWords = poemLines[i].split(" ");
-				String wordToReplace = lineWords[lineWords.length-1];
-				String prevWord1 = lineWords[lineWords.length-2];
-
-				final String originalWord = wordToReplace;
-				String rhymingWord = "";
-				System.out.println(rhymingWord + " - " + originalWord);
-				int j =0;
-				while(rhymingWord.equals("") && j <wordsToRhymeWith.size()) {
-					String wordToRhymeWith = wordsToRhymeWith.get(j);
-					System.out.println("Word to rhyme with: " + wordToRhymeWith + " for line " + poemLines[i]);
-					rhymingWord = rhymeGenerator.getRhymingWord(/*prevWord3, prevWord2, */prevWord1, wordToReplace, wordToRhymeWith);
-					System.out.println("RESULT ------------------------------------------>" + rhymingWord);
-					j++;
-				}
-				if(rhymingWord.equals("")) {
-					//get random word of that POS tag to fill the gap
-					rhymingWord = originalWord;
-				}
-
-				System.out.println("line before: " + poemLines[i]);
-				poemLines[i] = poemLines[i].substring(0, poemLines[i].length()-1-wordToReplace.length()) + " " + rhymingWord;
-				System.out.println("line after: " + poemLines[i]);
-
-				System.out.println("replaced " + wordToReplace + " with " + rhymingWord);
+				int randomEvenNumber = new Random().nextInt((wordsToRhymeWith.size()/2)*2);
+				wordToRhymeWith = wordsToRhymeWith.get(randomEvenNumber);  
+			} else {
+				int randomOddNumber = new Random().nextInt((wordsToRhymeWith.size()/2)*2-1);
+				wordToRhymeWith = wordsToRhymeWith.get(randomOddNumber);
 			}
+			String[] lineWords = poemLines[i].split(" ");
+			String wordToReplace = lineWords[lineWords.length-1];
+			String prevWord1 = lineWords[lineWords.length-2];
+
+			final String originalWord = wordToReplace;
+			String rhymingWord = "";
+		//	System.out.println(rhymingWord + " - " + originalWord);
+			int j =0;
+			while(rhymingWord.equals("") && j <10) {
+				//	String wordToRhymeWith = wordsToRhymeWith.get(j);
+				//System.out.println("Word to rhyme with: " + wordToRhymeWith + " for line " + poemLines[i]);
+				rhymingWord = rhymeGenerator.getRhymingWord(/*prevWord3, prevWord2, */prevWord1, wordToReplace, wordToRhymeWith);
+				//System.out.println("RESULT ------------------------------------------>" + rhymingWord);
+				j++;
+			}
+			if(rhymingWord.equals("")) {
+				//get random word of that POS tag to fill the gap
+				rhymingWord = originalWord;
+			}
+
+		//	System.out.println("line before: " + poemLines[i]);
+			poemLines[i] = poemLines[i].substring(0, poemLines[i].length()-1-wordToReplace.length()) + " " + rhymingWord;
+		//	System.out.println("line after: " + poemLines[i]);
+
+		//	System.out.println("replaced " + wordToReplace + " with " + rhymingWord);
+
 			updatedPoem += poemLines[i] + "\n";
 		}
-		
+
 		return updatedPoem;
 	}
 
@@ -207,7 +221,7 @@ public class PoemGeneratorEA {
 				int to = match.getToPos();
 				System.out.println(ruleId);
 				List<String> suggestions =  match.getSuggestedReplacements();
-				if(suggestions.size() > 0) {
+				if(suggestions.size() == 1) {
 					System.out.println("has suggestions");
 					poem = replaceWithSuggestion(poem, from, to, suggestions);
 					poemChanged = true;
@@ -229,11 +243,11 @@ public class PoemGeneratorEA {
 			}
 		}
 
-		if(poemChanged) {
+	/*	if(poemChanged) {
 			//More probable after fixing grammar
 			BigDecimal newProb = population.get(originalPoem).add(new BigDecimal(0.0001));
 			population.replace(poem, newProb);
-		}
+		}*/
 		return poem;
 	}
 
@@ -258,7 +272,6 @@ public class PoemGeneratorEA {
 
 		line = contentBefore + " " + replacement + contentAfter;
 
-
 		System.out.println("Replaced '" + toReplace + "' with '" + replacement + "' --> " + line);
 
 		return line;
@@ -276,7 +289,6 @@ public class PoemGeneratorEA {
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestPoem = poem.getKey();
-				System.out.println("Best cost updated");
 			}
 		}
 		System.out.println("Best cost: " + bestCost);

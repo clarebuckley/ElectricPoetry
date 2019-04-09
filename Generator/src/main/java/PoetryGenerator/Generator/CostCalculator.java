@@ -40,9 +40,8 @@ public class CostCalculator {
 		BigDecimal costIncrease = new BigDecimal(0);
 		String[] poemLines = poem.split("\\r?\\n");
 		ArrayList<String> rhymeCandidates = new ArrayList<String>();
-		//Get alternate ending words
+		//Get ending words
 		for(int i = 0; i < poemLines.length; i++) {
-			System.out.println(poemLines[i]);
 			String[] lineWords = poemLines[i].split(" ");
 			String lastWord = lineWords[lineWords.length-1];
 			rhymeCandidates.add(lastWord);
@@ -55,9 +54,9 @@ public class CostCalculator {
 		        String candidate2 = rhymeCandidates.get(j);
 		        if(rhyme.doWordsRhyme(candidate1, candidate2)) {
 		        	if(!candidate1.equals(candidate2)) {
-		        		costIncrease = costIncrease.add(new BigDecimal(0.002));
+		        		costIncrease = costIncrease.add(new BigDecimal(0.0002));
 		        	} else {
-		        		costIncrease = costIncrease.add(new BigDecimal(0.001));
+		        		costIncrease = costIncrease.add(new BigDecimal(0.0001));
 		        	}
 				}
 		    }
