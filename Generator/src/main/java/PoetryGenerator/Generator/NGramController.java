@@ -9,7 +9,7 @@ import org.bson.Document;
 /**
  * Generate word sequences using n-grams stored in database
  * @author Clare Buckley
- * @version 05/04/19
+ * @version 09/04/19
  *
  */
 
@@ -23,14 +23,14 @@ public class NGramController {
 	}
 
 	/**
-	 * 
+	 * Returns word to be added to poem, given the previous n words in the poem
 	 * @param word - current POS tag
 	 * @param originalWord - current word from original poem
 	 * @param prevWord1 - n-1
 	 * @param prevWord2 - n-2
 	 * @param prevWord1POS - POS tag for n-1
 	 * @param prevWord2POS - POS tag for n-2
-	 * @return
+	 * @return word to be used in poem
 	 */
 	public String getWord(String word, String originalWord, String prevWord1, String prevWord2, String prevWord3, String prevWord1POS, String prevWord2POS, String prevWord3POS) {
 		String wordToReturn = "";
@@ -110,7 +110,16 @@ public class NGramController {
 	}
 	
 	
-
+	/**
+	 * Get word using 3-grams
+	 * If iteration limit is reached with no word replacement found, original poem word will be used
+	 * @param prevWord2POS - POS of word 2 places before word to find
+	 * @param prevWord1POS - POS of word before the word to find
+	 * @param prevWord2 - word 2 places before the word to find
+	 * @param prevWord1 - word before the word to find
+	 * @param wordPOS - pos of word to find
+	 * @return word to be used in poem
+	 */
 	private String findWordUsingTrigram(String prevWord2POS, String prevWord1POS, String prevWord2, String prevWord1, String wordPOS) {
 		String result = null;
 		List<Document> matches = mongo.getSequenceMatches(collection, wordPOS, "POS");
@@ -167,6 +176,21 @@ public class NGramController {
 		return result;
 	}
 
+	/**
+	 * 	
+	/**
+	 * Get word using 4-grams
+	 * If iteration limit is reached with no word replacement found, original poem word will be used
+	 * @param prevWord3POS - POS of word 3 places before word to find
+	 * @param prevWord2POS - POS of word 2 places before word to find
+	 * @param prevWord1POS - POS of word before the word to find
+	 * @param prevWord3 - word 3 places before the word to find
+	 * @param prevWord2 - word 2 places before the word to find
+	 * @param prevWord1 - word before the word to find
+	 * @param wordPOS - pos of word to find
+	 * @return word to be used in poem
+	 */
+	
 	private String findWordUsingFourGram(String prevWord3POS, String prevWord2POS, String prevWord1POS, String prevWord3, String prevWord2,  String prevWord1, String wordPOS) {
 		String result = null;
 		boolean useBigram = false;

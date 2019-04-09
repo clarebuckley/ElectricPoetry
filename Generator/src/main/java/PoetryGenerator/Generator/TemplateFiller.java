@@ -10,7 +10,7 @@ import org.bson.Document;
 /**
  * Fill in a POS template using wordbank stored in database
  * @author Clare Buckley
- * @version 05/04/19
+ * @version 09/04/19
  *
  */
 
@@ -34,7 +34,7 @@ public class TemplateFiller {
 	 * Process the POS poem template to create meaningful poem
 	 * @param template - POS poem template
 	 * @param poemText - original poem text
-	 * @return poem made of words from wordbank
+	 * @return poem made of words found using n-grams
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<ArrayList<String>> processTemplate(List<List<Document>> templateVerses, List<List<Document>> poemTextVerses) {
@@ -66,8 +66,8 @@ public class TemplateFiller {
 
 	/**
 	 * Process each line in a verse
-	 * @param templateLine
-	 * @param originalLine
+	 * @param templateLine - line made of POS tags
+	 * @param originalLine - original poem that made the template
 	 * @return String containing poem line
 	 */
 	private String processLine(List<String> templateLine, List<String> originalLine) {
@@ -85,9 +85,6 @@ public class TemplateFiller {
 			prevWord3POS = ((i>=3) ? templateLine.get(i-3) : "");
 
 			String word = "";
-
-			//		System.out.println("replacing word " + word);
-
 			word = getWord(templateLine.get(i), originalLine.get(i), prevWord1, prevWord2, prevWord3, prevWord1POS, prevWord2POS, prevWord3POS);
 
 
@@ -156,6 +153,8 @@ public class TemplateFiller {
 		line = line.replaceAll(" \\?", "?");
 		line = line.replaceAll("'", "");
 		line = line.replaceAll("_", ".");
+		line = line.replaceAll("-lrb- ", " (");
+		line = line.replaceAll("-rrb-", ") ");
 		//Remove space before punctuation
 		line = line.replaceAll("\\s+(?=\\p{Punct})", "");
 
@@ -191,46 +190,5 @@ public class TemplateFiller {
 		line = capitaliseResult.trim();
 		return line;
 	}
-
-
-	/**
-	 * Returns false if word is spelled incorrectly
-	 * @param line
-	 * @return true if word is contained in dictionary
-	 */
-	/*	public boolean spellCheckWord(String word) {
-		if(word == null) {
-			wordValid = false;
-			return false;
-		}
-		if(word.length() == 0) {
-			wordValid = false;
-			return false;
-		} 
-		else {	
-			List<RuleMatch> matches;
-			for (Rule rule : langTool.getAllRules()) {
-				if (!rule.isDictionaryBasedSpellingRule()) {
-					langTool.disableRule(rule.getId());
-				}
-			}
-			try {
-				//	System.out.println(word);
-				matches = langTool.check(word);
-				if(matches.size() > 0) {
-					wordValid = false;
-					return false;
-				} else {
-					wordValid = true;
-					return true;
-				}
-			} catch (IOException e) {
-				System.out.println("Error checking valid word");
-				e.printStackTrace();
-				return false;
-			}
-		}
-	}*/
-
 
 }

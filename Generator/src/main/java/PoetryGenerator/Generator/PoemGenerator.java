@@ -15,13 +15,16 @@ import org.bson.Document;
 public class PoemGenerator {
 	private String generationGram;
 
-
-
 	public PoemGenerator(String generationGram) {
 		this.generationGram = generationGram;
 	}
 
 
+	/**
+	 * Generate poem made of a set number of verses
+	 * @param poemVerses
+	 * @return poem
+	 */
 	public String generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
 		TemplateController templateMutator = new TemplateController(1);

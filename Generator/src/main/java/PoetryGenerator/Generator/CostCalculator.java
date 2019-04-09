@@ -9,46 +9,64 @@ import java.util.Set;
 
 import org.bson.Document;
 
+/**
+ * Calculates cost of poem
+ * @author Clare
+ * @version 09/04/2019
+ */
 public class CostCalculator {
 	private String evaluationGram;
-	private String generationGram;
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
-	private RhymeGenerator rhyme = new RhymeGenerator(generationGram);
+	private RhymeGenerator rhyme = new RhymeGenerator();
+	private BigDecimal thisCost = new BigDecimal(0);
 
-	public CostCalculator(String evaluationGram, String generationGram) {
+	public CostCalculator(String evaluationGram) {
 		this.evaluationGram = evaluationGram;
-		this.generationGram = generationGram;
 	}
 
+	/**
+	 * Main method
+	 * @param poem
+	 * @return cost of poem
+	 */
 	public BigDecimal getCost(String poem) {
-		BigDecimal cost = new BigDecimal(0);
 		switch(evaluationGram) {
 		case "2-gram":
-			cost = getCostOfPoemBigram(poem);
+			thisCost = getCostOfPoemBigram(poem);
 		case "3-gram":
-			cost =  getCostOfPoemThreeGram(poem);
+			thisCost =  getCostOfPoemThreeGram(poem);
 		case "4-gram":
-			cost =  getCostOfPoemFourGram(poem);
+			thisCost =  getCostOfPoemFourGram(poem);
 		}
-		cost = cost.add(checkRhymeCost(poem));
-		cost = cost.add(checkLengthCost(poem));
-		return cost;
+		thisCost = thisCost.add(checkRhymeCost(poem));
+		thisCost = thisCost.add(checkLengthCost(poem));
+		return thisCost;
 		
 	}
 	
+	/**
+	 * Reward poems that have short line lengths
+	 * @param poem
+	 * @return cost to be added to thisCost
+	 */
 	private BigDecimal checkLengthCost(String poem) {
 		BigDecimal costIncrease = new BigDecimal(0);
 		String[] poemLines = poem.split("\\r?\\n");
 		for(String poemLine : poemLines) {
 			int lineLength = poemLine.split(" ").length;
 			if(lineLength <= 6) {
-				costIncrease = costIncrease.add(new BigDecimal(0.0001));
+				costIncrease = thisCost.multiply(new BigDecimal(0.35));
 			}
 		}
 		return costIncrease;
 	}
 	
+	/**
+	 * Reward poems that have rhyme
+	 * @param poem
+	 * @return cost to be added to thisCost
+	 */
 	private BigDecimal checkRhymeCost(String poem) {
 		BigDecimal costIncrease = new BigDecimal(0);
 		String[] poemLines = poem.split("\\r?\\n");
@@ -67,9 +85,9 @@ public class CostCalculator {
 		        String candidate2 = rhymeCandidates.get(j);
 		        if(rhyme.doWordsRhyme(candidate1, candidate2)) {
 		        	if(!candidate1.equals(candidate2)) {
-		        		costIncrease = costIncrease.add(new BigDecimal(0.0002));
+		        		costIncrease = thisCost.multiply(new BigDecimal(0.3));
 		        	} else {
-		        		costIncrease = costIncrease.add(new BigDecimal(0.0001));
+		        		costIncrease = thisCost.multiply(new BigDecimal(0.2));
 		        	}
 				}
 		    }
@@ -82,10 +100,7 @@ public class CostCalculator {
 	/**
 	 * Calculate cost of a candidate poem using chain rule on bigrams
 	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
-	 * try fourgram with bigram generation, etc
-	 * discuss why results have given that result, interpret results and explore combinations
-	 * allow config for different grams/cost generations
-	 * @return
+	 * @return cost of candidate poem
 	 */
 	private BigDecimal getCostOfPoemBigram(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
@@ -126,6 +141,11 @@ public class CostCalculator {
 	}
 
 
+	/**
+	 * Calculate cost of a candidate poem using chain rule on trigrams
+	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
+	 * @return cost of candidate poem
+	 */
 	private BigDecimal getCostOfPoemThreeGram(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
 
@@ -169,7 +189,11 @@ public class CostCalculator {
 		return probability;
 	}
 	
-	
+	/**
+	 * Calculate cost of a candidate poem using chain rule on fourgrams
+	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
+	 * @return cost of candidate poem
+	 */
 	private BigDecimal getCostOfPoemFourGram(String poem) {
 		String[] poemSentences = poem.split("\\?|\\.|\\!");
 
@@ -213,7 +237,11 @@ public class CostCalculator {
 	}
 	
 	
-
+	/**
+	 * Get probability of a given sequence from the database
+	 * @param sequence - sequence to be checked
+	 * @return probability of sequence
+	 */
 	private BigDecimal getSequenceProbability(String sequence) {
 		BigDecimal defaultProb = new BigDecimal(0.000000000000000000000000000001);
 		String word = sequence;
