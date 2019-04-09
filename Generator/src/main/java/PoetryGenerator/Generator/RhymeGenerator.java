@@ -39,7 +39,7 @@ public class RhymeGenerator {
 		int i = 0;
 		//For all words that have the same POS tag as the original word
 		for(Document match : matches) {
-			if(i == 30) {
+			if(i == 10) {
 				break;
 			}
 			String wordMatch = match.getString("word");
@@ -57,8 +57,12 @@ public class RhymeGenerator {
 						break;
 					}
 					
-					//Make sure word isn't replaced by same word
-					if(!wordMatch.equals(wordToReplace) && ngramPrev1POS.equals(prevWord1POS)) {
+					//If POS tags for n-1 match
+					int j = 0;
+					if(ngramPrev1POS.equals(prevWord1POS)) {
+						if(j > 50) {
+							break;
+						}
 						Document thisDoc = (Document) ngram.get(ngramSequence);
 						Double probability = new Double(thisDoc.get("probability").toString());
 						BigDecimal thisProb = new BigDecimal(probability);
@@ -66,6 +70,7 @@ public class RhymeGenerator {
 							highestProbability = thisProb;
 							rhymingWord = wordMatch;
 						}
+						j++;
 					} 
 				}
 
