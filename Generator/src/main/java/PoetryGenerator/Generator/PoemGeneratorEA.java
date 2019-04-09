@@ -156,6 +156,8 @@ public class PoemGeneratorEA {
 			String[] lineWords = poemLines[i].split(" ");
 			wordsToRhymeWith.add(lineWords[lineWords.length-1]);
 		}
+		
+		String updatedPoem = "";
 
 		//Add rhyme to even lines
 		for(int i = 0; i < poemLines.length; i++) {
@@ -168,8 +170,8 @@ public class PoemGeneratorEA {
 				String rhymingWord = "";
 				System.out.println(rhymingWord + " - " + originalWord);
 				int j =0;
-				while(rhymingWord.equals("") && j <10) {
-					String wordToRhymeWith = wordsToRhymeWith.get(wordsToRhymeWith.size()-1);
+				while(rhymingWord.equals("") && j <wordsToRhymeWith.size()) {
+					String wordToRhymeWith = wordsToRhymeWith.get(j);
 					System.out.println("Word to rhyme with: " + wordToRhymeWith + " for line " + poemLines[i]);
 					rhymingWord = rhymeGenerator.getRhymingWord(/*prevWord3, prevWord2, */prevWord1, wordToReplace, wordToRhymeWith);
 					System.out.println("RESULT ------------------------------------------>" + rhymingWord);
@@ -177,6 +179,7 @@ public class PoemGeneratorEA {
 				}
 				if(rhymingWord.equals("")) {
 					//get random word of that POS tag to fill the gap
+					rhymingWord = originalWord;
 				}
 
 				System.out.println("line before: " + poemLines[i]);
@@ -185,9 +188,10 @@ public class PoemGeneratorEA {
 
 				System.out.println("replaced " + wordToReplace + " with " + rhymingWord);
 			}
+			updatedPoem += poemLines[i] + "\n";
 		}
-		//([^\s]+\s+[^\s]+\s+[^\s]+)\s+find
-		return poem;
+		
+		return updatedPoem;
 	}
 
 	private String fixGrammar(String poem) throws IOException {

@@ -77,7 +77,7 @@ public class NGramController {
 
 			int j = 0;
 			for(String word : bigramWords ) {
-				if(j == 150) {
+				if(j == 60) {
 					break;
 				}
 				bigramN1 = word.split(" ")[0];
@@ -101,7 +101,7 @@ public class NGramController {
 				j++;
 			}
 			i++;
-			if(i == 150) {
+			if(i == 60) {
 				break;
 			}
 		}
@@ -130,7 +130,7 @@ public class NGramController {
 
 			int j = 0;
 			for(String word : trigramWords ) {
-				if(j == 100) {
+				if(j == 60) {
 					break;
 				}
 				trigramN2 = word.split(" ")[0];
@@ -159,7 +159,7 @@ public class NGramController {
 				j++;
 			}
 			i++;
-			if(i == 100) {
+			if(i == 60) {
 				break;
 			}
 		}
@@ -198,7 +198,7 @@ public class NGramController {
 
 			int j = 0;
 			for(String word : trigramWords ) {
-				if(j == 100) {
+				if(j == 60) {
 					break;
 				}
 
@@ -230,7 +230,7 @@ public class NGramController {
 				j++;
 			}
 			i++;
-			if(i == 100) {
+			if(i == 60) {
 				break;
 			}
 		}
