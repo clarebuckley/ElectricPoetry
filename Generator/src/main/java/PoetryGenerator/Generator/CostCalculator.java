@@ -32,8 +32,21 @@ public class CostCalculator {
 			cost =  getCostOfPoemFourGram(poem);
 		}
 		cost = cost.add(checkRhymeCost(poem));
+		cost = cost.add(checkLengthCost(poem));
 		return cost;
 		
+	}
+	
+	private BigDecimal checkLengthCost(String poem) {
+		BigDecimal costIncrease = new BigDecimal(0);
+		String[] poemLines = poem.split("\\r?\\n");
+		for(String poemLine : poemLines) {
+			int lineLength = poemLine.split(" ").length;
+			if(lineLength <= 6) {
+				costIncrease = costIncrease.add(new BigDecimal(0.0001));
+			}
+		}
+		return costIncrease;
 	}
 	
 	private BigDecimal checkRhymeCost(String poem) {
