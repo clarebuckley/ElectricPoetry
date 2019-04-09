@@ -33,7 +33,7 @@ public class PoemGeneratorEA {
 	private  int tournamentSize;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(5,1,2, "3-gram", "4-gram");
+		new PoemGeneratorEA(10,1,5, "3-gram", "4-gram");
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
@@ -210,7 +210,11 @@ public class PoemGeneratorEA {
 			}
 			String[] lineWords = poemLines[i].split(" ");
 			String wordToReplace = lineWords[lineWords.length-1];
-			String prevWord1 = lineWords[lineWords.length-2];
+			String prevWord1 = "<s>";
+			if(lineWords.length > 1) {
+				prevWord1 = lineWords[lineWords.length-2];
+			}
+			 
 
 			final String originalWord = wordToReplace;
 			String rhymingWord = "";

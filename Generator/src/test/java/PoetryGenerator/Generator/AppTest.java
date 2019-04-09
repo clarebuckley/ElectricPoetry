@@ -8,9 +8,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AppTest{
-	private static PoemGenerator poemGenerator;
-	private static CostCalculator costCalculator;
-	private static RhymeGenerator rhymeGenerator;
 	private static PoemGeneratorEA ea;
 
 	@BeforeClass
@@ -30,4 +27,17 @@ public class AppTest{
 				"And other grammar issues that are here.";
 		assertTrue(poemAfter.equals(expectedAfter));
 	}
+	
+	@Test
+	public void testCostCalculator() {
+		CostCalculator cost2 = new CostCalculator("2-gram");
+		CostCalculator cost3 = new CostCalculator("3-gram");
+		CostCalculator cost4 = new CostCalculator("4-gram");
+		String sequence = "And the sunset kindles with me: Oh what beautiful company!";
+		System.out.println(cost2.getSequenceProbability(sequence));
+		System.out.println(cost3.getSequenceProbability(sequence));
+		System.out.println(cost4.getSequenceProbability(sequence));
+		
+	}
+	
 }

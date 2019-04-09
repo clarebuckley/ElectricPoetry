@@ -153,10 +153,11 @@ public class TemplateFiller {
 		line = line.replaceAll(" \\?", "?");
 		line = line.replaceAll("'", "");
 		line = line.replaceAll("_", ".");
-		line = line.replaceAll("-lrb- ", " (");
-		line = line.replaceAll("-rrb-", ") ");
 		//Remove space before punctuation
 		line = line.replaceAll("\\s+(?=\\p{Punct})", "");
+
+		line = line.replaceAll("-lrb- ", " (");
+		line = line.replaceAll("-rrb-", ") ");
 
 		//For consonants following 'an', change to 'a'
 		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");

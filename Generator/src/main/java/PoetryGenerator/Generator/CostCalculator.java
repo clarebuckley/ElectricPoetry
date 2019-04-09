@@ -242,7 +242,7 @@ public class CostCalculator {
 	 * @param sequence - sequence to be checked
 	 * @return probability of sequence
 	 */
-	private BigDecimal getSequenceProbability(String sequence) {
+	public BigDecimal getSequenceProbability(String sequence) {
 		BigDecimal defaultProb = new BigDecimal(0.000000000000000000000000000001);
 		String word = sequence;
 		String gramVal = "1-gram";

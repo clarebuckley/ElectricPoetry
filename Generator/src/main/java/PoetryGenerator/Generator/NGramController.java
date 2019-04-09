@@ -7,6 +7,7 @@ import org.bson.Document;
 
 
 /**
+ * TODO: this could do with being cleaned up --> don't need method for each n-gram, use regex in one method
  * Generate word sequences using n-grams stored in database
  * @author Clare Buckley
  * @version 09/04/19
