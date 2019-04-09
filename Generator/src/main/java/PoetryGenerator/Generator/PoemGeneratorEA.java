@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
@@ -16,7 +14,7 @@ import org.languagetool.rules.RuleMatch;
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
  * @author Clare Buckley
- * @version 08/04/19
+ * @version 09/04/19
  */
 
 public class PoemGeneratorEA {
@@ -35,7 +33,7 @@ public class PoemGeneratorEA {
 	private  int tournamentSize;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(2,1,1, "3-gram", "4-gram");
+		new PoemGeneratorEA(5,1,2, "3-gram", "4-gram");
 	}
 
 	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
@@ -168,8 +166,6 @@ public class PoemGeneratorEA {
 
 		String updatedPoem = "";
 
-
-
 		//Add rhyme to even lines
 		for(int i = 0; i < poemLines.length; i++) {
 			String wordToRhymeWith;
@@ -221,10 +217,8 @@ public class PoemGeneratorEA {
 
 			int from = match.getFromPos();
 			int to = match.getToPos();
-			System.out.println(ruleId);
 			List<String> suggestions =  match.getSuggestedReplacements();
 			if(suggestions.size() > 0) {
-				System.out.println("has suggestions");
 				poem = replaceWithSuggestion(poem, from, to, suggestions);
 			} 
 			else if(ruleId.equals("USELESS_THAT") || ruleId.equals("TIRED_INTENSIFIERS")) {
