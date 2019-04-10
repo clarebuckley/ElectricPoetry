@@ -1,10 +1,7 @@
 package PoetryGenerator.Generator;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +47,7 @@ public class PoemGeneratorEA {
 		mutationProbability = mutationProbabilityParam;
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
-		//./src/main/java/PoetryGenerator/Data/languageModel.arpa
-		writer = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults" + population + "-pop_" + numberOfGenerations + "-gen_" + ".csv");
+		writer = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
 
 		findBestPoem();
 	}
@@ -327,7 +323,8 @@ public class PoemGeneratorEA {
 			writer.append(',');
 			writer.append(bestCost.toString());
 			writer.append(',');
-			String bestPoemToSave = bestPoem.replace("\n", "[NEWLINE]");
+			String bestPoemToSave = bestPoem.replace(",", "[COMMA]");
+			bestPoemToSave = bestPoemToSave.replace(System.getProperty("line.separator"), "[NEWLINE]");
 			writer.append(bestPoemToSave);
 			writer.append(",");
 			writer.append('\n');

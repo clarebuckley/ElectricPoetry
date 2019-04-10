@@ -1,6 +1,7 @@
 package PoetryGenerator.Generator;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -50,7 +51,12 @@ public class RhymeGenerator {
 				for(String ngramSequence : ngram.keySet()) {
 					String ngramPrev1 = ngramSequence.split(" ")[0].replaceAll("_", ".");
 					Document ngramPrev1Db = mongo.getSequenceMatches(collection, ngramPrev1, "word").get(0);
-					Document prevWord1Db = mongo.getSequenceMatches(collection, prevWord1, "word").get(0);
+					//Prev word may have been changed, meaning that word won't be in database
+					List<Document> prevWord1DbMatches = mongo.getSequenceMatches(collection, prevWord1, "word");
+					if(prevWord1DbMatches.isEmpty()) {
+						break;
+					} 
+					Document prevWord1Db = prevWord1DbMatches.get(0);
 					String ngramPrev1POS = ngramPrev1Db.getString("POS");
 					String prevWord1POS = prevWord1Db.getString("POS");
 					if(wordMatch.equals(wordToReplace)){

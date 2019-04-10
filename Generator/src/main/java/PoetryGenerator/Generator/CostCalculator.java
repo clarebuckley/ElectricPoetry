@@ -42,9 +42,9 @@ public class CostCalculator {
 		thisCost = thisCost.add(checkRhymeCost(poem));
 		thisCost = thisCost.add(checkLengthCost(poem));
 		return thisCost;
-		
+
 	}
-	
+
 	/**
 	 * Reward poems that have short line lengths
 	 * @param poem
@@ -61,7 +61,7 @@ public class CostCalculator {
 		}
 		return costIncrease;
 	}
-	
+
 	/**
 	 * Reward poems that have rhyme
 	 * @param poem
@@ -77,25 +77,25 @@ public class CostCalculator {
 			String lastWord = lineWords[lineWords.length-1];
 			rhymeCandidates.add(lastWord);
 		}
-		
+
 		for(int i = 0; i < rhymeCandidates.size(); i++) {
-		    String candidate1 = rhymeCandidates.get(i);
-		    for(int j = 0; j < rhymeCandidates.size(); j++) {
-		        if(j == i) continue; // will  increase j
-		        String candidate2 = rhymeCandidates.get(j);
-		        if(rhyme.doWordsRhyme(candidate1, candidate2)) {
-		        	if(!candidate1.equals(candidate2)) {
-		        		costIncrease = thisCost.multiply(new BigDecimal(0.3));
-		        	} else {
-		        		costIncrease = thisCost.multiply(new BigDecimal(0.2));
-		        	}
+			String candidate1 = rhymeCandidates.get(i);
+			for(int j = 0; j < rhymeCandidates.size(); j++) {
+				if(j == i) continue; // will  increase j
+				String candidate2 = rhymeCandidates.get(j);
+				if(rhyme.doWordsRhyme(candidate1, candidate2)) {
+					if(!candidate1.equals(candidate2)) {
+						costIncrease = thisCost.multiply(new BigDecimal(0.3));
+					} else {
+						costIncrease = thisCost.multiply(new BigDecimal(0.2));
+					}
 				}
-		    }
+			}
 		} 
 		return costIncrease;
 	}
-	
-	
+
+
 
 	/**
 	 * Calculate cost of a candidate poem using chain rule on bigrams
@@ -183,12 +183,12 @@ public class CostCalculator {
 				}
 			}
 		}
-		
+
 		probability = probability.divide(new BigDecimal(poemSentences.length), MathContext.DECIMAL64);
 		System.out.println("probability: " + probability);
 		return probability;
 	}
-	
+
 	/**
 	 * Calculate cost of a candidate poem using chain rule on fourgrams
 	 * P(A,B,C,D) = P(A) * P(B | A) * P(C | A, B) * P(D | A, B, C)
@@ -230,13 +230,13 @@ public class CostCalculator {
 				}
 			}
 		}
-		
+
 		probability = probability.divide(new BigDecimal(poemSentences.length), MathContext.DECIMAL64);
 		System.out.println("probability: " + probability);
 		return probability;
 	}
-	
-	
+
+
 	/**
 	 * Get probability of a given sequence from the database
 	 * @param sequence - sequence to be checked
@@ -259,13 +259,15 @@ public class CostCalculator {
 		for(Document match : sequenceMatches) {
 			Document associations = (Document) match.get("associations");
 			Document ngramData = (Document) associations.get(gramVal);
-			Set<String> words = ngramData.keySet();
-			for(String keyWord : words) {
-				if(keyWord.equalsIgnoreCase(sequence)) {
-					Document thisWord = (Document) ngramData.get(keyWord);
-					Double probability = new Double(thisWord.get("probability").toString());
-					BigDecimal thisProb = new BigDecimal(probability);
-					return thisProb;
+			if(!ngramData.isEmpty()) {
+				Set<String> words = ngramData.keySet();
+				for(String keyWord : words) {
+					if(keyWord.equalsIgnoreCase(sequence)) {
+						Document thisWord = (Document) ngramData.get(keyWord);
+						Double probability = new Double(thisWord.get("probability").toString());
+						BigDecimal thisProb = new BigDecimal(probability);
+						return thisProb;
+					}
 				}
 			}
 		}
