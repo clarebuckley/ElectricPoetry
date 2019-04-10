@@ -47,9 +47,20 @@ public class PoemGeneratorEA {
 		mutationProbability = mutationProbabilityParam;
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
+		
 		writer = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
-
-		findBestPoem();
+		writer.append("Generation no.");
+		writer.append(',');
+		writer.append("Highest cost");
+		writer.append(',');
+		writer.append("Poem");
+		writer.append(",");
+		writer.append('\n');
+		for(int i = 0; i < 10; i++) {
+			findBestPoem();
+		}
+		
+	
 	}
 
 	//Used for testing
@@ -60,15 +71,6 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	private void findBestPoem() throws IOException{
-		writer.append("Generation no.");
-		writer.append(',');
-		writer.append("Highest cost");
-		writer.append(',');
-		writer.append("Poem");
-		writer.append(",");
-		writer.append('\n');
-
-
 		System.out.println("Initialising population\n");
 		initialisePopulation();
 		System.out.println("Initialising population probabilities\n");
