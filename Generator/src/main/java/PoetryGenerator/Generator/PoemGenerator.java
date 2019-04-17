@@ -27,10 +27,10 @@ public class PoemGenerator {
 	 */
 	public String generatePoem(int poemVerses){
 		ArrayList<ArrayList<String>> poem = new ArrayList<ArrayList<String>>();
-		TemplateController templateMutator = new TemplateController(1);
+		TemplateController templateController = new TemplateController(1);
 		TemplateFiller templateFiller = new TemplateFiller(generationGram);
-		List<List<Document>> poemText = templateMutator.getPoemText();
-		List<List<Document>> template = templateMutator.getPoemTemplate();
+		List<List<Document>> poemText = templateController.getPoemText();
+		List<List<Document>> template = templateController.getPoemTemplate();
 		poem = templateFiller.processTemplate(template, poemText);
 		
 		String poemContent = buildPoem(poem);

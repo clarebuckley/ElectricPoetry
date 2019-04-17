@@ -141,54 +141,56 @@ public class TemplateFiller {
 	 */
 	private String postProcessLine(String line) {
 		//Set start of lines to have capital letters
-		line = line.substring(0, 1).toUpperCase() + line.substring(1);
+		if(line.length() > 1) {
+			line = line.substring(0, 1).toUpperCase() + line.substring(1);
 
-		line = line.replaceAll(" i ", " I ");
-		line = line.replaceAll("::", ":");
-		line = line.replaceAll(" 's", "'s");
-		line = line.replaceAll(" 'll", "'ll");
-		line = line.replaceAll(" 'd", "'d");
-		line = line.replaceAll("!", "! ");
-		line = line.replaceAll(" !", "!");
-		line = line.replaceAll(" \\?", "?");
-		line = line.replaceAll("'", "");
-		line = line.replaceAll("_", ".");
-		//Remove space before punctuation
-		line = line.replaceAll("\\s+(?=\\p{Punct})", "");
+			line = line.replaceAll(" i ", " I ");
+			line = line.replaceAll("::", ":");
+			line = line.replaceAll(" 's", "'s");
+			line = line.replaceAll(" 'll", "'ll");
+			line = line.replaceAll(" 'd", "'d");
+			line = line.replaceAll("!", "! ");
+			line = line.replaceAll(" !", "!");
+			line = line.replaceAll(" \\?", "?");
+			line = line.replaceAll("'", "");
+			line = line.replaceAll("_", ".");
+			//Remove space before punctuation
+			line = line.replaceAll("\\s+(?=\\p{Punct})", "");
 
-		line = line.replaceAll("-lrb- ", " (");
-		line = line.replaceAll("-rrb-", ") ");
+			line = line.replaceAll("-lrb- ", " (");
+			line = line.replaceAll("-rrb-", ") ");
 
-		//For consonants following 'an', change to 'a'
-		Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
-		Matcher matcher = pattern.matcher(line);
-		while(matcher.find()){
-			String match = line.substring(matcher.start(), matcher.start()+1);
-			line.replace(match, "a");
+			//For consonants following 'an', change to 'a'
+			Pattern pattern = Pattern.compile("an [b-df-hj-np-tv-z]");
+			Matcher matcher = pattern.matcher(line);
+			while(matcher.find()){
+				String match = line.substring(matcher.start(), matcher.start()+1);
+				line.replace(match, "a");
+			}
+
+
+			String capitaliseResult = "";
+			boolean capitalise = true;
+			for(int i = 0; i < line.length(); i++) {
+				//Current character
+				char c = line.charAt(i);
+				//If character is full stop, next character will be capitalised
+				if(c == '.') {
+					capitalise = true;
+				}
+				else if(capitalise && Character.isAlphabetic(c)) {
+					c = Character.toUpperCase(c);
+					//Don't capitalise next character
+					capitalise = false;
+				}
+				capitaliseResult += c;
+
+				if(i == line.length() && line.charAt(i) == ',') {
+					line = line.substring(0, line.length()-1) + ".";
+				}
+			}
+			line = capitaliseResult.trim();
 		}
-
-
-		String capitaliseResult = "";
-		boolean capitalise = true;
-		for(int i = 0; i < line.length(); i++) {
-			//Current character
-			char c = line.charAt(i);
-			//If character is full stop, next character will be capitalised
-			if(c == '.') {
-				capitalise = true;
-			}
-			else if(capitalise && Character.isAlphabetic(c)) {
-				c = Character.toUpperCase(c);
-				//Don't capitalise next character
-				capitalise = false;
-			}
-			capitaliseResult += c;
-
-			if(i == line.length() && line.charAt(i) == ',') {
-				line = line.substring(0, line.length()-1) + ".";
-			}
-		}
-		line = capitaliseResult.trim();
 		return line;
 	}
 

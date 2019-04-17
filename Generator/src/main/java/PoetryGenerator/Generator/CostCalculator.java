@@ -259,7 +259,7 @@ public class CostCalculator {
 		for(Document match : sequenceMatches) {
 			Document associations = (Document) match.get("associations");
 			Document ngramData = (Document) associations.get(gramVal);
-			if(!ngramData.isEmpty()) {
+			if(ngramData != null && !ngramData.isEmpty()) {
 				Set<String> words = ngramData.keySet();
 				for(String keyWord : words) {
 					if(keyWord.equalsIgnoreCase(sequence)) {

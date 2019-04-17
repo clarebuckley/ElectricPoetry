@@ -15,14 +15,15 @@ import org.languagetool.rules.RuleMatch;
  * Evolutionary algorithm to find the highest scoring poem
  * Goal: maximise cost
  * @author Clare Buckley
- * @version 09/04/19
+ * @version 10/04/19
  */
 
 public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
 	private RhymeGenerator rhymeGenerator;
-	private FileWriter writer;
+	private FileWriter textWriter;
+	private FileWriter csvWriter;
 	//ArrayList of candidates to be used
 	private HashMap<String,BigDecimal> population = new HashMap<String,BigDecimal>();    
 	//Number of candidate solutions
@@ -34,12 +35,17 @@ public class PoemGeneratorEA {
 	private int currentGeneration = 0;
 	//Sample size for tournament parent selection
 	private  int tournamentSize;
+	//Number of verses in each poem
+	private int numVerses;
+	
+	private int iteration;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(2,1,1, "3-gram", "4-gram");
+		new PoemGeneratorEA(10,0.7,5,1, "4-gram", "4-gram");
 	}
 
-	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, String generatorGram, String evaluatorGram) throws IOException{
+
+	public PoemGeneratorEA(int populationSizeParam, double mutationProbabilityParam, int generationsParam, int numVersesParam, String generatorGram, String evaluatorGram) throws IOException{
 		costCalculator = new CostCalculator(evaluatorGram);
 		poemGenerator = new PoemGenerator(generatorGram);
 		rhymeGenerator = new RhymeGenerator();
@@ -47,20 +53,24 @@ public class PoemGeneratorEA {
 		mutationProbability = mutationProbabilityParam;
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
-		
-		writer = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
-		writer.append("Generation no.");
-		writer.append(',');
-		writer.append("Highest cost");
-		writer.append(',');
-		writer.append("Poem");
-		writer.append(",");
-		writer.append('\n');
-		for(int i = 0; i < 10; i++) {
+		numVerses = numVersesParam;
+
+		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
+		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
+		csvWriter.append("Iteration");
+		csvWriter.append(',');
+		csvWriter.append("Best Cost Found");
+		csvWriter.append(',');
+		csvWriter.append('\n');
+		for( iteration = 0; iteration < 10; iteration++) {
 			findBestPoem();
 		}
-		
-	
+
+		textWriter.flush();
+		textWriter.close();
+		csvWriter.flush();
+		csvWriter.close();
+
 	}
 
 	//Used for testing
@@ -71,6 +81,8 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	private void findBestPoem() throws IOException{
+
+
 		System.out.println("Initialising population\n");
 		initialisePopulation();
 		System.out.println("Initialising population probabilities\n");
@@ -84,16 +96,16 @@ public class PoemGeneratorEA {
 		evaluateFinalPopulation();
 		System.out.println("-------------------------------------------------------------");
 
-		writer.flush();
-		writer.close();	
+
 	}
 
 	/**
 	 * Initialise population for evolutionary algorithm
 	 */
 	private void initialisePopulation() {
+		population.clear();
 		for(int i = 0; i < populationSize; i++) {
-			String poem = poemGenerator.generatePoem(1);
+			String poem = poemGenerator.generatePoem(numVerses);
 			population.put(poem, new BigDecimal(0));
 			System.out.println(poem);
 		}
@@ -137,6 +149,11 @@ public class PoemGeneratorEA {
 		String child = addRhyme(parent1); 
 		String mutatedParent = "";
 		String toMutate = "";
+
+		if(child.equals(parent1)) {
+			System.out.println("No rhyme added");
+			child = poemGenerator.generatePoem(numVerses);
+		}
 
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
@@ -260,7 +277,8 @@ public class PoemGeneratorEA {
 		System.out.println("Fixing grammar");
 		JLanguageTool langTool = new JLanguageTool(new BritishEnglish());
 		List<RuleMatch> matches = langTool.check(poem);
-		while(matches.size() > 0) {
+		int i = 0;
+		while(matches.size() > 0 && i < 10) {
 			RuleMatch match = matches.get(0);
 			String ruleId = match.getRule().getId();
 
@@ -278,6 +296,7 @@ public class PoemGeneratorEA {
 			//To and from indexes will be incorrect for previous matches: 
 			matches.clear();
 			matches = langTool.check(poem);
+			i++;
 		}
 		return poem;
 	}
@@ -321,21 +340,27 @@ public class PoemGeneratorEA {
 		System.out.println("Best poem: \n" + bestPoem); 
 
 		try {
-			writer.append(Integer.toString(currentGeneration));
-			writer.append(',');
-			writer.append(bestCost.toString());
-			writer.append(',');
-			String bestPoemToSave = bestPoem.replace(",", "[COMMA]");
-			bestPoemToSave = bestPoemToSave.replace(System.getProperty("line.separator"), "[NEWLINE]");
-			writer.append(bestPoemToSave);
-			writer.append(",");
-			writer.append('\n');
+			System.out.println("writing to file for iteration: " + iteration + " --> " + bestCost);
+			csvWriter.append(Integer.toString(iteration));
+			csvWriter.append(',');
+			csvWriter.append(bestCost.toString());
+			csvWriter.append(',');
+			csvWriter.append('\n');
+
+			textWriter.append("Generation: ");
+			textWriter.append(Integer.toString(iteration));
+			textWriter.append("\n");
+			textWriter.append(bestPoem);
+			textWriter.append("\n");
+
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}			    
-
 		return bestCost;
+
+
 	}
 
 

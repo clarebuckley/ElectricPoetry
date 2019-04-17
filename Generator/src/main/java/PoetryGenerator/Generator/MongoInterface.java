@@ -1,5 +1,6 @@
 package PoetryGenerator.Generator;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,11 +26,18 @@ import com.mongodb.client.model.Sorts;
  */
 public class MongoInterface {
 
-	private MongoClient mongo = new MongoClient( "localhost", 27017 ); 
+	static public MongoClient mongo = null;
+	
 	private final MongoDatabase database;
 	private final String databaseName;
 
 	MongoInterface(String databaseNameParam) {
+		try {
+			mongo = getMongoClientInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		databaseName = databaseNameParam;
 		database = mongo.getDatabase(databaseName);
 	}
@@ -40,6 +48,13 @@ public class MongoInterface {
 	 */
 	public MongoDatabase getDatabase() {
 		return database;
+	}
+	
+	public static synchronized MongoClient getMongoClientInstance() throws UnknownHostException {
+	    if (mongo == null) {
+	        mongo = new MongoClient( "localhost", 27017 );
+	    }
+	    return mongo;
 	}
 
 	/**
