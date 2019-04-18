@@ -37,11 +37,11 @@ public class PoemGeneratorEA {
 	private  int tournamentSize;
 	//Number of verses in each poem
 	private int numVerses;
-	
+
 	private int iteration;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(10,0.7,5,1, "4-gram", "4-gram");
+		new PoemGeneratorEA(2,1,5,1, "4-gram", "4-gram");
 	}
 
 
@@ -137,48 +137,64 @@ public class PoemGeneratorEA {
 	 * One generation of the algorithm
 	 * Add child to population, and mutate both child and another poem in the population 
 	 * if the mutation probability is met.
-	 * Child: parent selected using tournament selection, rhyme is added to this parent
-	 * Mutation: selected poems have grammar fixed using LanguageTool
+	 * Child: crossover of two parents
+	 * Mutation: selected poems have grammar fixed using LanguageTool and rhyme is added using RhymeGenerators
 	 * @throws IOException 
 	 */
 	private void oneGeneration() throws IOException {
 		//Select parents
 		String parent1 = tournamentParentSelection();
-
-		System.out.println("Creating child");
-		String child = addRhyme(parent1); 
-		String mutatedParent = "";
-		String toMutate = "";
-
-		if(child.equals(parent1)) {
-			System.out.println("No rhyme added");
-			child = poemGenerator.generatePoem(numVerses);
+		String parent2 = tournamentParentSelection();
+		while(!parent2.contentEquals(parent1)) {
+			parent2 = tournamentParentSelection();
 		}
+		String child = generateCrossover(parent1, parent2);
 
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
 			child =	fixGrammar(child); 
-			toMutate = tournamentParentSelection();
-			mutatedParent = fixGrammar(toMutate);
-
+			child =	addRhyme(child); 
 		}
 
 		HashMap<String, BigDecimal> newPopulation = population;
 		BigDecimal childProb = costCalculator.getCost(child);
-		if(mutatedParent.length() > 0) {
-			BigDecimal mutatedParentProb = costCalculator.getCost(mutatedParent);
-			newPopulation.remove(toMutate);
-			newPopulation.put(mutatedParent, mutatedParentProb);
-			System.out.println("Mutated: \n" + mutatedParent);
-			System.out.println("probability: " + mutatedParentProb);
-		}
-
 		System.out.println("Child: \n" + child);
 		System.out.println("probability: " + childProb);
 		newPopulation.put(child, childProb);
 		//Replace weakest member of population
 		population = removeWeakestIndividual(newPopulation);
 
+	}
+
+	public String generateCrossover(String parent1, String parent2) {
+		String child = "";
+		String[] parent1Lines = parent1.split("\\r?\\n");
+		String[] parent2Lines = parent2.split("\\r?\\n");
+		int totalLines = parent1Lines.length + parent2Lines.length;
+		int childLength = (int)totalLines/2;
+
+		String[] part1, part2;
+		int part1Length,part2Length;
+		if(parent1Lines.length > parent2Lines.length) {
+			part1 = parent1Lines;
+			part2 = parent2Lines;
+		} else {
+			part1 = parent2Lines;
+			part2 = parent1Lines;
+		}
+
+		part1Length = (int) childLength/2;
+		part2Length = childLength - part1Length;
+		for(int i = 0; i < part1Length; i++) {
+			child = child + part1[i] + "\n";
+		}
+		int j = 0;
+		int existingChildLines = child.split("\\r?\\n").length;
+		while(existingChildLines < childLength && j < part2Length) {
+			child = child + part2[j] + "\n";
+			j++;
+		}
+		return child;
 	}
 
 	/**
