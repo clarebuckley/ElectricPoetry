@@ -41,7 +41,7 @@ public class PoemGeneratorEA {
 	private int iteration;
 
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(2,1,5,1, "4-gram", "4-gram");
+		new PoemGeneratorEA(10,0.8,5,1, "4-gram", "4-gram");
 	}
 
 
