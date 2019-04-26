@@ -1,3 +1,4 @@
+#Taken from tutorial at: http://victor.chahuneau.fr/notes/2012/07/03/kenlm.html
 import sys
 import nltk
 
