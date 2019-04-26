@@ -6,24 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.RuleMatch;
 /**
- * Evolutionary algorithm to find the highest scoring poem
- * Goal: maximise cost
+ * Evolutionary algorithm to find the highest scoring poem in terms of grammaticality, poeticness and meaningfulness
+ * Goal: maximise cost of candidate solutions
  * @author Clare Buckley
- * @version 10/04/19
+ * @version 26/04/19
  */
 
 public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
 	private RhymeGenerator rhymeGenerator;
-	private FileWriter textWriter;
-	private FileWriter csvWriter;
+//	private FileWriter textWriter;
+//	private FileWriter csvWriter;
 	//ArrayList of candidates to be used
 	private HashMap<String,BigDecimal> population = new HashMap<String,BigDecimal>();    
 	//Number of candidate solutions
@@ -37,11 +37,15 @@ public class PoemGeneratorEA {
 	private  int tournamentSize;
 	//Number of verses in each poem
 	private int numVerses;
+//	private int iteration;
 
-	private int iteration;
-
-	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(10,0.8,5,1, "4-gram", "4-gram");
+	/**
+	 * Main method to run the system.
+	 * Used to set parameters for the evolutionary algorithm.
+	 * @throws IOException
+	 */
+	public static void main() throws IOException {
+		new PoemGeneratorEA(50,0.8,5,1, "2-gram", "4-gram");
 	}
 
 
@@ -55,21 +59,21 @@ public class PoemGeneratorEA {
 		tournamentSize = (int) (populationSize * 0.5);
 		numVerses = numVersesParam;
 
-		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
-		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
-		csvWriter.append("Iteration");
-		csvWriter.append(',');
-		csvWriter.append("Best Cost Found");
-		csvWriter.append(',');
-		csvWriter.append('\n');
-		for( iteration = 0; iteration < 10; iteration++) {
+//		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
+//		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
+//		csvWriter.append("Iteration");
+//		csvWriter.append(',');
+//		csvWriter.append("Best Cost Found");
+//		csvWriter.append(',');
+//		csvWriter.append('\n');
+//		for( iteration = 0; iteration < 10; iteration++) {
 			findBestPoem();
-		}
+//		}
 
-		textWriter.flush();
-		textWriter.close();
-		csvWriter.flush();
-		csvWriter.close();
+//		textWriter.flush();
+//		textWriter.close();
+//		csvWriter.flush();
+//		csvWriter.close();
 
 	}
 
@@ -145,7 +149,7 @@ public class PoemGeneratorEA {
 		//Select parents
 		String parent1 = tournamentParentSelection();
 		String parent2 = tournamentParentSelection();
-		while(!parent2.contentEquals(parent1)) {
+		while(parent2.contentEquals(parent1)) {
 			parent2 = tournamentParentSelection();
 		}
 		String child = generateCrossover(parent1, parent2);
@@ -166,6 +170,12 @@ public class PoemGeneratorEA {
 
 	}
 
+	/**
+	 * Create child from two parent candidates using crossover
+	 * @param parent1 - parent selected from population using tournament selection
+	 * @param parent2 - parent selected from population using tournament selection
+	 * @return child poem consisting of both parent1 and parent2
+	 */
 	public String generateCrossover(String parent1, String parent2) {
 		String child = "";
 		String[] parent1Lines = parent1.split("\\r?\\n");
@@ -200,7 +210,7 @@ public class PoemGeneratorEA {
 	/**
 	 * Select one parent from the poem with highest probability from
 	 * a subgroup of the population
-	 * @return
+	 * @return strongest parent from tournament
 	 */
 	private String tournamentParentSelection(){
 		Random random = new Random();
@@ -323,6 +333,7 @@ public class PoemGeneratorEA {
 	 * @param from - start index of error
 	 * @param to - end index of error
 	 * @param suggestions - possible ways to correct issue
+	 * @return word to replace original with
 	 */
 	private String replaceWithSuggestion(String line, int from, int to, List<String> suggestions) {
 		String replacement = suggestions.get(0);
@@ -355,25 +366,25 @@ public class PoemGeneratorEA {
 		System.out.println("Best cost: " + bestCost);
 		System.out.println("Best poem: \n" + bestPoem); 
 
-		try {
-			System.out.println("writing to file for iteration: " + iteration + " --> " + bestCost);
-			csvWriter.append(Integer.toString(iteration));
-			csvWriter.append(',');
-			csvWriter.append(bestCost.toString());
-			csvWriter.append(',');
-			csvWriter.append('\n');
-
-			textWriter.append("Generation: ");
-			textWriter.append(Integer.toString(iteration));
-			textWriter.append("\n");
-			textWriter.append(bestPoem);
-			textWriter.append("\n");
-
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}			    
+//		try {
+//			System.out.println("writing to file for iteration: " + iteration + " --> " + bestCost);
+//			csvWriter.append(Integer.toString(iteration));
+//			csvWriter.append(',');
+//			csvWriter.append(bestCost.toString());
+//			csvWriter.append(',');
+//			csvWriter.append('\n');
+//
+//			textWriter.append("Generation: ");
+//			textWriter.append(Integer.toString(iteration));
+//			textWriter.append("\n");
+//			textWriter.append(bestPoem);
+//			textWriter.append("\n");
+//
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}			    
 		return bestCost;
 
 
