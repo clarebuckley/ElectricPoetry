@@ -44,8 +44,8 @@ public class PoemGeneratorEA {
 	 * Used to set parameters for the evolutionary algorithm.
 	 * @throws IOException
 	 */
-	public static void main() throws IOException {
-		new PoemGeneratorEA(50,0.8,5,1, "2-gram", "4-gram");
+	public static void main(String[] args) throws IOException {
+		new PoemGeneratorEA(50,0.8,10,1, "2-gram", "4-gram");
 	}
 
 
