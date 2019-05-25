@@ -1,4 +1,5 @@
 package PoetryGenerator.Generator;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class PoemGeneratorEA {
 	private PoemGenerator poemGenerator;
 	private CostCalculator costCalculator;
 	private RhymeGenerator rhymeGenerator;
-//	private FileWriter textWriter;
-//	private FileWriter csvWriter;
+	private FileWriter textWriter;
+	private FileWriter csvWriter;
 	//ArrayList of candidates to be used
 	private HashMap<String,BigDecimal> population = new HashMap<String,BigDecimal>();    
 	//Number of candidate solutions
@@ -37,7 +38,6 @@ public class PoemGeneratorEA {
 	private  int tournamentSize;
 	//Number of verses in each poem
 	private int numVerses;
-//	private int iteration;
 
 	/**
 	 * Main method to run the system.
@@ -45,7 +45,7 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(50,0.8,10,1, "2-gram", "4-gram");
+		new PoemGeneratorEA(100,0.8,100,1, "2-gram", "4-gram");
 	}
 
 
@@ -58,22 +58,23 @@ public class PoemGeneratorEA {
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
 		numVerses = numVersesParam;
+		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
+		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
 
-//		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
-//		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
-//		csvWriter.append("Iteration");
-//		csvWriter.append(',');
-//		csvWriter.append("Best Cost Found");
-//		csvWriter.append(',');
-//		csvWriter.append('\n');
-//		for( iteration = 0; iteration < 10; iteration++) {
-			findBestPoem();
-//		}
 
-//		textWriter.flush();
-//		textWriter.close();
-//		csvWriter.flush();
-//		csvWriter.close();
+		//      csvWriter.append("Iteration");
+		//		csvWriter.append(',');
+		//		csvWriter.append("Best Cost Found");
+		//		csvWriter.append(',');
+		//		csvWriter.append('\n');
+		//		for( iteration = 0; iteration < 10; iteration++) {
+		findBestPoem();
+		//		}
+		//
+		//		textWriter.flush();
+		//		textWriter.close();
+		//		csvWriter.flush();
+		//		csvWriter.close();
 
 	}
 
@@ -131,10 +132,24 @@ public class PoemGeneratorEA {
 	 * @throws IOException 
 	 */
 	private void evolve() throws IOException {
+
+		csvWriter.append("Generation");
+		csvWriter.append(',');
+		csvWriter.append("Best Cost Found");
+		csvWriter.append(',');
+		csvWriter.append('\n');
+
 		while(currentGeneration < numberOfGenerations) {
 			oneGeneration();
 			currentGeneration++;
 		}
+
+		textWriter.flush();
+		textWriter.close();
+		csvWriter.flush();
+		csvWriter.close();
+
+
 	}
 
 	/**
@@ -366,25 +381,25 @@ public class PoemGeneratorEA {
 		System.out.println("Best cost: " + bestCost);
 		System.out.println("Best poem: \n" + bestPoem); 
 
-//		try {
-//			System.out.println("writing to file for iteration: " + iteration + " --> " + bestCost);
-//			csvWriter.append(Integer.toString(iteration));
-//			csvWriter.append(',');
-//			csvWriter.append(bestCost.toString());
-//			csvWriter.append(',');
-//			csvWriter.append('\n');
-//
-//			textWriter.append("Generation: ");
-//			textWriter.append(Integer.toString(iteration));
-//			textWriter.append("\n");
-//			textWriter.append(bestPoem);
-//			textWriter.append("\n");
-//
-//
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}			    
+		//		try {
+		//			System.out.println("writing to file for iteration: " + iteration + " --> " + bestCost);
+		//			csvWriter.append(Integer.toString(iteration));
+		//			csvWriter.append(',');
+		//			csvWriter.append(bestCost.toString());
+		//			csvWriter.append(',');
+		//			csvWriter.append('\n');
+		//
+		//			textWriter.append("Generation: ");
+		//			textWriter.append(Integer.toString(iteration));
+		//			textWriter.append("\n");
+		//			textWriter.append(bestPoem);
+		//			textWriter.append("\n");
+		//
+		//
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}			    
 		return bestCost;
 
 
@@ -399,14 +414,42 @@ public class PoemGeneratorEA {
 	private HashMap<String, BigDecimal>  removeWeakestIndividual(HashMap<String, BigDecimal> candidates){
 		BigDecimal lowestProb = new BigDecimal(100);
 		String weakestCandidate = "";
+		BigDecimal bestCost = new BigDecimal(0);
+		String bestPoem = "";
 		for(Map.Entry<String, BigDecimal> candidate:candidates.entrySet())   {
 			BigDecimal thisCost = candidate.getValue();
 			if(thisCost.compareTo(lowestProb) < 0) {
 				lowestProb = thisCost;
 				weakestCandidate = candidate.getKey();
 			}
+			if(thisCost.compareTo(bestCost) > 0) {
+				bestCost = thisCost;
+				bestPoem = candidate.getKey();
+			}
 		}
 		candidates.remove(weakestCandidate);
+
+
+		try {
+			System.out.println("writing to file for iteration: " + currentGeneration + " --> " + bestCost);
+			csvWriter.append(Integer.toString(currentGeneration));
+			csvWriter.append(',');
+			csvWriter.append(bestCost.toString());
+			csvWriter.append(',');
+			csvWriter.append('\n');
+
+			textWriter.append("Generation: ");
+			textWriter.append(Integer.toString(currentGeneration));
+			textWriter.append("\n");
+			textWriter.append(bestPoem);
+			textWriter.append("\n");
+
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			    
+
 		return candidates;
 	}
 
