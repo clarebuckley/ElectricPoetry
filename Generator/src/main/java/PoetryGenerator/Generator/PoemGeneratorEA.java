@@ -58,23 +58,11 @@ public class PoemGeneratorEA {
 		numberOfGenerations = generationsParam;
 		tournamentSize = (int) (populationSize * 0.5);
 		numVerses = numVersesParam;
-		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
-		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/poemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
+		textWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/TESTpoemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".txt");
+		csvWriter = new FileWriter("./src/main/java/PoetryGenerator/Data/results/TESTpoemResults_generate=" + generatorGram + "_evaluate=" + evaluatorGram + "_pop=" + populationSize + "_generations=" + numberOfGenerations +  ".csv");
 
 
-		//      csvWriter.append("Iteration");
-		//		csvWriter.append(',');
-		//		csvWriter.append("Best Cost Found");
-		//		csvWriter.append(',');
-		//		csvWriter.append('\n');
-		//		for( iteration = 0; iteration < 10; iteration++) {
 		findBestPoem();
-		//		}
-		//
-		//		textWriter.flush();
-		//		textWriter.close();
-		//		csvWriter.flush();
-		//		csvWriter.close();
 
 	}
 
@@ -229,26 +217,26 @@ public class PoemGeneratorEA {
 	 */
 	private String tournamentParentSelection(){
 		Random random = new Random();
-		int sampleSize = tournamentSize;
 		ArrayList<String> candidates = new ArrayList<String>();
 
 		//Get candidate parents
-		for(int i = 0; i < sampleSize; i++) {
+		for(int i = 0; i < tournamentSize; i++) {
 			String randomPoem = (String) population.keySet().toArray()[random.nextInt(population.keySet().toArray().length)];
 			candidates.add(randomPoem);
 		}
 
-		//Get best candidate from selection
-		String bestCandidate = "";
+		//Get best proportion of candidates from selection
+		ArrayList<String> bestCandidates = new ArrayList<String>();
 		BigDecimal bestCost = new BigDecimal(0);
 		for(String candidate : candidates) {
 			BigDecimal thisCost = population.get(candidate);
-			if(thisCost.compareTo(bestCost) > 0) {
+			if(thisCost.compareTo(bestCost) > 0 && bestCandidates.size() < tournamentSize*0.5) {
 				bestCost = thisCost;
-				bestCandidate = candidate;
+				bestCandidates.add(candidate);
 			}
 		}
-		return bestCandidate;
+	
+		return bestCandidates.get(random.nextInt(bestCandidates.size()));
 	}
 
 
