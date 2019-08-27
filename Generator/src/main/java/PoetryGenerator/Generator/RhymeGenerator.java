@@ -16,6 +16,7 @@ import org.bson.Document;
 public class RhymeGenerator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
+	private static final int SEARCH_LIMIT = 300;
 
 	public RhymeGenerator() {
 	}
@@ -69,7 +70,7 @@ public class RhymeGenerator {
 							//If POS tags for n-1 match
 							int j = 0;
 							if(ngramPrev1POS.equals(prevWord1POS)) {
-								if(j > 50) {
+								if(j > SEARCH_LIMIT) {
 									break;
 								}
 								Document thisDoc = (Document) ngram.get(ngramSequence);

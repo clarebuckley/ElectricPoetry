@@ -19,7 +19,7 @@ public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
 	private String generationGram;
-	private static final int SEARCH_LIMIT = 150;
+	private static final int SEARCH_LIMIT = 300;
 
 	public NGramController(String generationGram) {
 		this.generationGram = generationGram;
@@ -73,6 +73,10 @@ public class NGramController {
 		int i = 0;
 		BigDecimal highestProbability = new BigDecimal(0);
 		for(Document match : matches) {
+			Random random = new Random();
+			if(i% (random.nextInt(5)+1)== 0) {
+				continue;
+			}
 			Document associations = (Document) match.get("associations");
 			Document bigramData = (Document) associations.get("2-gram");
 			Set<String> bigramWords = bigramData.keySet();
@@ -129,52 +133,55 @@ public class NGramController {
 
 		BigDecimal highestProbability = new BigDecimal(0);
 
-	//	int matchSample = (int) (matches.size()*0.05);
-		int randomInt = new Random().nextInt(4)+1;
+		//	int matchSample = (int) (matches.size()*0.05);
+	
 		for(int i = 0; i < matches.size(); i++ /*Document match : matches*/) {
-			if(i%randomInt == 0) {
-				Document match = matches.get(i);
-				Document associations = (Document) match.get("associations");
-				Document ngramData = (Document) associations.get("3-gram");
+			Random random = new Random();
+			if(i% (random.nextInt(5)+1) == 0) {
+				continue;
+			}
+			Document match = matches.get(i);
+			Document associations = (Document) match.get("associations");
+			Document ngramData = (Document) associations.get("3-gram");
 
-				if(ngramData == null) {
-					return findWordUsingBigram(prevWord1POS, prevWord1, wordPOS);
+			if(ngramData == null) {
+				return findWordUsingBigram(prevWord1POS, prevWord1, wordPOS);
+			}
+
+			Set<String> trigramWords = ngramData.keySet();
+			String trigramN2 = "", trigramN1, trigramWord;
+
+			int j = 0;
+			for(String word : trigramWords ) {
+				if(j == SEARCH_LIMIT) { 
+					break;
 				}
+				trigramN2 = word.split(" ")[0];
+				trigramN1 = word.split(" ")[1];
+				trigramWord = word.split(" ")[2];
 
-				Set<String> trigramWords = ngramData.keySet();
-				String trigramN2 = "", trigramN1, trigramWord;
+				if(prevWord1.equals(trigramN1) || prevWord2.equals(trigramN2)) {
+					//check pos tag of previous words
+					Document thisWord = (Document) ngramData.get(word);
+					String posTags = thisWord.get("POS").toString();
+					String[] posParts = posTags.split(" ");
+					String trigramPrev2POS = posParts[2];
+					String trigramPrev1POS = posParts[1];
 
-				int j = 0;
-				for(String word : trigramWords ) {
-					if(j == SEARCH_LIMIT) { 
-						break;
-					}
-					trigramN2 = word.split(" ")[0];
-					trigramN1 = word.split(" ")[1];
-					trigramWord = word.split(" ")[2];
-
-					if(prevWord1.equals(trigramN1) || prevWord2.equals(trigramN2)) {
-						//check pos tag of previous words
-						Document thisWord = (Document) ngramData.get(word);
-						String posTags = thisWord.get("POS").toString();
-						String[] posParts = posTags.split(" ");
-						String trigramPrev2POS = posParts[2];
-						String trigramPrev1POS = posParts[1];
-
-						if(trigramPrev2POS.equals(prevWord2POS) || trigramPrev1POS.equals(prevWord1POS)) {
-							//check probability
-							Double probability = new Double(thisWord.get("probability").toString());
-							BigDecimal thisProb = new BigDecimal(probability);
-							if(thisProb.compareTo(highestProbability) > 0) {
-								highestProbability = thisProb;
-								result = trigramWord;
-							}
+					if(trigramPrev2POS.equals(prevWord2POS) || trigramPrev1POS.equals(prevWord1POS)) {
+						//check probability
+						Double probability = new Double(thisWord.get("probability").toString());
+						BigDecimal thisProb = new BigDecimal(probability);
+						if(thisProb.compareTo(highestProbability) > 0) {
+							highestProbability = thisProb;
+							result = trigramWord;
 						}
 					}
-
-					j++;
 				}
+
+				j++;
 			}
+
 		}
 		//system.out.println("result --> " + result);
 		return result;
@@ -226,6 +233,10 @@ public class NGramController {
 
 			int j = 0;
 			for(String word : trigramWords ) {
+				Random random = new Random();
+				if(i% (random.nextInt(5)+1) == 0) {
+					continue;
+				}
 				if(j == SEARCH_LIMIT) {
 					break;
 				}

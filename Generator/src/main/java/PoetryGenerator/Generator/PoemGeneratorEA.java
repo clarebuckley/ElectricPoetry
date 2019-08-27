@@ -4,14 +4,21 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 //import java.io.FileWriter;
+import java.util.Set;
 
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.RuleMatch;
+
+import net.ricecode.similarity.LevenshteinDistanceStrategy;
+import net.ricecode.similarity.SimilarityStrategy;
+import net.ricecode.similarity.StringSimilarityService;
+import net.ricecode.similarity.StringSimilarityServiceImpl;
 /**
  * Evolutionary algorithm to find the highest scoring poem in terms of grammaticality, poeticness and meaningfulness
  * Goal: maximise cost of candidate solutions
@@ -75,11 +82,11 @@ public class PoemGeneratorEA {
 	 */
 	private void findBestPoem() throws IOException{
 
-
+		population.clear();
 		System.out.println("Initialising population\n");
 		initialisePopulation();
-		System.out.println("Initialising population probabilities\n");
-		initialisePopulationProbabilities();
+//		System.out.println("Initialising population probabilities\n");
+//		initialisePopulationProbabilities();
 
 		System.out.println("\nGoing through " + numberOfGenerations + " generations...");
 		evolve();
@@ -96,24 +103,25 @@ public class PoemGeneratorEA {
 	 * Initialise population for evolutionary algorithm
 	 */
 	private void initialisePopulation() {
-		population.clear();
-		for(int i = 0; i < populationSize; i++) {
+		while(population.size() != populationSize) {
 			String poem = poemGenerator.generatePoem(numVerses);
-			population.put(poem, new BigDecimal(0));
+			BigDecimal poemCost = costCalculator.getCost(poem);
+			population.put(poem, poemCost);
 			System.out.println(poem);
+			System.out.println(poemCost);
 		}
 	}
 
-	/**
-	 * Get probabilities for each poem in the population
-	 */
-	private void initialisePopulationProbabilities() {
-		for(Map.Entry<String, BigDecimal> poem : population.entrySet()) {
-			BigDecimal poemCost = costCalculator.getCost(poem.getKey());
-			System.out.println(poemCost);
-			population.replace(poem.getKey(), poemCost);
-		}
-	}
+//	/**
+//	 * Get probabilities for each poem in the population
+//	 */
+//	private void initialisePopulationProbabilities() {
+//		for(Map.Entry<String, BigDecimal> poem : population.entrySet()) {
+//			BigDecimal poemCost = costCalculator.getCost(poem.getKey());
+//			System.out.println(poemCost);
+//			population.replace(poem.getKey(), poemCost);
+//		}
+//	}
 
 	/**
 	 * Go through number of generations and improve potential solutions
@@ -152,7 +160,13 @@ public class PoemGeneratorEA {
 		//Select parents
 		String parent1 = tournamentParentSelection();
 		String parent2 = tournamentParentSelection();
-		while(parent2.contentEquals(parent1)) {
+		
+		//A score of 0.0 means that the two strings are absolutely dissimilar, and 1.0 means that absolutely similar (or equal).
+		SimilarityStrategy strategy = new LevenshteinDistanceStrategy();
+		StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
+		double similarityScore = service.score(parent1, parent2);
+		
+		while(parent2.contentEquals(parent1) || similarityScore > 0.5) {
 			parent2 = tournamentParentSelection();
 		}
 		String child = generateCrossover(parent1, parent2);
@@ -168,8 +182,18 @@ public class PoemGeneratorEA {
 		System.out.println("Child: \n" + child);
 		System.out.println("probability: " + childProb);
 		newPopulation.put(child, childProb);
-		//Replace weakest member of population
-		population = removeWeakestIndividual(newPopulation);
+		
+		//Replace weakest members of population
+		population = removeWeakestCandidaes(newPopulation);
+		//Re-populate missing poems
+		while(population.size() != populationSize) {
+			String poem = poemGenerator.generatePoem(numVerses);
+			population.put(poem, costCalculator.getCost(poem));
+			System.out.println(poem);
+		}
+		
+		System.out.println("END POPULATION: " + population.size());
+
 
 	}
 
@@ -230,12 +254,13 @@ public class PoemGeneratorEA {
 		BigDecimal bestCost = new BigDecimal(0);
 		for(String candidate : candidates) {
 			BigDecimal thisCost = population.get(candidate);
-			if(thisCost.compareTo(bestCost) > 0 && bestCandidates.size() < tournamentSize*0.5) {
+			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestCandidates.add(candidate);
 			}
 		}
-	
+		
+
 		return bestCandidates.get(random.nextInt(bestCandidates.size()));
 	}
 
@@ -399,23 +424,38 @@ public class PoemGeneratorEA {
 	 * @param candidates: whole population
 	 * @return population with weakest individual removed
 	 */
-	private HashMap<String, BigDecimal>  removeWeakestIndividual(HashMap<String, BigDecimal> candidates){
-		BigDecimal lowestProb = new BigDecimal(100);
-		String weakestCandidate = "";
+	private HashMap<String, BigDecimal>  removeWeakestCandidaes(HashMap<String, BigDecimal> candidates){
+		//TODO: remove any poems with probability less than X or with similarity higher than Y
+		//TODO: replace these with new poems
+		//TODO: should you replace words which repeat too many times?
+		int removedCount =0;
+		Set<String> weakestCandidates = new HashSet<String>();
+		//	BigDecimal lowestProb = new BigDecimal(100);
+		//	String weakestCandidate = "";
 		BigDecimal bestCost = new BigDecimal(0);
 		String bestPoem = "";
 		for(Map.Entry<String, BigDecimal> candidate:candidates.entrySet())   {
 			BigDecimal thisCost = candidate.getValue();
-			if(thisCost.compareTo(lowestProb) < 0) {
-				lowestProb = thisCost;
-				weakestCandidate = candidate.getKey();
+			System.out.println("-->" + thisCost);
+			if(thisCost.compareTo((new BigDecimal(0.001))) < 0) {
+				weakestCandidates.add(candidate.getKey());
+				removedCount++;
 			}
+			/*	if(thisCost.compareTo(lowestProb) < 0) {
+				lowestProb = thisCost;
+			//	weakestCandidate = candidate.getKey();
+				weakestCandidates.add(candidate.getKey());
+			}*/
 			if(thisCost.compareTo(bestCost) > 0) {
 				bestCost = thisCost;
 				bestPoem = candidate.getKey();
 			}
 		}
-		candidates.remove(weakestCandidate);
+
+		
+		//	candidates.remove(weakestCandidate);
+		candidates.keySet().removeAll(weakestCandidates);
+		System.out.println("POTENTIALLY REMOVED " + removedCount);
 
 
 		try {
@@ -440,5 +480,8 @@ public class PoemGeneratorEA {
 
 		return candidates;
 	}
+	
+	
+	
 
 }
