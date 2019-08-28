@@ -52,7 +52,7 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(100,0.8,100,1, "2-gram", "4-gram");
+		new PoemGeneratorEA(3,0.8,2,1, "2-gram", "4-gram");
 	}
 
 
@@ -136,6 +136,7 @@ public class PoemGeneratorEA {
 		csvWriter.append('\n');
 
 		while(currentGeneration < numberOfGenerations) {
+			System.out.println("Generation " + currentGeneration);
 			oneGeneration();
 			currentGeneration++;
 		}
@@ -157,6 +158,7 @@ public class PoemGeneratorEA {
 	 * @throws IOException 
 	 */
 	private void oneGeneration() throws IOException {
+		System.out.println("Getting parents");
 		//Select parents
 		String parent1 = tournamentParentSelection();
 		String parent2 = tournamentParentSelection();
@@ -169,6 +171,7 @@ public class PoemGeneratorEA {
 		while(parent2.contentEquals(parent1) || similarityScore > 0.5) {
 			parent2 = tournamentParentSelection();
 		}
+		System.out.println("Creating child");
 		String child = generateCrossover(parent1, parent2);
 
 		//Mutate resulting offspring and add to possible solutions
@@ -184,16 +187,15 @@ public class PoemGeneratorEA {
 		newPopulation.put(child, childProb);
 		
 		//Replace weakest members of population
+		System.out.println("Removing weak candidates");
 		population = removeWeakestCandidaes(newPopulation);
 		//Re-populate missing poems
+		System.out.println("Repopulating candidate solutions");
 		while(population.size() != populationSize) {
 			String poem = poemGenerator.generatePoem(numVerses);
 			population.put(poem, costCalculator.getCost(poem));
 			System.out.println(poem);
 		}
-		
-		System.out.println("END POPULATION: " + population.size());
-
 
 	}
 

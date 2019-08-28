@@ -19,7 +19,7 @@ public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
 	private String generationGram;
-	private static final int SEARCH_LIMIT = 300;
+	private static final int SEARCH_LIMIT = 50;
 
 	public NGramController(String generationGram) {
 		this.generationGram = generationGram;
@@ -137,7 +137,7 @@ public class NGramController {
 	
 		for(int i = 0; i < matches.size(); i++ /*Document match : matches*/) {
 			Random random = new Random();
-			if(i% (random.nextInt(5)+1) == 0) {
+			if(i% (random.nextInt(3)+1) == 0) {
 				continue;
 			}
 			Document match = matches.get(i);
@@ -234,7 +234,7 @@ public class NGramController {
 			int j = 0;
 			for(String word : trigramWords ) {
 				Random random = new Random();
-				if(i% (random.nextInt(5)+1) == 0) {
+				if(i% (random.nextInt(3)+1) == 0) {
 					continue;
 				}
 				if(j == SEARCH_LIMIT) {

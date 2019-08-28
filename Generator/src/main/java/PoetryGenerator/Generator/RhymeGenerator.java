@@ -16,7 +16,7 @@ import org.bson.Document;
 public class RhymeGenerator {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
-	private static final int SEARCH_LIMIT = 300;
+	private static final int SEARCH_LIMIT = 90;
 
 	public RhymeGenerator() {
 	}
