@@ -19,7 +19,7 @@ public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
 	private String generationGram;
-	private static final int SEARCH_LIMIT = 150;
+	private static final int SEARCH_LIMIT = 250;
 
 	public NGramController(String generationGram) {
 		this.generationGram = generationGram;
