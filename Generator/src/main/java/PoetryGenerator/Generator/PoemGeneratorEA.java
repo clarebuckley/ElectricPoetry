@@ -55,7 +55,7 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(100,0.8,100,1, "2-gram", "4-gram");
+		new PoemGeneratorEA(3,0.8,2,1, "2-gram", "4-gram");
 	}
 
 

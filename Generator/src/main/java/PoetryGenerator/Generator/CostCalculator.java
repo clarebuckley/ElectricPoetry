@@ -173,7 +173,6 @@ public class CostCalculator {
 						else {
 							sequence =  words[i-2] + " " + words[i-1] + " " + words[i];
 						}
-						//BigDecimal probOfXGivenY = 
 						//prob of this sequence = P(words[i]) * P(words[i-1] words[i])
 						String[] sequenceParts = sequence.split(" ");
 						BigDecimal thisProbability = getSequenceProbability(sequenceParts[0]).multiply(getSequenceProbability(sequenceParts[1] + " " + sequenceParts[2]));
