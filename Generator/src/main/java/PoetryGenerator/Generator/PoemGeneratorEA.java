@@ -44,7 +44,7 @@ public class PoemGeneratorEA {
 	//Number of verses in each poem
 	private int numVerses;
 	//Max limits for finding a result
-	private static final double MAX_SIMILARITY = 0.4;
+	private static final double MAX_SIMILARITY = 0.2;
 	private static final int GRAMMAR_SEARCH_LIMIT = 10;
 	private static final int RHYME_SEARCH_LIMIT = 10;
 	private static final BigDecimal MIN_PROBABILITY = new BigDecimal(0.01);
@@ -55,7 +55,7 @@ public class PoemGeneratorEA {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new PoemGeneratorEA(3,0.8,2,1, "2-gram", "4-gram");
+		new PoemGeneratorEA(30,0.8,20,1, "2-gram", "4-gram");
 	}
 
 
@@ -153,6 +153,7 @@ public class PoemGeneratorEA {
 
 		//Mutate resulting offspring and add to possible solutions
 		if(Math.random() < mutationProbability) {
+			System.out.println("Mutating");
 			child =	fixGrammar(child); 
 			child =	addRhyme(child); 
 		}
@@ -164,8 +165,10 @@ public class PoemGeneratorEA {
 		newPopulation.put(child, childProb);
 		
 		//Replace weakest members of population
+		System.out.println("Removing weak candidates");
 		population = removeWeakestCandidaes(newPopulation);
 		//Re-populate missing poems
+		System.out.println("Re-populating missing candidates");
 		while(population.size() != populationSize) {
 			String poem = poemGenerator.generatePoem(numVerses);
 			population.put(poem, costCalculator.getCost(poem));
@@ -353,7 +356,6 @@ public class PoemGeneratorEA {
 	 * @return cost of the best poem
 	 */
 	public BigDecimal evaluateFinalPopulation() {
-		System.out.println("end population size: " + population.size());
 		//Find best poem from end population
 		BigDecimal bestCost = new BigDecimal(0);
 		String bestPoem = "";
