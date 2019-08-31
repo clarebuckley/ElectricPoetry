@@ -1,6 +1,6 @@
 # ElectricPoetry
-Romantic poetry generator based on the novel 'Do Androids Dream of Electric Sheep' by Philip K Dick.
-Poems can be based on other texts by parsing in the file using PoemParser, and parsing a language model based on that text into LanguageModelParser.
+Poetry generator based on human-created texts.
+Poems can be based on texts by parsing in a text file using the PoemParser class, and parsing a language model based on that text into LanguageModelParser.
 
 ## Language Model Generation
 Language models have been generated using the tutorial at http://victor.chahuneau.fr/notes/2012/07/03/kenlm.html 
