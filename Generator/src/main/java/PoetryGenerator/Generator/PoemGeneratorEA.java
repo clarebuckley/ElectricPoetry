@@ -49,6 +49,8 @@ public class PoemGeneratorEA {
 	private static final int RHYME_SEARCH_LIMIT = 10;
 	private static final BigDecimal MIN_PROBABILITY = new BigDecimal(0.01);
 
+	//TODO: always grammar correct
+	
 	/**
 	 * Main method to run the system.
 	 * Used to set parameters for the evolutionary algorithm.
