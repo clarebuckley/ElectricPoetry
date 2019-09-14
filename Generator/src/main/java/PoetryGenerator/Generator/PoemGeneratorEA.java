@@ -145,8 +145,8 @@ public class PoemGeneratorEA {
 		SimilarityStrategy strategy = new LevenshteinDistanceStrategy();
 		StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
 		double similarityScore = service.score(parent1, parent2);
-
-		while(parent2.contentEquals(parent1) || similarityScore >= MAX_SIMILARITY) {
+		System.out.println(similarityScore);
+		while(parent2.contentEquals(parent1) || similarityScore <= MAX_SIMILARITY) {
 			parent2 = tournamentParentSelection();
 		}
 		String child = generateCrossover(parent1, parent2);
