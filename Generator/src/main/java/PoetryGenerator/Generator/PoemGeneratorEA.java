@@ -165,6 +165,7 @@ public class PoemGeneratorEA {
 			if(tries > 100) {
 				continue;
 			}
+			tries++;
 		}	
 		String child = generateCrossover(parent1, parent2);
 
