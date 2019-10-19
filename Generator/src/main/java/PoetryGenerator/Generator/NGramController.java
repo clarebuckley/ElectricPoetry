@@ -8,7 +8,7 @@ import org.bson.Document;
 
 
 /**
- * TODO: this could do with being cleaned up --> don't need method for each n-gram, use regex in one method
+ * TODO: this could do with being cleaned up --> don't need method for each n-gram, refer to smaller n method
  * Generate word sequences using n-grams stored in database
  * @author Clare Buckley
  * @version 09/04/19
@@ -19,7 +19,7 @@ public class NGramController {
 	private final MongoInterface mongo = new MongoInterface("poetryDB");
 	private final String collection = "languageModel";
 	private String generationGram;
-	private static final int SEARCH_LIMIT = 250;
+	private static final int SEARCH_LIMIT = 100;
 
 	public NGramController(String generationGram) {
 		this.generationGram = generationGram;
@@ -108,7 +108,6 @@ public class NGramController {
 				break;
 			}
 		}
-		//system.out.println("result --> " + result);
 		return result;
 	}
 
@@ -126,12 +125,10 @@ public class NGramController {
 	private String findWordUsingTrigram(String prevWord2POS, String prevWord1POS, String prevWord2, String prevWord1, String wordPOS) {
 		String result = null;
 		List<Document> matches = mongo.getSequenceMatches(collection, wordPOS, "POS");
-
 		BigDecimal highestProbability = new BigDecimal(0);
 
-	//	int matchSample = (int) (matches.size()*0.05);
 		int randomInt = new Random().nextInt(4)+1;
-		for(int i = 0; i < matches.size(); i++ /*Document match : matches*/) {
+		for(int i = 0; i < matches.size(); i++) {
 			if(i%randomInt == 0) {
 				Document match = matches.get(i);
 				Document associations = (Document) match.get("associations");
@@ -176,7 +173,6 @@ public class NGramController {
 				}
 			}
 		}
-		//system.out.println("result --> " + result);
 		return result;
 	}
 
@@ -262,7 +258,6 @@ public class NGramController {
 				break;
 			}
 		}
-		//	//system.out.println("result --> " + result);
 		return result;
 	}
 

@@ -17,12 +17,9 @@ import org.bson.Document;
 public class TemplateFiller {
 	//If getLine encounters the listed POS tags, the original poem words for that tag will be used in the line
 	private ArrayList<String> retainOriginal = new ArrayList<String>(Arrays.asList("IN"/*,"PRP", "VB", "DT","CC","PRP$","TO","WRB","-RRB-","-LRB-","-lrb-","-rrb-","VBG","VBD","VBP", "VBZ"*/));
-
 	private String punctuation = ".,:;-'''`!";
-
 	private List<String> templateLine;
 	private List<String> originalLine;
-
 	private NGramController ngram ;
 
 	public TemplateFiller(String generationGram) {
@@ -154,9 +151,7 @@ public class TemplateFiller {
 			line = line.replaceAll(" \\?", "?");
 			line = line.replaceAll("'", "");
 			line = line.replaceAll("_", ".");
-			//Remove space before punctuation
-			line = line.replaceAll("\\s+(?=\\p{Punct})", "");
-
+			line = line.replaceAll("\\s+(?=\\p{Punct})", ""); 	//Remove space before punctuation
 			line = line.replaceAll("-lrb- ", " (");
 			line = line.replaceAll("-rrb-", ") ");
 
@@ -167,7 +162,6 @@ public class TemplateFiller {
 				String match = line.substring(matcher.start(), matcher.start()+1);
 				line.replace(match, "a");
 			}
-
 
 			String capitaliseResult = "";
 			boolean capitalise = true;
