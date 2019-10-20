@@ -156,14 +156,14 @@ public class PoemGeneratorEA {
 		StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
 		double similarityScore = service.score(parent1, parent2);
 		int tries = 0;
-		while(parent2.contentEquals(parent1) || similarityScore <= MAX_SIMILARITY) {
+		while(parent2.contentEquals(parent1) || similarityScore < MAX_SIMILARITY) {
 			System.out.println("score: " + similarityScore + " max: " + MAX_SIMILARITY+ " --> " + tries);
 			parent2 = tournamentParentSelection();
 			if(tries > 50) {
 				tournamentSize = populationSize;
 			}
 			if(tries > 100) {
-				continue;
+				break;
 			}
 			tries++;
 		}	
